@@ -1,21 +1,53 @@
-MIT License
+UV–VIS SPECTRAL STUDIO — PROPRIETARY LICENSE
+All Rights Reserved
 
-Copyright (c) 2026 ABDULSALAM S. HASAN
+Copyright (c) 2026 ABDULSALAM S. HASAN.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Effective for material first published under this notice on or after
+23 September 2026.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. Ownership and scope
+   Except for material subject to a pre-existing license or third-party
+   rights, all copyright and other applicable intellectual-property rights
+   in UV–Vis Spectral Studio, its source code, documentation, graphics,
+   and accompanying original materials are reserved by the copyright holder.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. No general permission to copy or modify
+   No permission is granted by this notice to reproduce, redistribute,
+   republish, sublicense, sell, modify, adapt, translate, create derivative
+   works from, or incorporate the covered materials into another product,
+   whether for commercial or non-commercial purposes. Any such permission
+   must be obtained separately in writing from the copyright holder.
+
+3. Access to the hosted application
+   Members of the public may access and interact with an officially hosted
+   instance of the application as made available by the copyright holder.
+   This limited permission does not authorize redistribution of the source
+   code or the creation or distribution of modified versions. Ordinary
+   technical copies necessary to display or operate the hosted application,
+   permissions required by applicable law, and rights granted by the hosting
+   platform's terms remain unaffected.
+
+4. Previously licensed releases
+   Earlier versions or copies that were made available under the MIT License
+   remain subject to that license for recipients who obtained them under it.
+   This notice does not withdraw permissions previously granted under the
+   MIT License, or extinguish rights in code legitimately derived from those
+   previously MIT-licensed copies. It applies to material newly released
+   under this proprietary notice to the extent the copyright holder is
+   entitled to license that material.
+
+5. Third-party materials
+   Any separately licensed third-party component remains governed by its
+   respective license. This notice does not supersede third-party rights.
+
+6. No warranty
+   TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE COVERED MATERIALS AND
+   HOSTED APPLICATION ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR
+   PURPOSE, AND NONINFRINGEMENT. THE COPYRIGHT HOLDER IS NOT LIABLE FOR
+   DAMAGES ARISING FROM THEIR USE TO THE EXTENT PERMITTED BY APPLICABLE LAW.
+
+For permission requests, contact the copyright holder through the project's
+GitHub repository:
+https://github.com/abd19990044-commits/UVVisSpectralStudio
