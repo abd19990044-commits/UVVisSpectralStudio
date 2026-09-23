@@ -643,6 +643,7 @@ function buildSvg(data,order,B,preview=false){
 }
 function render(){
  locked=false;$('tooltip').style.display='none';
+ lastMeasurement=null;lastSensitivity=null;
  const v=visible(),order=activeOrder(),gallery=$('overview');
  updatePrepOptions();
  $('plotHeading').textContent=$('chartTitle').value.trim()||'UV–Vis Spectral Overlay';
@@ -769,6 +770,7 @@ $('prepApply').onclick=()=>{
  }catch(e){$('prepStatus').textContent=e.message;statusRaw(e.message,'warn');}
 };
 let lastSensitivity=null;
+$('analysisCurve').onchange=()=>{lastMeasurement=null;lastSensitivity=null;$('analysisResults').textContent='';$('sensitivityResults').textContent='';};
 $('sensitivityRun').onclick=()=>{
  if(!plotState){status('noPlot','warn');return;}
  try{
