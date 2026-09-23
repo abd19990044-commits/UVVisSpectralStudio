@@ -71,6 +71,21 @@ Choose one currently displayed curve and an explicit wavelength interval. The an
 
 An optional user-chosen noise interval produces a descriptive amplitude/sample-standard-deviation ratio. This is **not a determination of LOD, LOQ, instrumental S/N, or analytical selectivity**; the software does not infer a blank region automatically. Features are computed quantities, not chemical identifications.
 
+## Non-destructive spectral preprocessing
+
+The **Non-destructive spectral processing** panel produces a **new curve** from a selected source; it does not edit, discard or replace the original measurements. Operations use the explicit derivative-processing wavelength interval and preserve the original source wavelength positions:
+
+- **Linear endpoint baseline correction** subtracts a straight line fitted through two user-selected, valid anchor wavelengths.
+- **Local-polynomial smoothing** computes a zero-order fit using the selected point window, polynomial degree and edge-mask policy, independently within each continuous segment.
+- **Maximum-absolute normalization** yields a *relative* signal (not absolute absorbance); the vertical title adapts when relative and raw curves are mixed.
+- **Reference subtraction/ratio** use the source wavelength positions. Where the reference lacks a sampled value, interpolation is explicit, gap-aware and recorded in the derived-curve provenance; missing reference values are never extrapolated across gaps.
+
+Processed curves inherit the same derivative settings as raw curves, but the user must determine whether a chosen transformation is chemically justified. CSV includes per-curve provenance, and the application does not claim that smoothing or normalization validates an analytical method.
+
+## Citing and release history
+
+See [CITATION.cff](CITATION.cff) for bibliographic metadata and [CHANGELOG.md](CHANGELOG.md) for version history. No DOI has been assigned in this repository; do not cite an invented identifier. The [proprietary license](LICENSE) remains unchanged, including previously granted rights in older MIT-licensed copies.
+
 ## Verification
 
 - [Automated numerical regression](tests/uvvis-regression.test.cjs) verifies known polynomial derivatives, processing/display independence, discontinuity isolation, gap-aware analytical measurements, retained raw data, and SVG axis formatting.
