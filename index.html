@@ -359,6 +359,48 @@ function useData(s,order){
  const part=restrictedSpectrum(s);
  return{x:part.x,y:derivative(part,order),breaks:part.breaks,s};
 }
+/* All measurements are derived from finite, already-computed data.
+   NaN/masked points, instrument gaps and user processing bounds are respected. */
+function analyticalMetrics(d,lo,hi,noiseRange=null){
+ if(!(Number.isFinite(lo)&&Number.isFinite(hi)&&hi>lo))throw Error('Invalid measurement wavelength interval');
+ const points=[];
+ for(let i=0;i<d.x.length;i++){
+  if(d.x[i]>=lo&&d.x[i]<=hi&&Number.isFinite(d.y[i]))points.push({i,x:d.x[i],y:d.y[i]});
+ }
+ if(points.length<2)throw Error('At least two finite data points are required in the measurement interval');
+ let highest=points[0],lowest=points[0],area=0,segments=0,zeros=[],previous=null;
+ for(const p of points){
+  if(p.y>highest.y)highest=p;
+  if(p.y<lowest.y)lowest=p;
+  if(p.y===0&&!zeros.some(q=>q.x===p.x))zeros.push({x:p.x,kind:'measured zero'});
+  if(previous&&p.i===previous.i+1&&!d.breaks.includes(p.i)){
+   area+=(p.x-previous.x)*(p.y+previous.y)/2;segments++;
+   if(previous.y*p.y<0){
+    const zx=previous.x+(p.x-previous.x)*(-previous.y)/(p.y-previous.y);
+    if(!zeros.some(q=>Math.abs(q.x-zx)<1e-9))zeros.push({x:zx,kind:'linearly interpolated zero'});
+   }
+  }
+  previous=p;
+ }
+ let noise=null;
+ if(noiseRange){
+  if(!(Number.isFinite(noiseRange.lo)&&Number.isFinite(noiseRange.hi)&&noiseRange.hi>noiseRange.lo))throw Error('Invalid noise-region interval');
+  const samples=d.x.map((w,i)=>w>=noiseRange.lo&&w<=noiseRange.hi?d.y[i]:NaN).filter(Number.isFinite);
+  if(samples.length<3)throw Error('Noise-region estimate requires at least three finite readings');
+  const mean=samples.reduce((a,b)=>a+b,0)/samples.length;
+  const sd=Math.sqrt(samples.reduce((sum,v)=>sum+(v-mean)**2,0)/(samples.length-1));
+  const amplitude=Math.max(Math.abs(highest.y-mean),Math.abs(lowest.y-mean));
+  noise={n:samples.length,mean,sd,snr:sd>0?amplitude/sd:NaN};
+ }
+ return{n:points.length,lo,hi,highest,lowest,peakToPeak:highest.y-lowest.y,
+  peakToZero:Math.max(Math.abs(highest.y),Math.abs(lowest.y)),
+  area,segments,zeros,noise};
+}
+function updateMeasureCurveOptions(data){
+ const select=$('analysisCurve'),prior=select.value;
+ select.innerHTML=data.map((d,i)=>'<option value="'+i+'">'+E(d.s.name)+'</option>').join('');
+ if([...select.options].some(o=>o.value===prior))select.value=prior;
+}
 function interp(d,w){let x=d.x,y=d.y,n=x.length;if(!n||w<x[0]||w>x[n-1])return NaN;let lo=0,hi=n-1;while(lo<hi){let m=(lo+hi)>>1;if(x[m]<w)lo=m+1;else hi=m;}if(x[lo]===w)return y[lo];if(!lo||d.breaks.includes(lo))return NaN;let a=y[lo-1],b=y[lo];return Number.isFinite(a)&&Number.isFinite(b)?a+(w-x[lo-1])/(x[lo]-x[lo-1])*(b-a):NaN;}
 function nearestData(d,w){let xs=d.x,n=xs.length;if(!n||w<xs[0]||w>xs[n-1])return null;let lo=0,hi=n-1;while(lo<hi){let m=(lo+hi)>>1;if(xs[m]<w)lo=m+1;else hi=m;}let k=lo>0&&Math.abs(xs[lo-1]-w)<Math.abs(xs[lo]-w)?lo-1:lo;return Number.isFinite(d.y[k])?{x:xs[k],y:d.y[k]}:null;}
 function visible(){return spectra.filter(s=>s.visible);}
@@ -501,6 +543,7 @@ function render(){
    return;
   }
   const data=v.map(s=>useData(s,order));
+  updateMeasureCurveOptions(data);$('analysisResults').textContent='';
   const B=derivativeAutoFit&&order>0?boundsMini(data,displayXRange()):bounds(data);
   const chart=buildSvg(data,order,B);
   $('chart').outerHTML=chart.svg.replace('<svg ','<svg id="chart" class="chart-svg" role="img" aria-label="Interactive spectrum plot" ');
@@ -598,6 +641,63 @@ $('langToggle').onclick=switchLanguage;
 $('upload').onchange=e=>{importFiles([...e.target.files]);e.target.value='';};let drop=$('drop');drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag');};drop.ondragleave=()=>drop.classList.remove('drag');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');importFiles([...e.dataTransfer.files]);};
 $('demo').onclick=()=>{let x=Array.from({length:301},(_,i)=>200+i),defs=[{name:'Sample A · synthetic',f:w=>.04+.75*Math.exp(-.5*((w-274)/17)**2)+.12*Math.exp(-.5*((w-355)/36)**2)},{name:'Sample B · synthetic',f:w=>.05+.65*Math.exp(-.5*((w-286)/21)**2)+.10*Math.exp(-.5*((w-348)/28)**2)},{name:'Sample C · synthetic',f:w=>.04+.52*Math.exp(-.5*((w-265)/24)**2)+.14*Math.exp(-.5*((w-375)/24)**2)}];for(let d of defs)spectra.push({id:++seq,name:d.name,x:[...x],y:x.map(d.f),breaks:[],color:PALETTE[(seq-1)%PALETTE.length],style:'solid',visible:true,cache:{}});updateSamples();render();status('demoStatus');};
 $('clear').onclick=()=>{spectra=[];sourceTables=[];updateMapping();updateSamples();render();status('cleared');};$('view').onchange=()=>{let order=$('view').value==='all'?4:Number($('view').value);if(order>Number($('degree').value))$('degree').value=String(order);if($('view').value==='all')derivativeGalleryOpen=true;derivativeAutoFit=order>0&&!manualYLimits;if(!manualYLimits){if(order>0){$('ymin').value='';$('ymax').value='';}else{$('ymin').value='0';$('ymax').value='2.5';}}render();};for(let id of ['ymin','ymax'])$(id).oninput=()=>{yInputsEdited=true;};for(let id of ['window','degree','edgeMode'])$(id).onchange=render;for(let id of ['chartTitle','xLabel','yLabel','showCurveLegend'])$(id).onchange=render;$('axisApply').onclick=()=>{const roi=displayXRange();if(!manualYLimits&&!yInputsEdited&&activeOrder()===0&&(roi.lo!==200||roi.hi!==800)){$('ymin').value='';$('ymax').value='';}manualYLimits=Boolean(yInputsEdited&&($('ymin').value.trim()||$('ymax').value.trim())||manualYLimits);yInputsEdited=false;derivativeAutoFit=activeOrder()>0&&!manualYLimits;render();};$('axisReset').onclick=()=>{manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;$('xmin').value='200';$('xmax').value='800';if(activeOrder()===0){$('ymin').value='0';$('ymax').value='2.5';}else{$('ymin').value='';$('ymax').value='';}render();};$('fitData').onclick=()=>{const v=visible();if(!v.length){status('noPlot','warn');return;}const lo=Math.min(...v.map(s=>s.x[0])),hi=Math.max(...v.map(s=>s.x.at(-1)));$('xmin').value=String(lo);$('xmax').value=String(hi);$('ymin').value='';$('ymax').value='';manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;render();};$('applyProcess').onclick=()=>{const l=$('processMin').value.trim(),h=$('processMax').value.trim(),lo=l===''?-Infinity:Number(l),hi=h===''?Infinity:Number(h);if(Number.isNaN(lo)||Number.isNaN(hi)||lo>=hi){statusRaw(lang==='ar'?'مجال الاشتقاق غير صالح':'Invalid derivative processing range','warn');return;}processingRange={lo,hi};render();};$('exportSvg').onclick=exportSvg;$('exportPng').onclick=exportPng;
+let lastMeasurement=null;
+$('analyzeSpectrum').onclick=()=>{
+ if(!plotState){status('noPlot','warn');return;}
+ try{
+  const {data,B,order}=plotState,d=data[Number($('analysisCurve').value)];
+  if(!d)throw Error('Choose a spectrum');
+  const a=$('measurementStart').value.trim(),b=$('measurementEnd').value.trim();
+  const lo=a===''?B.xmin:Number(a),hi=b===''?B.xmax:Number(b);
+  const ns=$('noiseStart').value.trim(),ne=$('noiseEnd').value.trim();
+  if(Boolean(ns)!==Boolean(ne))throw Error('Specify both noise-region limits or leave both empty');
+  const noise=ns?{lo:Number(ns),hi:Number(ne)}:null;
+  const m=analyticalMetrics(d,lo,hi,noise);
+  lastMeasurement={m,d,order,noise,range:{lo,hi}};
+  const unit=order?'nm^-'+order:'absorbance';
+  const rows=[
+   (lang==='ar'?'المنحنى: ':'Curve: ')+d.s.name+' · D'+order,
+   (lang==='ar'?'النقاط الصالحة: ':'Finite points: ')+m.n,
+   'Maximum: '+fmt(m.highest.y,10)+' '+unit+' @ '+fmt(m.highest.x,8)+' nm',
+   'Minimum: '+fmt(m.lowest.y,10)+' '+unit+' @ '+fmt(m.lowest.x,8)+' nm',
+   'Global peak-to-peak: '+fmt(m.peakToPeak,10)+' '+unit+' (not necessarily adjacent peaks)',
+   'Peak-to-zero |D|: '+fmt(m.peakToZero,10)+' '+unit,
+   'Signed trapezoidal area: '+fmt(m.area,10)+' '+(order?'nm^'+(1-order):'nm')+'; valid intervals: '+m.segments,
+   'Zero crossings (candidates): '+(m.zeros.length?m.zeros.map(z=>fmt(z.x,8)+' nm ['+z.kind+']').join('; '):'none'),
+   m.noise?'Exploratory signal / sample SD in user-selected noise region: '+fmt(m.noise.snr,7)+' (n='+m.noise.n+', SD='+fmt(m.noise.sd,10)+'); not an LOQ determination':'S/N not computed: no user-defined noise region.'
+  ];
+  if(m.noise&&Number.isFinite(m.noise.snr)&&m.noise.snr<10)rows.push('Caution: low exploratory S/N; do not infer analytical LOQ from this ratio.');
+  $('analysisResults').textContent=rows.join('\n');
+  $('analysisResults').style.whiteSpace='pre-wrap';
+ }catch(e){lastMeasurement=null;statusRaw(e.message,'warn');$('analysisResults').textContent=e.message;}
+};
+$('exportMetrics').onclick=()=>{
+ if(!lastMeasurement){$('analyzeSpectrum').click();if(!lastMeasurement)return;}
+ const {m,d,order,range}=lastMeasurement;
+ const rows=[
+  ['Metric','Value','Unit','Details'],
+  ['Curve',d.s.name,'',''],
+  ['Derivative order',order,'',''],
+  ['Processing minimum',processingRange.lo,'nm',''],
+  ['Processing maximum',processingRange.hi,'nm',''],
+  ['Measurement minimum',range.lo,'nm',''],
+  ['Measurement maximum',range.hi,'nm',''],
+  ['Fit window',$('window').value,'points',''],
+  ['Polynomial degree',$('degree').value,'',''],
+  ['Edge mask',$('edgeMode').checked,'',''],
+  ['Max wavelength',m.highest.x,'nm',''],
+  ['Max ordinate',m.highest.y,order?'nm^-'+order:'absorbance',''],
+  ['Min wavelength',m.lowest.x,'nm',''],
+  ['Min ordinate',m.lowest.y,order?'nm^-'+order:'absorbance',''],
+  ['Global peak-to-peak',m.peakToPeak,order?'nm^-'+order:'absorbance','not necessarily adjacent extrema'],
+  ['Peak-to-zero absolute amplitude',m.peakToZero,order?'nm^-'+order:'absorbance',''],
+  ['Trapezoidal signed area',m.area,order?'nm^'+(1-order):'nm','discontinuous intervals not bridged'],
+  ...m.zeros.map(z=>['Zero-crossing candidate',z.x,'nm',z.kind]),
+  ...(m.noise?[['Exploratory S/N',m.noise.snr,'','not a quantification limit'],['Noise sample SD',m.noise.sd,order?'nm^-'+order:'absorbance','sample SD; n='+m.noise.n]]:[])
+ ];
+ const content='\uFEFF# UV-Vis Spectral Studio v'+APP_VERSION+'\r\n'+rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
+ download(new Blob([content],{type:'text/csv;charset=utf-8'}),'uvvis_measurements_D'+order+'.csv');
+};
 function exportedCsv(){
  if(!plotState)throw Error(t('noPlot'));
  const {data,B,order}=plotState,aligned=$('csvMode').value==='aligned',unit=order?'nm^-'+order:'dimensionless';
