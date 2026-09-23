@@ -819,6 +819,55 @@ $('prepApply').onclick=()=>{
   $('prepStatus').textContent=(lang==='ar'?'أُضيف منحنى جديد مع حفظ القياسات الأصلية: ':'New derived curve added without modifying original measurements: ')+generated.name;
  }catch(e){$('prepStatus').textContent=e.message;statusRaw(e.message,'warn');}
 };
+let lastCalibration=null;
+for(const id of ['calData','calBlanks','calUnknown','calUnit'])$(id).oninput=()=>{lastCalibration=null;$('calResults').textContent='';};
+$('calRun').onclick=()=>{
+ try{
+  const pairs=parseCalibrationPairs($('calData').value);
+  const rawBlank=$('calBlanks').value.trim();
+  const blanks=rawBlank?rawBlank.split(/[\s,;]+/).map(validNumber):[];
+  const rawUnknown=$('calUnknown').value.trim();
+  const unknown=rawUnknown===''?null:Number(rawUnknown);
+  if(unknown!==null&&!Number.isFinite(unknown))throw Error('Unknown signal must be finite');
+  const result=calibrationOLS(pairs,blanks,unknown);
+  const unit=$('calUnit').value.trim()||'concentration unit';
+  lastCalibration={result,unit,blanks,unknown};
+  const textRows=[
+   'Unweighted OLS; n='+result.n+'; '+result.xmin+'–'+result.xmax+' '+unit,
+   'Signal = '+fmt(result.slope,12)+' × concentration + '+fmt(result.intercept,12),
+   'Slope: '+fmt(result.slope,12)+' signal / ('+unit+'); intercept: '+fmt(result.intercept,12)+' signal',
+   'R²: '+fmt(result.r2,12)+'; SSE: '+fmt(result.sse,10)+'; residual SD: '+fmt(result.residualSD,10)+' signal',
+   result.blank?'Independent blanks n='+result.blank.n+'; sample SD='+fmt(result.blank.sd,10)+' signal'+
+    (result.blank.lod!==null?'; LOD (3.3σ/|S|)='+fmt(result.blank.lod,10)+' '+unit+
+      '; LOQ (10σ/|S|)='+fmt(result.blank.loq,10)+' '+unit
+      :'; zero blank variance: LOD/LOQ not estimated'):
+    'LOD/LOQ omitted: no independently prepared blank measurements supplied.',
+   result.estimated!==null?'Estimated unknown concentration: '+fmt(result.estimated,10)+' '+unit+
+    (result.outside?' [EXTRAPOLATED OUTSIDE CALIBRATION RANGE]':''):'',
+   'Regression and LOD/LOQ estimates alone do not establish selectivity, accuracy, robustness or full method validation.'
+  ];
+  $('calResults').textContent=textRows.filter(Boolean).join('\n');
+  $('calResults').style.whiteSpace='pre-wrap';
+ }catch(e){lastCalibration=null;$('calResults').textContent=e.message;statusRaw(e.message,'warn');}
+};
+$('calExport').onclick=()=>{
+ if(!lastCalibration){$('calRun').click();if(!lastCalibration)return;}
+ const {result:r,unit,blanks,unknown}=lastCalibration;
+ const metadata=['# UV-Vis Spectral Studio v'+APP_VERSION,
+  '# Concentration unit: '+unit.replace(/[\r\n]/g,' '),
+  '# Unweighted OLS; signal units must be consistent; blanks are assumed independent',
+  '# Slope: '+r.slope+'; intercept: '+r.intercept+'; R2: '+r.r2+'; SSE: '+r.sse+'; residual SD: '+r.residualSD,
+  '# Blank sample SD: '+(r.blank?r.blank.sd:'not supplied'),
+  '# LOD (3.3 sigma / |slope|): '+(r.blank?r.blank.lod:'not calculated'),
+  '# LOQ (10 sigma / |slope|): '+(r.blank?r.blank.loq:'not calculated'),
+  '# Unknown signal: '+(unknown===null?'not supplied':unknown)+
+   '; estimated concentration: '+(r.estimated===null?'not calculated':r.estimated)+
+   '; extrapolated: '+r.outside];
+ const rows=[['concentration ('+unit+')','measured signal','fitted signal','residual'],
+  ...r.pairs.map((p,i)=>[p.x,p.y,r.intercept+r.slope*p.x,r.residuals[i]])];
+ const content='\uFEFF'+metadata.join('\r\n')+'\r\n'+rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
+ download(new Blob([content],{type:'text/csv;charset=utf-8'}),'uvvis_calibration_OLS.csv');
+};
 let lastSensitivity=null;
 $('analysisCurve').onchange=()=>{lastMeasurement=null;lastSensitivity=null;$('analysisResults').textContent='';$('sensitivityResults').textContent='';};
 $('sensitivityRun').onclick=()=>{
