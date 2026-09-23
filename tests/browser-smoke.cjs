@@ -107,9 +107,14 @@ async function run(){
   const inputMin=await page.locator('#samples [data-name]').last().evaluate(el=>el.parentElement.textContent);
   assert.ok(inputMin.includes('185'),'Valid 185 nm readings must remain');
   await page.locator('#upload').setInputFiles({name:'AmbiguousAxis.csv',mimeType:'text/csv',
-   buffer:Buffer.from('X,Absorbance\\n'+Array.from({length:15},(_,i)=>(4000-i*50)+','+(0.1+i*.01)).join('\\n'))});
+   buffer:Buffer.from('X,Absorbance\n'+Array.from({length:15},(_,i)=>(4000-i*50)+','+(0.1+i*.01)).join('\n'))});
   await page.waitForFunction(()=>document.querySelectorAll('#samples [data-name]').length===6);
   assert.match(await page.locator('#status').textContent(),/unusual|غير معتاد/i);
+  await page.locator('#upload').setInputFiles(path.join(__dirname,'multisheet_fixture.xlsx'));
+  await page.waitForFunction(()=>document.querySelectorAll('#samples [data-name]').length===8);
+  const summaries=await page.locator('#samples [data-name]').evaluateAll(els=>els.slice(-2).map(el=>el.parentElement.textContent));
+  assert.ok(summaries[0].includes('185'),'First XLSX sheet must retain 185 nm');
+  assert.ok(summaries[1].includes('310'),'Second XLSX sheet must retain 310 nm');
   assert.deepEqual(errors,[],'No uncaught browser errors');
   process.stdout.write('Browser smoke tests passed: ROI, gallery, theme, Arabic labels, SVG, PNG, duplicate prevention.\n');
  }finally{await browser.close();}
