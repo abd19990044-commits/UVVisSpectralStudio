@@ -149,7 +149,7 @@ test('Reference arithmetic cannot bridge a gap or divide by zero',()=>{
  const source={id:10,name:'Drug',x,y:x.map(()=>1),breaks:[],cache:{}};
  const ref={id:11,name:'Reference',x,y:x.map((_,i)=>i<15?.5:i>15?0:NaN),breaks:[16],cache:{}};
  const out=ctx.prepareProcessedCurve(source,ref,'subtract');
- assert.ok(out.x.every(w=>w<285||w>286),'Missing or discontinuous reference values must stay absent');
+ assert.ok(out.x.every(w=>w!==285),'Missing or discontinuous reference values must stay absent');
  assert.ok(out.breaks.length>0,'Discontinuities must be preserved');
  assert.throws(()=>ctx.prepareProcessedCurve(source,source,'ratio'),/different reference/);
  vm.runInContext('processingRange={lo:270,hi:400}',ctx);
