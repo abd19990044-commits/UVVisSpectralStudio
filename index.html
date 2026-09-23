@@ -157,11 +157,6 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 <div class="field"><label for="prepRight" data-i18n="prepRight">Baseline anchor to (nm, optional)</label><input id="prepRight" type="number" step="any" placeholder="Processing end"></div></div>
 <div class="toolbar"><button id="prepApply" class="btn small primary" data-i18n="prepApply">Create processed curve</button></div>
 <p class="note" id="prepStatus" aria-live="polite"></p></section>
-<section class="panel" id="calibrationPanel"><h2 data-i18n="calHeader">08 / Quantitative calibration (unweighted OLS)</h2><p class="note" data-i18n="calNote">Enter at least five concentration, signal pairs. Derivative amplitudes may be entered as signals. Blank readings are independent preparations in signal units; LOD/LOQ are calculated only when a valid blank sample SD is supplied. This is not full method validation.</p>
-<div class="field"><label for="calData" data-i18n="calPairs">Concentration, signal (one pair per row)</label><textarea id="calData" rows="6" spellcheck="false" placeholder="0,0.010&#10;1,0.090&#10;2,0.170"></textarea></div>
-<div class="two"><div class="field"><label for="calUnit" data-i18n="calUnit">Concentration unit</label><input id="calUnit" value="µg/mL"></div><div class="field"><label for="calUnknown" data-i18n="calUnknown">Unknown sample signal (optional)</label><input id="calUnknown" type="number" step="any" placeholder="Signal"></div></div>
-<div class="field"><label for="calBlanks" data-i18n="calBlanks">Independent blank readings, signal units (optional)</label><textarea id="calBlanks" rows="2" placeholder="0.0031, 0.0028, 0.0034"></textarea></div>
-<div class="toolbar"><button class="btn small primary" id="calRun" data-i18n="calRun">Calculate calibration</button><button class="btn small" id="calExport" data-i18n="calExport">Export calibration CSV</button></div><div id="calResults" class="note" aria-live="polite"></div></section>
 <section class="panel"><h2 data-i18n="scientificHeader">Scientific interpretation & limitations</h2><div class="note" data-i18n="scientificNote">Absorbance A is dimensionless; the nth derivative with wavelength in nm has units nm⁻ⁿ. Local polynomial derivatives, especially the 3rd/4th, are sensitive to noise, window size, nonuniform sampling and edge effects. The original data are retained. Numerical extrema and user-requested zero-crossing candidates can be reported; they do not prove chemical identity or establish an analytical method. Curve overlap is a visual comparison, not chemical identity evidence. PNG physical width is configurable in inches or cm with embedded DPI; SVG is resolution-independent. A missing reading is not silently bridged.</div></section>
 </div></main><footer><span data-i18n="footer">UV–Vis Spectral Studio · Spectral analysis and scientific visualization</span> · <span data-i18n="developedBy">Developed by</span> <strong dir="ltr">ABDULSALAM S. HASAN</strong> · v1.2.0 · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio" target="_blank" rel="noopener noreferrer">Source</a> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></footer>
 <script>
@@ -200,7 +195,6 @@ Object.assign(STR.en,{
   metricsHeader:'06 / Analytical measurements',metricsNote:'Choose the interval. Reported extrema and zero crossings are numerical candidates, not chemical identifications.',metricsCurve:'Spectrum to measure',metricsStart:'Measurement from (nm)',metricsEnd:'Measurement to (nm)',noiseStart:'Optional noise-region start (nm)',noiseEnd:'Optional noise-region end (nm)',metricsRun:'Measure selected curve',metricsExport:'Export measurements CSV',
   prepHeader:'07 / Non-destructive spectral processing',prepNote:'Adds a new curve; raw data are never overwritten. Uses the explicit processing interval and measured wavelengths.',prepSource:'Source curve',prepReference:'Reference for subtraction / ratio',prepMode:'Transformation',prepBaseline:'Straight-line baseline between chosen endpoints',prepSmooth:'Local-polynomial smoothing (D0)',prepNormalize:'Normalize by maximum absolute signal',prepSubtract:'Subtract reference (marked interpolation)',prepRatio:'Ratio to reference (marked interpolation)',prepLeft:'Baseline anchor from (nm, optional)',prepRight:'Baseline anchor to (nm, optional)',prepApply:'Create processed curve',
   sensitivityRun:'Compare fitting windows',sensitivityExport:'Save window sensitivity CSV',
-  calHeader:'08 / Quantitative calibration (unweighted OLS)',calNote:'Enter at least five concentration–signal pairs. Blank readings must be independent preparations in signal units; LOD/LOQ are optional estimates, not full method validation.',calPairs:'Concentration, signal (one pair per row)',calUnit:'Concentration unit',calUnknown:'Unknown sample signal (optional)',calBlanks:'Independent blank readings (signal units, optional)',calRun:'Calculate calibration',calExport:'Export calibration CSV',
   developedBy:'Developed by',headerOverlay:'Spectral overlay · D1–D4',headerAnalysis:'UV–Vis analysis',
  importAria:'Import spectral data',widthAria:'Physical figure width',dpiAria:'PNG resolution',plotAria:'Interactive UV–Vis spectrum plot',
  themeDark:'Dark mode',themeLight:'Light mode',themeDarkAria:'Switch to dark mode',themeLightAria:'Switch to light mode',cursorWavelength:'Wavelength',measuredData:'Measured readings',column:'Column'
@@ -211,7 +205,6 @@ Object.assign(STR.ar,{
   metricsHeader:'06 / القياسات التحليلية',metricsNote:'حدّد المجال. القمم ومواضع عبور الصفر مرشحات عددية وليست إثباتاً لهوية المركب.',metricsCurve:'المنحنى المراد قياسه',metricsStart:'بداية مجال القياس (nm)',metricsEnd:'نهاية مجال القياس (nm)',noiseStart:'بداية مجال الضجيج الاختياري (nm)',noiseEnd:'نهاية مجال الضجيج الاختياري (nm)',metricsRun:'قياس المنحنى المختار',metricsExport:'تصدير القياسات CSV',
   prepHeader:'07 / المعالجة الطيفية غير المتلفة',prepNote:'إضافة منحنى جديد دون استبدال القياسات؛ يُستخدم مجال المعالجة المحدد والأطوال الموجية المقيسة.',prepSource:'المنحنى الأصلي',prepReference:'المنحنى المرجعي للطرح أو النسبة',prepMode:'العملية',prepBaseline:'تصحيح خط أساس مستقيم بين نقطتين',prepSmooth:'تنعيم ملاءمة متعددة الحدود D0',prepNormalize:'تطبيع إلى أقصى قيمة مطلقة',prepSubtract:'طرح المرجع (مع استيفاء معلن)',prepRatio:'القسمة على المرجع (مع استيفاء معلن)',prepLeft:'بداية مرجع خط الأساس (nm)',prepRight:'نهاية مرجع خط الأساس (nm)',prepApply:'إنشاء منحنى معالج',
   sensitivityRun:'مقارنة نوافذ الاشتقاق',sensitivityExport:'حفظ مقارنة النوافذ CSV',
-  calHeader:'08 / منحنى المعايرة الكمي',calNote:'أدخل خمسة أزواج تركيز وإشارة على الأقل. قراءات البلانك لتحضيرات مستقلة وبوحدة الإشارة؛ LOD/LOQ تقديرات اختيارية وليست تحققاً كاملاً للطريقة.',calPairs:'التركيز، الإشارة (زوج في كل سطر)',calUnit:'وحدة التركيز',calUnknown:'إشارة العينة المجهولة (اختياري)',calBlanks:'قراءات بلانك مستقلة بوحدة الإشارة (اختياري)',calRun:'حساب المعايرة',calExport:'تصدير المعايرة CSV',
   developedBy:'طُوّر بواسطة',headerOverlay:'تراكب الأطياف · المشتقات D1–D4',headerAnalysis:'التحليل الطيفي بالأشعة فوق البنفسجية والمرئية',
  importAria:'استيراد البيانات الطيفية',widthAria:'العرض الفيزيائي للشكل',dpiAria:'دقة تصدير PNG',plotAria:'رسم تفاعلي لأطياف الامتصاص بالأشعة فوق البنفسجية والمرئية',
  brand:'تحليل أطياف الامتصاص بالأشعة فوق البنفسجية والمرئية · الاشتقاق الطيفي · رسوم للبحث العلمي',
@@ -447,49 +440,6 @@ function prepareProcessedCurve(source,reference,mode,from='',to=''){
   '; processing nm='+processingRange.lo+'..'+processingRange.hi+'; original preserved';
  return{name:source.name+' · '+mode,x:points.map(p=>p.x),y:points.map(p=>p.y),breaks,
   scaleType:mode==='normalize'?'relative':mode==='ratio'?'ratio':kind,provenance};
-}
-function parseCalibrationPairs(source){
- const lines=String(source).replace(/^\uFEFF/,'').split(/\r?\n|\r/).map(s=>s.trim()).filter(Boolean);
- const pairs=[];
- for(let row=0;row<lines.length;row++){
-  const line=lines[row];if(/^#/.test(line))continue;
-  const delimiter=line.includes('\t')?'\t':line.includes(';')?';':line.includes(',')?',':null;
-  const fields=delimiter?line.split(delimiter).map(s=>s.trim()):line.split(/\s+/);
-  if(fields.length!==2)throw Error('Calibration row '+(row+1)+' must contain exactly two values; use decimal points with comma-separated data');
-  const x=validNumber(fields[0]),y=validNumber(fields[1]);
-  if(row===0&&!Number.isFinite(x)&&!Number.isFinite(y))continue;
-  if(!Number.isFinite(x)||!Number.isFinite(y)||x<0)throw Error('Invalid concentration/signal in row '+(row+1));
-  pairs.push({x,y});
- }
- if(pairs.length<5||new Set(pairs.map(p=>p.x)).size<5)throw Error('At least five distinct calibration concentration levels are required');
- return pairs;
-}
-function calibrationOLS(pairs,blankReadings=[],unknown=null){
- const n=pairs.length,meanX=pairs.reduce((s,p)=>s+p.x,0)/n,
-  meanY=pairs.reduce((s,p)=>s+p.y,0)/n,
-  sxx=pairs.reduce((s,p)=>s+(p.x-meanX)**2,0),
-  sxy=pairs.reduce((s,p)=>s+(p.x-meanX)*(p.y-meanY),0);
- if(!(sxx>0))throw Error('Concentration range has zero variance');
- const slope=sxy/sxx,intercept=meanY-slope*meanX;
- if(!Number.isFinite(slope)||Math.abs(slope)<1e-15)throw Error('Calibration slope is zero or numerically unresolved');
- const residuals=pairs.map(p=>p.y-(slope*p.x+intercept));
- const sse=residuals.reduce((s,v)=>s+v*v,0),sst=pairs.reduce((s,p)=>s+(p.y-meanY)**2,0);
- const r2=sst>0?1-sse/sst:NaN;
- const residualSD=Math.sqrt(sse/(n-2));
- let blank=null;
- if(blankReadings.length){
-  if(blankReadings.length<3||blankReadings.some(z=>!Number.isFinite(z)))throw Error('At least three finite, independent blank readings are required');
-  const bm=blankReadings.reduce((s,v)=>s+v,0)/blankReadings.length;
-  const sd=Math.sqrt(blankReadings.reduce((s,v)=>s+(v-bm)**2,0)/(blankReadings.length-1));
-  blank={n:blankReadings.length,mean:bm,sd,
-   lod:sd>0?3.3*sd/Math.abs(slope):null,
-   loq:sd>0?10*sd/Math.abs(slope):null};
- }
- const estimated=unknown===null?null:(unknown-intercept)/slope;
- const xmin=Math.min(...pairs.map(p=>p.x)),xmax=Math.max(...pairs.map(p=>p.x));
- return{n,slope,intercept,r2,sse,residualSD,blank,estimated,
-  outside:estimated!==null&&(estimated<xmin||estimated>xmax),
-  xmin,xmax,pairs,residuals};
 }
 function windowSensitivity(source,order,degree,windows,measureLo,measureHi){
  if(!(measureHi>measureLo))throw Error('Invalid sensitivity interval');
@@ -818,55 +768,6 @@ $('prepApply').onclick=()=>{
   updateSamples();render();
   $('prepStatus').textContent=(lang==='ar'?'أُضيف منحنى جديد مع حفظ القياسات الأصلية: ':'New derived curve added without modifying original measurements: ')+generated.name;
  }catch(e){$('prepStatus').textContent=e.message;statusRaw(e.message,'warn');}
-};
-let lastCalibration=null;
-for(const id of ['calData','calBlanks','calUnknown','calUnit'])$(id).oninput=()=>{lastCalibration=null;$('calResults').textContent='';};
-$('calRun').onclick=()=>{
- try{
-  const pairs=parseCalibrationPairs($('calData').value);
-  const rawBlank=$('calBlanks').value.trim();
-  const blanks=rawBlank?rawBlank.split(/[\s,;]+/).map(validNumber):[];
-  const rawUnknown=$('calUnknown').value.trim();
-  const unknown=rawUnknown===''?null:Number(rawUnknown);
-  if(unknown!==null&&!Number.isFinite(unknown))throw Error('Unknown signal must be finite');
-  const result=calibrationOLS(pairs,blanks,unknown);
-  const unit=$('calUnit').value.trim()||'concentration unit';
-  lastCalibration={result,unit,blanks,unknown};
-  const textRows=[
-   'Unweighted OLS; n='+result.n+'; '+result.xmin+'–'+result.xmax+' '+unit,
-   'Signal = '+fmt(result.slope,12)+' × concentration + '+fmt(result.intercept,12),
-   'Slope: '+fmt(result.slope,12)+' signal / ('+unit+'); intercept: '+fmt(result.intercept,12)+' signal',
-   'R²: '+fmt(result.r2,12)+'; SSE: '+fmt(result.sse,10)+'; residual SD: '+fmt(result.residualSD,10)+' signal',
-   result.blank?'Independent blanks n='+result.blank.n+'; sample SD='+fmt(result.blank.sd,10)+' signal'+
-    (result.blank.lod!==null?'; LOD (3.3σ/|S|)='+fmt(result.blank.lod,10)+' '+unit+
-      '; LOQ (10σ/|S|)='+fmt(result.blank.loq,10)+' '+unit
-      :'; zero blank variance: LOD/LOQ not estimated'):
-    'LOD/LOQ omitted: no independently prepared blank measurements supplied.',
-   result.estimated!==null?'Estimated unknown concentration: '+fmt(result.estimated,10)+' '+unit+
-    (result.outside?' [EXTRAPOLATED OUTSIDE CALIBRATION RANGE]':''):'',
-   'Regression and LOD/LOQ estimates alone do not establish selectivity, accuracy, robustness or full method validation.'
-  ];
-  $('calResults').textContent=textRows.filter(Boolean).join('\n');
-  $('calResults').style.whiteSpace='pre-wrap';
- }catch(e){lastCalibration=null;$('calResults').textContent=e.message;statusRaw(e.message,'warn');}
-};
-$('calExport').onclick=()=>{
- if(!lastCalibration){$('calRun').click();if(!lastCalibration)return;}
- const {result:r,unit,blanks,unknown}=lastCalibration;
- const metadata=['# UV-Vis Spectral Studio v'+APP_VERSION,
-  '# Concentration unit: '+unit.replace(/[\r\n]/g,' '),
-  '# Unweighted OLS; signal units must be consistent; blanks are assumed independent',
-  '# Slope: '+r.slope+'; intercept: '+r.intercept+'; R2: '+r.r2+'; SSE: '+r.sse+'; residual SD: '+r.residualSD,
-  '# Blank sample SD: '+(r.blank?r.blank.sd:'not supplied'),
-  '# LOD (3.3 sigma / |slope|): '+(r.blank?r.blank.lod:'not calculated'),
-  '# LOQ (10 sigma / |slope|): '+(r.blank?r.blank.loq:'not calculated'),
-  '# Unknown signal: '+(unknown===null?'not supplied':unknown)+
-   '; estimated concentration: '+(r.estimated===null?'not calculated':r.estimated)+
-   '; extrapolated: '+r.outside];
- const rows=[['concentration ('+unit+')','measured signal','fitted signal','residual'],
-  ...r.pairs.map((p,i)=>[p.x,p.y,r.intercept+r.slope*p.x,r.residuals[i]])];
- const content='\uFEFF'+metadata.join('\r\n')+'\r\n'+rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
- download(new Blob([content],{type:'text/csv;charset=utf-8'}),'uvvis_calibration_OLS.csv');
 };
 let lastSensitivity=null;
 $('analysisCurve').onchange=()=>{lastMeasurement=null;lastSensitivity=null;$('analysisResults').textContent='';$('sensitivityResults').textContent='';};
