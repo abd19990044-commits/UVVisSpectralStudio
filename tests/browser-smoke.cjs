@@ -20,7 +20,8 @@ async function run(){
 
   const citation=page.locator('#citationText');
   assert.match(await citation.inputValue(),/Hasan, A\. S\. \(2026\)/);
-  assert.match(await citation.inputValue(),/Version 1\.2\.0/);
+  assert.match(await citation.inputValue(),/Version v1\.2\.0/);
+  assert.match(await citation.inputValue(),/\[Computer software\]\. Zenodo\. https:\/\/doi\.org\/10\.5281\/zenodo\.22923132/);
   assert.match(await citation.inputValue(),/https:\/\/doi\.org\/10\.5281\/zenodo\.22923132/);
   assert.equal(await page.locator('#citationPanel .citation-doi a').getAttribute('href'),
     'https://doi.org/10.5281/zenodo.22923132');
