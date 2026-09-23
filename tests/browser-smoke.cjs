@@ -69,6 +69,14 @@ async function run(){
   const metrics=fs.readFileSync(await (await metricsDownload).path(),'utf8');
   assert.ok(metrics.includes('Global peak-to-peak'));
   assert.ok(metrics.includes('Noise sample SD'));
+  await page.locator('#sensitivityRun').click();
+  assert.match(await page.locator('#sensitivityResults').textContent(),/W=15 points/);
+  assert.match(await page.locator('#sensitivityResults').textContent(),/median/);
+  const sensitivityDownload=page.waitForEvent('download');
+  await page.locator('#sensitivityExport').click();
+  const sensitivityCsv=fs.readFileSync(await (await sensitivityDownload).path(),'utf8');
+  assert.ok(sensitivityCsv.includes('median_span_nm'));
+  assert.ok(sensitivityCsv.includes('no automatic window recommendation'));
   const csvPromise=page.waitForEvent('download');
   await page.locator('#exportData').click();
   const csv=fs.readFileSync(await (await csvPromise).path(),'utf8');
