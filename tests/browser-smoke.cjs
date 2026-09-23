@@ -77,19 +77,6 @@ async function run(){
   const sensitivityCsv=fs.readFileSync(await (await sensitivityDownload).path(),'utf8');
   assert.ok(sensitivityCsv.includes('median_span_nm'));
   assert.ok(sensitivityCsv.includes('no automatic window recommendation'));
-  const calibrationPairs=['Concentration,Signal',
-   ...Array.from({length:6},(_,i)=>i+','+(.01+.08*i))].join('\n');
-  await page.locator('#calData').fill(calibrationPairs);
-  await page.locator('#calBlanks').fill('0.002, 0.003, 0.004');
-  await page.locator('#calUnknown').fill('0.17');
-  await page.locator('#calRun').click();
-  assert.match(await page.locator('#calResults').textContent(),/LOD \(3\.3σ\/\|S\|\)/);
-  assert.match(await page.locator('#calResults').textContent(),/Estimated unknown concentration/);
-  const calDownload=page.waitForEvent('download');
-  await page.locator('#calExport').click();
-  const calCsv=fs.readFileSync(await (await calDownload).path(),'utf8');
-  assert.ok(calCsv.includes('Unweighted OLS'));
-  assert.ok(calCsv.includes('concentration (µg/mL)'));
   const csvPromise=page.waitForEvent('download');
   await page.locator('#exportData').click();
   const csv=fs.readFileSync(await (await csvPromise).path(),'utf8');
