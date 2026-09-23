@@ -33,11 +33,21 @@ async function run(){
   assert.ok((await page.locator('#chart').innerHTML()).includes('270.0'));
   assert.ok((await page.locator('#chart').innerHTML()).includes('400.0'));
 
-  const before=await page.evaluate(()=>plotState?.data?.[0]?.y?.slice?.()||null).catch(()=>null);
+  const baselineDownload=page.waitForEvent('download');
+  await page.locator('#exportData').click();
+  const baselineCsv=fs.readFileSync(await (await baselineDownload).path(),'utf8');
+  const numericRows=s=>s.replace(/^\uFEFF/,'').split(/\r?\n/).filter(l=>/^\d+(?:\.\d+)?,/.test(l));
+  const baselineZoomRows=numericRows(baselineCsv).filter(line=>{const w=Number(line.split(',')[0]);return w>=300&&w<=350;});
+  assert.ok(baselineZoomRows.length>=40,'Expected measured wavelengths in zoomed range');
   await page.locator('#xmin').fill('300');
   await page.locator('#xmax').fill('350');
   await page.locator('#axisApply').click();
   assert.ok((await page.locator('#chart').innerHTML()).includes('300.0'));
+  const zoomDownload=page.waitForEvent('download');
+  await page.locator('#exportData').click();
+  const zoomCsv=fs.readFileSync(await (await zoomDownload).path(),'utf8');
+  assert.deepEqual(numericRows(zoomCsv),baselineZoomRows,
+    'Zooming must preserve exact numeric derivative data at common wavelengths');
   await page.locator('#fitData').click();
   await page.locator('#xmin').fill('270');
   await page.locator('#xmax').fill('400');
@@ -68,6 +78,18 @@ async function run(){
   const pngDownload=await pngPromise;
   const png=fs.readFileSync(await pngDownload.path());
   assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
+  const width=png.readUInt32BE(16),height=png.readUInt32BE(20);
+  assert.equal(width,600,'One inch at 600 DPI must rasterize to 600 pixels');
+  assert.ok(height>200&&height<1000);
+  let off=8,ppm=null;
+  while(off+12<=png.length){const len=png.readUInt32BE(off),type=png.toString('ascii',off+4,off+8);
+   if(type==='pHYs'){ppm=[png.readUInt32BE(off+8),png.readUInt32BE(off+12),png[off+16]];break;}
+   off+=12+len;
+  }
+  assert.ok(ppm,'PNG must contain physical-resolution metadata');
+  assert.equal(ppm[2],1);
+  assert.ok(Math.abs(ppm[0]-Math.round(600/0.0254))<=1,'PNG X DPI metadata');
+  assert.ok(Math.abs(ppm[1]-Math.round(600/0.0254))<=1,'PNG Y DPI metadata');
 
   await page.locator('#upload').setInputFiles({
    name:'Imported.csv',mimeType:'text/csv',buffer:Buffer.from(
@@ -84,6 +106,10 @@ async function run(){
   await page.waitForFunction(()=>document.querySelectorAll('#samples [data-name]').length===5);
   const inputMin=await page.locator('#samples [data-name]').last().evaluate(el=>el.parentElement.textContent);
   assert.ok(inputMin.includes('185'),'Valid 185 nm readings must remain');
+  await page.locator('#upload').setInputFiles({name:'AmbiguousAxis.csv',mimeType:'text/csv',
+   buffer:Buffer.from('X,Absorbance\\n'+Array.from({length:15},(_,i)=>(4000-i*50)+','+(0.1+i*.01)).join('\\n'))});
+  await page.waitForFunction(()=>document.querySelectorAll('#samples [data-name]').length===6);
+  assert.match(await page.locator('#status').textContent(),/unusual|غير معتاد/i);
   assert.deepEqual(errors,[],'No uncaught browser errors');
   process.stdout.write('Browser smoke tests passed: ROI, gallery, theme, Arabic labels, SVG, PNG, duplicate prevention.\n');
  }finally{await browser.close();}
