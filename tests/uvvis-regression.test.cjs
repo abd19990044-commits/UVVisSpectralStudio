@@ -27,6 +27,7 @@ const ctx={
 };
 vm.createContext(ctx);
 vm.runInContext('let processingRange={lo:270,hi:400};',ctx);
+vm.runInContext(extract('function median(','function validNumber('),ctx);
 vm.runInContext(extract('function factorial(','function interp('),ctx);
 
 test('Complete inline application JavaScript parses',()=>{
