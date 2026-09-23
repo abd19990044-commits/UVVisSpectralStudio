@@ -373,7 +373,12 @@ function restrictedSpectrum(s){
 }
 function useData(s,order){
  if(!order)return{x:s.x,y:s.y,breaks:s.breaks,s};
- const part=restrictedSpectrum(s);
+ const part=restrictedSpectrum(s),win=Number($('window').value),
+  limits=[0,...part.breaks,part.x.length];
+ /* A visible curve wholly outside the processing interval, or with no
+    sufficiently long continuous segment, must not invalidate other curves. */
+ const available=limits.some((l,i)=>i+1<limits.length&&limits[i+1]-l>=win);
+ if(!available)return{x:part.x,y:new Array(part.x.length).fill(NaN),breaks:part.breaks,s};
  return{x:part.x,y:derivative(part,order),breaks:part.breaks,s};
 }
 /* All measurements are derived from finite, already-computed data.
