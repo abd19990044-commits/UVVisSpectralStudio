@@ -74,4 +74,4 @@ This repository publishes the static application from [`index.html`](index.html)
 
 ## License
 
-No software license is specified in this repository at present. Do not assume that public visibility grants a particular license to redistribute or modify the source. A license can be added explicitly if the project owner chooses one.
+**Copyright © 2026 ABDULSALAM S. HASAN. All rights reserved.** The current repository is distributed under a [proprietary license](LICENSE): public access does not grant permission to copy, modify, redistribute, or republish the covered source code. Normal operation of the officially hosted app, applicable legal exceptions, and rights required by GitHub's terms are unaffected. **Earlier copies distributed under the MIT License retain their previously granted MIT permissions**; changing this repository's license does not revoke those earlier grants.
