@@ -66,6 +66,7 @@ test('ROI caches are bounded while changing zoom',()=>{
  controls.xmin.value='270';
 });
 test('Source plotting logic formats D0 in 0.10 multiples and D4 scientifically',()=>{
+ vm.runInContext(extract('function pathOf(','function geometry('),ctx);
  vm.runInContext(extract('function geometry(','function boundsMini('),ctx);
  const d={x:[200,300,400],y:[0,.8,.3],breaks:[],s:{name:'Sample',color:'#145c9a',style:'solid'}};
  const svg=ctx.buildSvg([d],0,{xmin:200,xmax:400,ymin:0,ymax:1.2}).svg;
