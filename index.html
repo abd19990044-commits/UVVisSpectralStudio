@@ -623,8 +623,8 @@ $('readingTableExport').onclick=()=>{
   const{curve,order,data}=selectedReading(),{from,to}=readingLimits(),rows=readingTableRows(data,from,to);
   const header=['Wavelength (nm)','Value ('+readingUnit(curve,order)+')','Provenance'];
   const csv=[header,...rows.map(r=>[r.w,Number.isFinite(r.value)?r.value:'',!Number.isFinite(r.value)?'unavailable':order?'computed derivative at recorded wavelength':'original measured reading'])];
-  const metadata='# UV-Vis Spectral Studio v'+APP_VERSION+'; curve='+curve.name.replace(/[\\r\\n]/g,' ')+'; D'+order+'; window='+$('window').value+'; degree='+$('degree').value+'; edge mask='+$('edgeMode').checked+'; processing='+processingRange.lo+'..'+processingRange.hi;
-  download(new Blob(['\\uFEFF'+metadata+'\\r\\n'+csv.map(row=>row.map(csvEscape).join(',')).join('\\r\\n')],{type:'text/csv;charset=utf-8'}),'uvvis_readings_D'+order+'.csv');
+  const metadata='# UV-Vis Spectral Studio v'+APP_VERSION+'; curve='+curve.name.replace(/[\r\n]/g,' ')+'; D'+order+'; window='+$('window').value+'; degree='+$('degree').value+'; edge mask='+$('edgeMode').checked+'; processing='+processingRange.lo+'..'+processingRange.hi;
+  download(new Blob(['\uFEFF'+metadata+'\r\n'+csv.map(row=>row.map(csvEscape).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),'uvvis_readings_D'+order+'.csv');
  }catch(err){$('readingTableInfo').textContent=err.message;}
 };
 function updateMeasureCurveOptions(data){
