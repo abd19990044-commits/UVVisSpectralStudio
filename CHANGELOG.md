@@ -7,7 +7,7 @@
 - Explicit unit-range warnings for ambiguous wavelength columns; CSV measured-grid exports use indexed lookups and retain per-curve transformation provenance.
 - Added researcher-controlled extrema, global peak-to-peak and peak-to-zero amplitudes, candidate zero crossings, discontinuity-safe signed areas, and optional sample-SD noise estimates.
 - Added non-destructive straight-line baseline correction, local-polynomial D0 smoothing, maximum-amplitude normalization and reference subtraction/ratio. Originals are retained; reference interpolation is recorded.
-- Added quantitative sensitivity comparison across fitting windows and a guarded unweighted OLS calibration workspace with independent-blank LOD/LOQ estimates and CSV exports.
+- Added quantitative sensitivity comparison across fitting windows and traceable CSV exports.
 - Prevented off-range visible curves from invalidating otherwise valid derivative plots; added regression coverage.
 
 ## 1.1.0 — 2026-09-23
