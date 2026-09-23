@@ -69,7 +69,7 @@ CSV metadata lines beginning with `#` record the software version, display and p
 
 Choose one currently displayed curve and an explicit wavelength interval. The analytical panel reports the maximum/minimum ordinates and their measured wavelengths, a **global** peak-to-peak amplitude (the two extrema need not be adjacent), absolute peak-to-zero amplitude, gap-aware signed trapezoidal area, and zero-crossing candidates. A sign-change crossing is linearly interpolated **between adjacent finite points only** and is marked as interpolated; it is not an experimentally measured zero. Measurements can be exported with the derivative order, processing interval, fit configuration and edge-mask setting.
 
-An optional user-chosen noise interval produces a descriptive amplitude/sample-standard-deviation ratio. This is **not a determination of LOD, LOQ, instrumental S/N, or analytical selectivity**; the software does not infer a blank region automatically. Features are computed quantities, not chemical identifications.
+An optional **fitting-window sensitivity analysis** compares user-selected derivative curves for window lengths 11, 15, 21, 31 and the active window. It reports actual nanometer spans and dominant absolute amplitudes without declaring one window optimal, and exports a parameterized CSV.\n\nAn optional user-chosen noise interval produces a descriptive amplitude/sample-standard-deviation ratio. This is **not a determination of LOD, LOQ, instrumental S/N, or analytical selectivity**; the software does not infer a blank region automatically. Features are computed quantities, not chemical identifications.
 
 ## Non-destructive spectral preprocessing
 
