@@ -22,6 +22,9 @@ async function run(){
   await page.locator('#xmin').fill('270');
   await page.locator('#xmax').fill('400');
   await page.locator('#axisApply').click();
+  await page.locator('#processMin').fill('270');
+  await page.locator('#processMax').fill('400');
+  await page.locator('#applyProcess').click();
   await page.locator('#view').selectOption('all');
   assert.equal(await page.locator('#overview .mini').count(),4);
   await page.locator('#overview .mini').first().click();
@@ -30,11 +33,25 @@ async function run(){
   assert.ok((await page.locator('#chart').innerHTML()).includes('270.0'));
   assert.ok((await page.locator('#chart').innerHTML()).includes('400.0'));
 
+  const before=await page.evaluate(()=>plotState?.data?.[0]?.y?.slice?.()||null).catch(()=>null);
+  await page.locator('#xmin').fill('300');
+  await page.locator('#xmax').fill('350');
+  await page.locator('#axisApply').click();
+  assert.ok((await page.locator('#chart').innerHTML()).includes('300.0'));
+  await page.locator('#fitData').click();
+  await page.locator('#xmin').fill('270');
+  await page.locator('#xmax').fill('400');
+  await page.locator('#axisApply').click();
   await page.locator('#view').selectOption('4');
   assert.ok((await page.locator('#chart').innerHTML()).includes('e-'));
   await page.locator('#langToggle').click();
   assert.ok((await page.locator('#chart').innerHTML()).includes('Wavelength (nm)'));
 
+  const csvPromise=page.waitForEvent('download');
+  await page.locator('#exportData').click();
+  const csv=fs.readFileSync(await (await csvPromise).path(),'utf8');
+  assert.ok(csv.includes('Derivative processing wavelength (nm): 270 .. 400'));
+  assert.ok(csv.includes('Fit points:'));
   await page.locator('#showCurveLegend').uncheck();
   await page.locator('#imageWidth').fill('1');
   await page.locator('#dpi').selectOption('600');
@@ -63,6 +80,10 @@ async function run(){
   await page.locator('#mapApply').click();
   assert.equal(await page.locator('#samples [data-name]').count(),4,
     'Repeated import of same column must not add curves');
+  await page.locator('#upload').setInputFiles({name:'DeepUV.txt',mimeType:'text/plain',buffer:Buffer.from(Array.from({length:21},(_,i)=>(185+i)+' '+(.2+i*.01)).join('\n'))});
+  await page.waitForFunction(()=>document.querySelectorAll('#samples [data-name]').length===5);
+  const inputMin=await page.locator('#samples [data-name]').last().evaluate(el=>el.parentElement.textContent);
+  assert.ok(inputMin.includes('185'),'Valid 185 nm readings must remain');
   assert.deepEqual(errors,[],'No uncaught browser errors');
   process.stdout.write('Browser smoke tests passed: ROI, gallery, theme, Arabic labels, SVG, PNG, duplicate prevention.\n');
  }finally{await browser.close();}
