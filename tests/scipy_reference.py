@@ -48,7 +48,7 @@ class IndependentReference(unittest.TestCase):
         actual=compute(x,y,indices)
         for k,i in enumerate(indices):
             zz=z[i]
-            expected=[.002+4e-8*zz**3,2e-5+12e-8*zz**2,24e-8*zz,24e-8]
+            expected=[.002+2e-5*zz+4e-8*zz**3,2e-5+12e-8*zz**2,24e-8*zz,24e-8]
             for n,truth in enumerate(expected,1):
                 self.assertAlmostEqual(actual[k,n-1],truth,delta=2e-9,
                     msg=f'Irregular grid D{n} at {x[i]} nm')
