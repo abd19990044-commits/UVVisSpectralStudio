@@ -175,8 +175,8 @@ test('Sensitivity changes fit spans, not original data or wavelength grid',()=>{
 test('OLS calibration recovers known slope, intercept, blanks and unknown',()=>{
  vm.runInContext(extract('function validNumber(','function splitRow('),ctx);
  vm.runInContext(extract('function parseCalibrationPairs(','function windowSensitivity('),ctx);
- const pairs=ctx.parseCalibrationPairs('Concentration,Signal\\n'+
-  Array.from({length:6},(_,i)=>i+','+(.01+.08*i)).join('\\n'));
+ const pairs=ctx.parseCalibrationPairs('Concentration,Signal\n'+
+  Array.from({length:6},(_,i)=>i+','+(.01+.08*i)).join('\n'));
  const r=ctx.calibrationOLS(pairs,[.002,.003,.004],.17);
  assert.ok(Math.abs(r.slope-.08)<1e-13);
  assert.ok(Math.abs(r.intercept-.01)<1e-13);
@@ -189,7 +189,7 @@ test('OLS calibration recovers known slope, intercept, blanks and unknown',()=>{
  const noBlank=ctx.calibrationOLS(pairs,[],.9);
  assert.equal(noBlank.blank,null);
  assert.equal(noBlank.outside,true);
- assert.throws(()=>ctx.parseCalibrationPairs('0,0\\n1,1\\n2,2'),/five distinct/);
+ assert.throws(()=>ctx.parseCalibrationPairs('0,0\n1,1\n2,2'),/five distinct/);
 });
 test('Source plotting logic formats D0 in 0.10 multiples and D4 scientifically',()=>{
  vm.runInContext(extract('function pathOf(','function geometry('),ctx);
