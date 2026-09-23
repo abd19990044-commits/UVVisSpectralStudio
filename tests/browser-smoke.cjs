@@ -127,6 +127,17 @@ async function run(){
   const summaries=await page.locator('#samples [data-name]').evaluateAll(els=>els.slice(-2).map(el=>el.parentElement.textContent));
   assert.ok(summaries[0].includes('185'),'First XLSX sheet must retain 185 nm');
   assert.ok(summaries[1].includes('310'),'Second XLSX sheet must retain 310 nm');
+  await page.locator('#prepMode').selectOption('baseline');
+  await page.locator('#prepApply').click();
+  await page.waitForFunction(()=>document.querySelectorAll('#samples [data-name]').length===9);
+  assert.match(await page.locator('#prepStatus').textContent(),/derived|processed|جديد|معالج/i);
+  const originalSummary=await page.locator('#samples [data-name]').first().evaluate(el=>el.parentElement.textContent);
+  assert.match(originalSummary,/301/,'Original demo spectrum must remain unchanged');
+  const derivedCsvPromise=page.waitForEvent('download');
+  await page.locator('#exportData').click();
+  const derivedCsv=fs.readFileSync(await (await derivedCsvPromise).path(),'utf8');
+  assert.ok(derivedCsv.includes('Curve provenance'));
+  assert.ok(derivedCsv.includes('operation=baseline'));
   assert.deepEqual(errors,[],'No uncaught browser errors');
   process.stdout.write('Browser smoke tests passed: ROI, gallery, theme, Arabic labels, SVG, PNG, duplicate prevention.\n');
  }finally{await browser.close();}
