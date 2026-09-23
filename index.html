@@ -638,7 +638,8 @@ function tickText(value,step,integer=false){
  if(integer&&Math.abs(value-Math.round(value))<1e-8)return String(Math.round(value));
  if(Math.abs(value)>=1e6||(Math.abs(value)>0&&Math.abs(value)<1e-4))return value.toExponential(2);
  const digits=Math.min(10,Math.max(0,-Math.floor(Math.log10(step))+1));
- return value.toFixed(digits).replace(/\\.?0+$/,'').replace(/\\.$/,'');
+ const label=value.toFixed(digits);
+ return label.includes('.')?label.replace(/0+$/,'').replace(/\.$/,''):label;
 }
 function plotWidth(id,lo,hi){const v=Number($(id).value);if(!Number.isFinite(v)||v<lo||v>hi)throw Error(id+': line width must be '+lo+'–'+hi+' px');return v;}
 function buildSvg(data,order,B,preview=false){
