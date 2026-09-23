@@ -2,7 +2,9 @@
 
 **A browser-based workspace for UV–visible absorbance spectra, derivative spectrophotometry, non-destructive processing, researcher-controlled numerical measurements, spectral overlays, and manuscript-oriented figures.**
 
-[**Launch the live app**](https://abd19990044-commits.github.io/UVVisSpectralStudio/) · [Source code](https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/index.html)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22923132.svg)](https://doi.org/10.5281/zenodo.22923132)
+
+[**Launch the live app**](https://abd19990044-commits.github.io/UVVisSpectralStudio/) · [Source code](https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/index.html) · [Archived release and DOI](https://doi.org/10.5281/zenodo.22923132)
 
 UV–Vis Spectral Studio is a single-file HTML/CSS/JavaScript application. Spectra are processed in the browser: no account, server-side spectral analysis, or installation is required. The interface can switch between **English and Arabic**; scientific axis labels and units remain **in English** in both modes.
 
@@ -95,7 +97,12 @@ Processed curves inherit the same derivative settings as raw curves, but the use
 
 ## Citing and release history
 
-See [CITATION.cff](CITATION.cff) for bibliographic metadata and [CHANGELOG.md](CHANGELOG.md) for version history. No DOI is listed or verified for this software; do not cite an invented identifier. The current [proprietary license](LICENSE) does not revoke permissions previously granted for copies released under MIT.
+Suggested citation:
+
+> Hasan, A. S. (2026). *UV–Vis Spectral Studio* (Version 1.2.0) [Computer software]. https://doi.org/10.5281/zenodo.22923132
+
+
+See [CITATION.cff](CITATION.cff) for bibliographic metadata and [CHANGELOG.md](CHANGELOG.md) for version history. **Version 1.2.0 DOI:** [10.5281/zenodo.22923132](https://doi.org/10.5281/zenodo.22923132). Cite the archived version you used and record the relevant spectral-processing parameters in Methods. The current [proprietary license](LICENSE) does not revoke permissions previously granted for copies released under MIT.
 
 ## Verification
 
