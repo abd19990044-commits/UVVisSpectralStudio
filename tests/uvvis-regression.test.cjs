@@ -52,8 +52,15 @@ test('Too-narrow ROI reports inability to fit rather than fabricating derivative
  vm.runInContext('processingRange={lo:330,hi:335}',ctx);
  const x=Array.from({length:301},(_,i)=>200+i);
  const s={name:'Narrow',x,y:x.map(w=>w*w),breaks:[],cache:{}};
- assert.throws(()=>ctx.useData(s,4),/nPoints/);
+ assert.ok(ctx.useData(s,4).y.every(Number.isNaN),'Too-narrow region must contain no invented derivative ordinates');
  vm.runInContext('processingRange={lo:270,hi:400}',ctx);
+});
+test('One outside-ROI spectrum must not suppress other valid derivatives',()=>{
+ vm.runInContext('processingRange={lo:270,hi:400}',ctx);
+ const x=Array.from({length:80},(_,i)=>270+i),s={name:'Valid',x,y:x.map(w=>Math.sin(w/50)),breaks:[],cache:{}};
+ const out={name:'Elsewhere',x:[185,186,187,188,189,190,191],y:[1,2,3,4,5,6,7],breaks:[],cache:{}};
+ assert.ok(ctx.useData(s,2).y.some(Number.isFinite),'Valid spectrum retains derivatives');
+ assert.equal(ctx.useData(out,2).y.length,0,'Entirely out-of-ROI spectrum contains zero derivative samples');
 });
 test('ROI caches are bounded while changing processing range',()=>{
  const x=Array.from({length:301},(_,i)=>200+i);
