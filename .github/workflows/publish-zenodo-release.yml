@@ -1,0 +1,34 @@
+name: Publish v1.2.0 for Zenodo
+on:
+  workflow_dispatch:
+    inputs:
+      zenodo_enabled:
+        description: 'I have connected GitHub and enabled this repository in Zenodo'
+        required: true
+        type: boolean
+        default: false
+permissions:
+  contents: write
+jobs:
+  release:
+    if: inputs.zenodo_enabled == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure release does not already exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v1.2.0 >/dev/null 2>&1; then
+            echo 'The v1.2.0 release already exists. No duplicate release was created.'
+            exit 1
+          fi
+      - name: Publish one immutable source snapshot for Zenodo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v1.2.0 \
+            --target "$GITHUB_SHA" \
+            --title 'UV–Vis Spectral Studio v1.2.0' \
+            --notes-file RELEASE_NOTES_v1.2.0.md \
+            --latest
