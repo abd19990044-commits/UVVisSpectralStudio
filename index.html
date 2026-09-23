@@ -378,6 +378,62 @@ function useData(s,order){
 }
 /* All measurements are derived from finite, already-computed data.
    NaN/masked points, instrument gaps and user processing bounds are respected. */
+function updatePrepOptions(){
+ const html=spectra.map(s=>'<option value="'+s.id+'">'+E(s.name)+'</option>').join('');
+ for(const id of ['prepSource','prepReference']){const el=$(id),prior=el.value;el.innerHTML=html;if([...el.options].some(o=>o.value===prior))el.value=prior;}
+}
+function prepareProcessedCurve(source,reference,mode,from='',to=''){
+ const d=restrictedSpectrum(source),x=d.x,y=d.y,win=Number($('window').value),deg=Number($('degree').value),half=Math.floor(win/2);
+ if(x.length<7)throw Error('At least seven measured wavelengths are required in the processing interval');
+ const kind=source.scaleType||'absorbance';
+ let line=null,divisor=null,interpolated=0;
+ if(mode==='baseline'){
+  const xa=from===''?x[0]:Number(from),xb=to===''?x.at(-1):Number(to);
+  if(!(xa>=x[0]&&xb<=x.at(-1)&&xb>xa))throw Error('Baseline anchors must be ordered and inside the processing interval');
+  const ya=interp(d,xa),yb=interp(d,xb);
+  if(!Number.isFinite(ya)||!Number.isFinite(yb))throw Error('Baseline anchors must lie on valid data without crossing a gap');
+  line={xa,xb,ya,yb};
+ }
+ if(mode==='normalize'){
+  divisor=y.filter(Number.isFinite).reduce((z,v)=>Math.max(z,Math.abs(v)),0);
+  if(!(divisor>0))throw Error('Normalization requires nonzero amplitude');
+ }
+ if(mode==='smooth'&&!(win>deg&&win%2===1))throw Error('Invalid smoothing window / degree');
+ if(mode==='subtract'||mode==='ratio'){
+  if(!reference||reference.id===source.id)throw Error('Select a different reference spectrum');
+  if((reference.scaleType||'absorbance')!==kind)throw Error('Signals must have identical units before arithmetic');
+ }
+ const points=[],limits=[0,...d.breaks,x.length];
+ for(let section=0;section<limits.length-1;section++){
+  const l=limits[section],r=limits[section+1];
+  for(let i=l;i<r;i++){
+   let z=y[i];
+   if(!Number.isFinite(z))continue;
+   if(mode==='baseline')z-=line.ya+(line.yb-line.ya)*(x[i]-line.xa)/(line.xb-line.xa);
+   else if(mode==='normalize')z/=divisor;
+   else if(mode==='smooth'){
+    if(r-l<win||$('edgeMode').checked&&(i-l<half||r-1-i<half))continue;
+    z=localDerivative(x,y,i,Math.max(l,Math.min(r-win,i-half)),win,deg,0);
+   }else if(mode==='subtract'||mode==='ratio'){
+    const ref=interp(reference,x[i]);if(!Number.isFinite(ref))continue;
+    if(measuredAt(reference,x[i])!==true)interpolated++;
+    if(mode==='subtract')z-=ref;
+    else{if(Math.abs(ref)<1e-12)continue;z/=ref;}
+   }else throw Error('Unknown processing mode');
+   if(Number.isFinite(z))points.push({i,x:x[i],y:z});
+  }
+ }
+ if(points.length<7)throw Error('Too few valid points after processing');
+ const breaks=[];for(let k=1;k<points.length;k++)if(points[k].i!==points[k-1].i+1||d.breaks.includes(points[k].i))breaks.push(k);
+ const provenance='operation='+mode+'; source='+source.name+
+  (reference&&(mode==='subtract'||mode==='ratio')?'; reference='+reference.name+'; interpolated reference points='+interpolated:'')+
+  (line?'; baseline anchors nm='+line.xa+'..'+line.xb:'')+
+  (divisor?'; normalization divisor='+divisor:'')+
+  (mode==='smooth'?'; window='+win+'; degree='+deg+'; mask='+$('edgeMode').checked:'')+
+  '; processing nm='+processingRange.lo+'..'+processingRange.hi+'; original preserved';
+ return{name:source.name+' · '+mode,x:points.map(p=>p.x),y:points.map(p=>p.y),breaks,
+  scaleType:mode==='normalize'?'relative':mode==='ratio'?'ratio':kind,provenance};
+}
 function analyticalMetrics(d,lo,hi,noiseRange=null){
  if(!(Number.isFinite(lo)&&Number.isFinite(hi)&&hi>lo))throw Error('Invalid measurement wavelength interval');
  const points=[];
@@ -490,7 +546,13 @@ function updateSamples(){
 function bounds(data){let all=data.flatMap(s=>s.x.length?[s.x[0],s.x.at(-1)]:[]),lo=all.length?Math.min(...all):200,hi=all.length?Math.max(...all):400,inputs=['xmin','xmax','ymin','ymax'].map(id=>$(id).value.trim());if(inputs[0])lo=Number(inputs[0]);if(inputs[1])hi=Number(inputs[1]);if(!Number.isFinite(lo)||!Number.isFinite(hi)||hi<=lo)throw Error(t('axesX'));
  let values=[];for(let d of data){for(let i=0;i<d.x.length;i++)if(d.x[i]>=lo&&d.x[i]<=hi&&Number.isFinite(d.y[i]))values.push(d.y[i]);for(let w of [lo,hi]){let z=interp(d,w);if(Number.isFinite(z))values.push(z);}}
  let ymin=values.length?values.reduce((a,b)=>Math.min(a,b),Infinity):-.1,ymax=values.length?values.reduce((a,b)=>Math.max(a,b),-Infinity):1;if(ymin===ymax){let span=Math.max(1e-8,Math.abs(ymin)*.1);ymin-=span;ymax+=span;}let pad=(ymax-ymin)*.07;if(!inputs[2])ymin-=pad;else ymin=Number(inputs[2]);if(!inputs[3])ymax+=pad;else ymax=Number(inputs[3]);if(!Number.isFinite(ymin)||!Number.isFinite(ymax)||ymax<=ymin)throw Error(t('axesY'));return{xmin:lo,xmax:hi,ymin,ymax};}
-function axisLabel(order){return $('yLabel').value.trim()||STR.en['unit'+order];}
+function axisLabel(order){
+ const custom=$('yLabel').value.trim();if(custom)return custom;
+ const kinds=new Set(visible().map(s=>s.scaleType||'absorbance'));
+ if(kinds.size===1&&kinds.has('absorbance'))return STR.en['unit'+order];
+ if(order)return 'd'+(order>1?'^'+order:'')+'(signal)/dλ'+(order>1?'^'+order:'')+' (nm^-'+order+')';
+ return kinds.size>1?'Absorbance / relative signal / ratio':kinds.has('relative')?'Normalized relative signal':'Signal ratio (dimensionless)';
+}
 function xAxisLabel(){return $('xLabel').value.trim()||STR.en.wavelength;}
 function pathOf(d,B,p){let out='',pen=false,bi=0,next=d.breaks[0];for(let i=0;i<d.x.length;i++){let x=d.x[i],y=d.y[i];if(i===next){pen=false;next=d.breaks[++bi];}if(!Number.isFinite(y)){pen=false;continue;}if(x<B.xmin||x>B.xmax){/* keep full path for mathematically faithful clip */}
  let X=p.x+(x-B.xmin)/(B.xmax-B.xmin)*p.w,Y=p.y+(B.ymax-y)/(B.ymax-B.ymin)*p.h;out+=(pen?'L':'M')+X.toFixed(4)+' '+Y.toFixed(4);pen=true;}return out;}
@@ -547,6 +609,7 @@ function buildSvg(data,order,B,preview=false){
 function render(){
  locked=false;$('tooltip').style.display='none';
  const v=visible(),order=activeOrder(),gallery=$('overview');
+ updatePrepOptions();
  $('plotHeading').textContent=$('chartTitle').value.trim()||'UV–Vis Spectral Overlay';
  $('plotSubtitle').textContent=t('subtitle'+order)+' · '+v.length+' '+t('visible');
  gallery.hidden=!derivativeGalleryOpen||!v.length;
@@ -728,6 +791,7 @@ function exportedCsv(){
   '# Data mode: '+(aligned?'aligned grid with provenance for every cell':'original measured wavelength positions; no inter-spectrum interpolation'),
   '# NOTE: derivative values are computed from locally fitted measured absorbances; a measured wavelength is not a measured derivative.'
  ];
+ for(const d of data)settings.push('# Curve provenance '+d.s.name.replace(/[\r\n]/g,' ')+': '+String(d.s.provenance||'original measured absorbance').replace(/[\r\n]/g,' '));
  const rows=[];
  const columns=['Wavelength (nm)'];
  for(const d of data){
