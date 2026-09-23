@@ -54,8 +54,8 @@ async function run(){
 
   await page.locator('#upload').setInputFiles({
    name:'Imported.csv',mimeType:'text/csv',buffer:Buffer.from(
-    'Wavelength (nm),NAP\\n'+Array.from({length:31},(_,i)=>
-      (270+i)+','+(0.4+Math.sin(i/6)*.1)).join('\\n')+'\\n'
+    'Wavelength (nm),NAP\n'+Array.from({length:31},(_,i)=>
+      (270+i)+','+(0.4+Math.sin(i/6)*.1)).join('\n')+'\n'
    )
   });
   await page.waitForFunction(()=>document.querySelectorAll('#samples [data-name]').length===4);
@@ -64,7 +64,7 @@ async function run(){
   assert.equal(await page.locator('#samples [data-name]').count(),4,
     'Repeated import of same column must not add curves');
   assert.deepEqual(errors,[],'No uncaught browser errors');
-  process.stdout.write('Browser smoke tests passed: ROI, gallery, theme, Arabic labels, SVG, PNG, duplicate prevention.\\n');
+  process.stdout.write('Browser smoke tests passed: ROI, gallery, theme, Arabic labels, SVG, PNG, duplicate prevention.\n');
  }finally{await browser.close();}
 }
 run().catch(e=>{console.error(e);process.exitCode=1;});
