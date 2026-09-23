@@ -448,6 +448,49 @@ function prepareProcessedCurve(source,reference,mode,from='',to=''){
  return{name:source.name+' · '+mode,x:points.map(p=>p.x),y:points.map(p=>p.y),breaks,
   scaleType:mode==='normalize'?'relative':mode==='ratio'?'ratio':kind,provenance};
 }
+function parseCalibrationPairs(source){
+ const lines=String(source).replace(/^\uFEFF/,'').split(/\r?\n|\r/).map(s=>s.trim()).filter(Boolean);
+ const pairs=[];
+ for(let row=0;row<lines.length;row++){
+  const line=lines[row];if(/^#/.test(line))continue;
+  const delimiter=line.includes('\t')?'\t':line.includes(';')?';':line.includes(',')?',':null;
+  const fields=delimiter?line.split(delimiter).map(s=>s.trim()):line.split(/\s+/);
+  if(fields.length!==2)throw Error('Calibration row '+(row+1)+' must contain exactly two values; use decimal points with comma-separated data');
+  const x=validNumber(fields[0]),y=validNumber(fields[1]);
+  if(row===0&&!Number.isFinite(x)&&!Number.isFinite(y))continue;
+  if(!Number.isFinite(x)||!Number.isFinite(y)||x<0)throw Error('Invalid concentration/signal in row '+(row+1));
+  pairs.push({x,y});
+ }
+ if(pairs.length<5||new Set(pairs.map(p=>p.x)).size<5)throw Error('At least five distinct calibration concentration levels are required');
+ return pairs;
+}
+function calibrationOLS(pairs,blankReadings=[],unknown=null){
+ const n=pairs.length,meanX=pairs.reduce((s,p)=>s+p.x,0)/n,
+  meanY=pairs.reduce((s,p)=>s+p.y,0)/n,
+  sxx=pairs.reduce((s,p)=>s+(p.x-meanX)**2,0),
+  sxy=pairs.reduce((s,p)=>s+(p.x-meanX)*(p.y-meanY),0);
+ if(!(sxx>0))throw Error('Concentration range has zero variance');
+ const slope=sxy/sxx,intercept=meanY-slope*meanX;
+ if(!Number.isFinite(slope)||Math.abs(slope)<1e-15)throw Error('Calibration slope is zero or numerically unresolved');
+ const residuals=pairs.map(p=>p.y-(slope*p.x+intercept));
+ const sse=residuals.reduce((s,v)=>s+v*v,0),sst=pairs.reduce((s,p)=>s+(p.y-meanY)**2,0);
+ const r2=sst>0?1-sse/sst:NaN;
+ const residualSD=Math.sqrt(sse/(n-2));
+ let blank=null;
+ if(blankReadings.length){
+  if(blankReadings.length<3||blankReadings.some(z=>!Number.isFinite(z)))throw Error('At least three finite, independent blank readings are required');
+  const bm=blankReadings.reduce((s,v)=>s+v,0)/blankReadings.length;
+  const sd=Math.sqrt(blankReadings.reduce((s,v)=>s+(v-bm)**2,0)/(blankReadings.length-1));
+  blank={n:blankReadings.length,mean:bm,sd,
+   lod:sd>0?3.3*sd/Math.abs(slope):null,
+   loq:sd>0?10*sd/Math.abs(slope):null};
+ }
+ const estimated=unknown===null?null:(unknown-intercept)/slope;
+ const xmin=Math.min(...pairs.map(p=>p.x)),xmax=Math.max(...pairs.map(p=>p.x));
+ return{n,slope,intercept,r2,sse,residualSD,blank,estimated,
+  outside:estimated!==null&&(estimated<xmin||estimated>xmax),
+  xmin,xmax,pairs,residuals};
+}
 function windowSensitivity(source,order,degree,windows,measureLo,measureHi){
  if(!(measureHi>measureLo))throw Error('Invalid sensitivity interval');
  const d=restrictedSpectrum(source),limits=[0,...d.breaks,d.x.length],mask=$('edgeMode').checked;
