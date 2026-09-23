@@ -99,7 +99,7 @@ Processed curves inherit the same derivative settings as raw curves, but the use
 
 Suggested citation:
 
-> Hasan, A. S. (2026). *UV–Vis Spectral Studio* (Version 1.2.0) [Computer software]. https://doi.org/10.5281/zenodo.22923132
+> Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923132
 
 
 See [CITATION.cff](CITATION.cff) for bibliographic metadata and [CHANGELOG.md](CHANGELOG.md) for version history. **Version 1.2.0 DOI:** [10.5281/zenodo.22923132](https://doi.org/10.5281/zenodo.22923132). Cite the archived version you used and record the relevant spectral-processing parameters in Methods. The current [proprietary license](LICENSE) does not revoke permissions previously granted for copies released under MIT.
