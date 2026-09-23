@@ -768,6 +768,41 @@ $('prepApply').onclick=()=>{
   $('prepStatus').textContent=(lang==='ar'?'أُضيف منحنى جديد مع حفظ القياسات الأصلية: ':'New derived curve added without modifying original measurements: ')+generated.name;
  }catch(e){$('prepStatus').textContent=e.message;statusRaw(e.message,'warn');}
 };
+let lastSensitivity=null;
+$('sensitivityRun').onclick=()=>{
+ if(!plotState){status('noPlot','warn');return;}
+ try{
+  const {data,B,order}=plotState,d=data[Number($('analysisCurve').value)];
+  if(!d)throw Error('Select a spectrum');
+  const a=$('measurementStart').value.trim(),b=$('measurementEnd').value.trim(),
+    lo=a===''?B.xmin:Number(a),hi=b===''?B.xmax:Number(b),degree=Number($('degree').value),
+    current=Number($('window').value);
+  const windows=[...new Set([11,15,21,31,current])].sort((x,y)=>x-y);
+  const rows=windowSensitivity(d.s,order,degree,windows,lo,hi);
+  lastSensitivity={d,rows,order,degree,lo,hi,current};
+  const baseline=rows.find(r=>r.win===current);
+  const body=rows.map(r=>{
+   const change=baseline&&Math.abs(baseline.ordinate)>1e-15?
+    ' · |peak| change vs current '+fmt(100*(Math.abs(r.ordinate)/Math.abs(baseline.ordinate)-1),6)+'%':'';
+   return 'W='+r.win+' points · width '+fmt(r.minSpan,5)+'–'+fmt(r.maxSpan,5)+
+    ' nm (median '+fmt(r.medianSpan,5)+') · dominant |D|='+fmt(Math.abs(r.ordinate),10)+
+    ' @ '+fmt(r.wavelength,8)+' nm · valid '+r.n+change;
+  });
+  $('sensitivityResults').textContent='Fitting-window sensitivity, not an automatic optimal-window selection:\n'+body.join('\n');
+  $('sensitivityResults').style.whiteSpace='pre-wrap';
+ }catch(e){lastSensitivity=null;$('sensitivityResults').textContent=e.message;statusRaw(e.message,'warn');}
+};
+$('sensitivityExport').onclick=()=>{
+ if(!lastSensitivity){$('sensitivityRun').click();if(!lastSensitivity)return;}
+ const {d,rows,order,degree,lo,hi,current}=lastSensitivity;
+ const csvRows=[['window_points','valid_points','min_span_nm','median_span_nm','max_span_nm','dominant_ordinate','dominant_wavelength_nm','selected_window'],
+ ...rows.map(r=>[r.win,r.n,r.minSpan,r.medianSpan,r.maxSpan,r.ordinate,r.wavelength,r.win===current])];
+ const metadata='# UV-Vis Spectral Studio v'+APP_VERSION+'; curve='+d.s.name.replace(/[\r\n]/g,' ')+
+  '; D'+order+'; degree='+degree+'; processing='+processingRange.lo+'..'+processingRange.hi+
+  '; measurement='+lo+'..'+hi+' nm; mask='+$('edgeMode').checked+'; no automatic window recommendation\r\n';
+ download(new Blob(['\uFEFF'+metadata+csvRows.map(r=>r.map(csvEscape).join(',')).join('\r\n')],
+  {type:'text/csv;charset=utf-8'}),'uvvis_window_sensitivity_D'+order+'.csv');
+};
 let lastMeasurement=null;
 $('analyzeSpectrum').onclick=()=>{
  if(!plotState){status('noPlot','warn');return;}
