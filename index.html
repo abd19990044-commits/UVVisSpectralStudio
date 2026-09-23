@@ -755,7 +755,7 @@ function tickText(value,step,integer=false){
  return label.includes('.')?label.replace(/0+$/,'').replace(/\.$/,''):label;
 }
 function derivativeTickLabel(value,step){
- // Derivative ordinates can be orders of magnitude below 0.01; never round distinct ticks to the same label.
+ // Keep D1–D4 labels distinct even when derivatives are much smaller than 0.01.
  const absStep=Math.abs(step);
  if(Math.abs(value)<absStep*1e-8)return '0';
  const decimals=Math.max(0,Math.min(12,-Math.floor(Math.log10(absStep))+1));
@@ -763,7 +763,8 @@ function derivativeTickLabel(value,step){
   const digits=Math.max(2,Math.min(12,Math.floor(Math.log10(Math.abs(value)))-Math.floor(Math.log10(absStep))+1));
   return value.toExponential(digits);
  }
- return value.toFixed(decimals).replace(/\\.?0+$/,'').replace(/\\.$/,'');
+ const label=value.toFixed(decimals);
+ return label.includes('.')?label.replace(/0+$/,'').replace(/\.$/,''):label;
 }
 function plotWidth(id,lo,hi){const v=Number($(id).value);if(!Number.isFinite(v)||v<lo||v>hi)throw Error(id+': line width must be '+lo+'–'+hi+' px');return v;}
 function buildSvg(data,order,B,preview=false){
