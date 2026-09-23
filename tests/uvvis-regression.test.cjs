@@ -67,7 +67,7 @@ test('ROI caches are bounded while changing processing range',()=>{
  vm.runInContext('processingRange={lo:270,hi:400}',ctx);
 });
 test('Changing only display X limits never changes computed derivatives',()=>{
- const x=Array.from({length:201},(_,i)=>250+i),y=x.map(w=>Math.exp(-((w-330)/23)**2));
+ const x=Array.from({length:201},(_,i)=>250+i),y=x.map(w=>Math.exp(-(((w-330)/23)**2)));
  const s={name:'Stable',x,y,breaks:[],cache:{}};
  vm.runInContext('processingRange={lo:270,hi:400}',ctx);
  const before=ctx.useData(s,2).y.slice();
