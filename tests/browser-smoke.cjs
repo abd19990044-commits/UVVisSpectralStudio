@@ -18,6 +18,16 @@ async function run(){
   await page.reload();
   assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'light');
 
+  const citation=page.locator('#citationText');
+  assert.match(await citation.inputValue(),/Hasan, A\\. S\\. \\(2026\\)/);
+  assert.match(await citation.inputValue(),/Version 1\\.2\\.0/);
+  assert.ok(!(await citation.inputValue()).includes('doi.org/10.'));
+  await page.locator('#copyCitation').click();
+  await page.waitForFunction(()=>/copied|نُسخ|Select the text|حدّد النص/i.test(document.querySelector('#citationStatus').textContent));
+  await page.locator('#langToggle').click();
+  assert.match(await page.locator('#citationPanel h2').textContent(),/الاستشهاد/);
+  await page.locator('#langToggle').click();
+  assert.match(await citation.inputValue(),/UV–Vis Spectral Studio/);
   await page.locator('#demo').click();
   await page.locator('#xmin').fill('270');
   await page.locator('#xmax').fill('400');
