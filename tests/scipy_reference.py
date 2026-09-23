@@ -15,7 +15,7 @@ const html=fs.readFileSync('index.html','utf8');
 const begin=html.indexOf('function factorial('),end=html.indexOf('function derivative(',begin);
 if(begin<0||end<0)throw Error('Production derivative implementation not found');
 const fn=new Function('x','y','indices','win','degree','orders',
-html.slice(begin,end)+'return indices.map(i=>orders.map(n=>localDerivative(x,y,i,i-Math.floor(win/2),win,degree,n)));');
+html.slice(begin,end)+'return indices.map(i=>orders.map(n=>localDerivative(x,y,i,Math.max(0,Math.min(x.length-win,i-Math.floor(win/2))),win,degree,n)));');
 const p=JSON.parse(fs.readFileSync(0,'utf8'));
 process.stdout.write(JSON.stringify(fn(p.x,p.y,p.indices,p.win,p.degree,p.orders)));
 """
@@ -39,6 +39,17 @@ class IndependentReference(unittest.TestCase):
                 self.assertAlmostEqual(actual[k,n-1],reference[i],
                     delta=max(1e-10,abs(reference[i])*2e-6),
                     msg=f'D{n} at wavelength {x[i]} nm')
+    def test_unmasked_edge_polynomial_against_scipy(self):
+        x=260+np.arange(121)*0.5
+        y=.03+.6*np.exp(-.5*((x-285)/13)**2)
+        indices=[0,1,2,3,4,5,6,7,113,114,115,116,117,118,119,120]
+        actual=compute(x,y,indices)
+        for n in range(1,5):
+            reference=savgol_filter(y,15,4,deriv=n,delta=.5,mode='interp')
+            for k,i in enumerate(indices):
+                self.assertAlmostEqual(actual[k,n-1],reference[i],
+                    delta=max(1e-10,abs(reference[i])*3e-6),
+                    msg=f'Unmasked edge D{n} at wavelength {x[i]} nm')
     def test_irregular_nm_grid_against_analytic_polynomial(self):
         t=np.arange(301)
         x=270+t*.5+.05*np.sin(t*.6)
