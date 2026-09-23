@@ -82,6 +82,39 @@ test('CSV and import hard limits are absent',()=>{
  assert.ok(script.includes('function exportedCsv()'));
  assert.ok(script.includes('per-value provenance')||script.includes('provenance'));
 });
+test('Derivative never crosses gaps or masked boundaries',()=>{
+ vm.runInContext('processingRange={lo:200,hi:260}',ctx);
+ const x=Array.from({length:61},(_,i)=>200+i);
+ const left=x.map((w,i)=>i<31?Math.sin(i/9):0);
+ const sA={name:'Gap A',x,y:left.map((v,i)=>i<31?v:100+10*i),breaks:[31],cache:{}};
+ const sB={name:'Gap B',x,y:left.map((v,i)=>i<31?v:-1000-300*i),breaks:[31],cache:{}};
+ for(const order of [1,2,3,4]){
+  const a=ctx.useData(sA,order),b=ctx.useData(sB,order);
+  for(let i=7;i<=23;i++)assert.ok(Math.abs(a.y[i]-b.y[i])<1e-10,'Gap leakage D'+order);
+  assert.ok(Number.isNaN(a.y[30]),'Mask must exclude near-gap edge D'+order);
+  assert.ok(Number.isNaN(a.y[31]),'Mask must exclude next-segment edge D'+order);
+ }
+ vm.runInContext('processingRange={lo:270,hi:400}',ctx);
+});
+test('Gap-aware extrema, signed area and zero-crossing candidates',()=>{
+ vm.runInContext(extract('function analyticalMetrics(','function interp('),ctx);
+ const s={x:[0,1,2,3,4],y:[-1,1,2,-2,1],breaks:[4]};
+ const m=ctx.analyticalMetrics(s,0,4);
+ assert.equal(m.highest.y,2);assert.equal(m.lowest.y,-2);
+ assert.equal(m.peakToPeak,4);
+ assert.equal(m.area,1.5,'Trapezoidal area must not bridge the gap at x=4');
+ assert.deepEqual(Array.from(m.zeros,z=>z.x),[.5,2.5],
+  'Opposite-sign readings separated by a gap must not create a crossing');
+ assert.throws(()=>ctx.analyticalMetrics(s,4,4),/Invalid/);
+});
+test('User-specified noise region is required for finite S/N',()=>{
+ const s={x:[0,1,2,3,4,5],y:[.1,.2,.1,2,-1,.1],breaks:[]};
+ const bare=ctx.analyticalMetrics(s,0,5);
+ assert.equal(bare.noise,null);
+ const measured=ctx.analyticalMetrics(s,0,5,{lo:0,hi:2});
+ assert.equal(measured.noise.n,3);
+ assert.ok(Number.isFinite(measured.noise.snr));
+});
 test('Source plotting logic formats D0 in 0.10 multiples and D4 scientifically',()=>{
  vm.runInContext(extract('function pathOf(','function geometry('),ctx);
  vm.runInContext(extract('function geometry(','function boundsMini('),ctx);
