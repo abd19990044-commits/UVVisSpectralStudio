@@ -82,6 +82,12 @@ The **Non-destructive spectral processing** panel produces a **new curve** from 
 
 Processed curves inherit the same derivative settings as raw curves, but the user must determine whether a chosen transformation is chemically justified. CSV includes per-curve provenance, and the application does not claim that smoothing or normalization validates an analytical method.
 
+## Quantitative calibration
+
+The optional calibration panel accepts at least five distinct concentration levels, with a signal in the same units at every level. It performs an **unweighted ordinary least-squares** regression and reports the slope, intercept, R², SSE and residual standard deviation. An independently prepared blank series with at least three finite readings enables conditional **LOD = 3.3 × sample SD / |slope|** and **LOQ = 10 × sample SD / |slope|** estimates; absent or zero-variance blanks do not produce misleading detection limits. An optional unknown-signal inversion is labeled when it extrapolates beyond the calibration range.
+
+These are numerical calculations, not a claim of full ICH Q2(R2) validation. The researcher remains responsible for calibration design, appropriate blank preparation, linearity assumptions, residual diagnostics, selectivity, accuracy, precision, robustness and any required analytical confirmation. Exported CSV includes data, fitted predictions, residuals and regression metadata.
+
 ## Citing and release history
 
 See [CITATION.cff](CITATION.cff) for bibliographic metadata and [CHANGELOG.md](CHANGELOG.md) for version history. No DOI has been assigned in this repository; do not cite an invented identifier. The [proprietary license](LICENSE) remains unchanged, including previously granted rights in older MIT-licensed copies.
