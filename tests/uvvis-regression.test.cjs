@@ -26,6 +26,7 @@ const ctx={
  axisLabel:order=>order?'Derivative':'Absorbance'
 };
 vm.createContext(ctx);
+vm.runInContext('let processingRange={lo:270,hi:400};',ctx);
 vm.runInContext(extract('function factorial(','function interp('),ctx);
 
 test('Complete inline application JavaScript parses',()=>{
@@ -48,22 +49,38 @@ test('ROI excludes noisy UV region and retains raw data unchanged',()=>{
  assert.ok(Math.abs(original.y[0])>1);
 });
 test('Too-narrow ROI reports inability to fit rather than fabricating derivatives',()=>{
- controls.xmin.value='330';controls.xmax.value='335';
+ vm.runInContext('processingRange={lo:330,hi:335}',ctx);
  const x=Array.from({length:301},(_,i)=>200+i);
  const s={name:'Narrow',x,y:x.map(w=>w*w),breaks:[],cache:{}};
  assert.throws(()=>ctx.useData(s,4),/nPoints/);
- controls.xmin.value='270';controls.xmax.value='400';
+ vm.runInContext('processingRange={lo:270,hi:400}',ctx);
 });
-test('ROI caches are bounded while changing zoom',()=>{
+test('ROI caches are bounded while changing processing range',()=>{
  const x=Array.from({length:301},(_,i)=>200+i);
  const s={name:'Memory',x,y:x.map(w=>Math.sin(w/100)),breaks:[],cache:{}};
  for(let i=0;i<10;i++){
-  controls.xmin.value=String(270+i);controls.xmax.value='400';
+  vm.runInContext('processingRange={lo:'+(270+i)+',hi:400}',ctx);
   ctx.useData(s,1);
  }
  assert.ok(s.cache.__roiKeys.length<=3);
  assert.ok(Object.keys(s.cache).filter(k=>k.startsWith('roi:')).length<=3);
- controls.xmin.value='270';
+ vm.runInContext('processingRange={lo:270,hi:400}',ctx);
+});
+test('Changing only display X limits never changes computed derivatives',()=>{
+ const x=Array.from({length:201},(_,i)=>250+i),y=x.map(w=>Math.exp(-((w-330)/23)**2));
+ const s={name:'Stable',x,y,breaks:[],cache:{}};
+ vm.runInContext('processingRange={lo:270,hi:400}',ctx);
+ const before=ctx.useData(s,2).y.slice();
+ controls.xmin.value='300';controls.xmax.value='350';
+ const after=ctx.useData(s,2).y;
+ assert.deepEqual(before,after);
+ controls.xmin.value='270';controls.xmax.value='400';
+});
+test('CSV and import hard limits are absent',()=>{
+ assert.ok(!script.includes('x>=200&&x<=3000'));
+ assert.ok(!script.includes('v>=200&&v<=3000'));
+ assert.ok(script.includes('function exportedCsv()'));
+ assert.ok(script.includes('per-value provenance')||script.includes('provenance'));
 });
 test('Source plotting logic formats D0 in 0.10 multiples and D4 scientifically',()=>{
  vm.runInContext(extract('function pathOf(','function geometry('),ctx);
