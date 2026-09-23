@@ -441,6 +441,34 @@ function prepareProcessedCurve(source,reference,mode,from='',to=''){
  return{name:source.name+' · '+mode,x:points.map(p=>p.x),y:points.map(p=>p.y),breaks,
   scaleType:mode==='normalize'?'relative':mode==='ratio'?'ratio':kind,provenance};
 }
+function windowSensitivity(source,order,degree,windows,measureLo,measureHi){
+ if(!(measureHi>measureLo))throw Error('Invalid sensitivity interval');
+ const d=restrictedSpectrum(source),limits=[0,...d.breaks,d.x.length],mask=$('edgeMode').checked;
+ const result=[];
+ for(const win of windows){
+  if(win<=degree||win%2!==1)continue;
+  const half=Math.floor(win/2),spans=[],samples=[];
+  for(let section=0;section<limits.length-1;section++){
+   const l=limits[section],r=limits[section+1];
+   if(r-l<win)continue;
+   for(let i=l;i+win<=r;i++)spans.push(d.x[i+win-1]-d.x[i]);
+   for(let i=l;i<r;i++){
+    if(d.x[i]<measureLo||d.x[i]>measureHi||mask&&(i-l<half||r-1-i<half))continue;
+    const st=Math.max(l,Math.min(r-win,i-half));
+    const yy=localDerivative(d.x,d.y,i,st,win,degree,order);
+    if(Number.isFinite(yy))samples.push({x:d.x[i],y:yy});
+   }
+  }
+  if(!samples.length)continue;
+  let dominant=samples[0];
+  for(const p of samples)if(Math.abs(p.y)>Math.abs(dominant.y))dominant=p;
+  spans.sort((a,b)=>a-b);
+  result.push({win,n:samples.length,minSpan:spans[0],medianSpan:median(spans),
+    maxSpan:spans.at(-1),ordinate:dominant.y,wavelength:dominant.x});
+ }
+ if(!result.length)throw Error('No finite candidate values: widen the processing/measurement range or reduce the fitting window');
+ return result;
+}
 function analyticalMetrics(d,lo,hi,noiseRange=null){
  if(!(Number.isFinite(lo)&&Number.isFinite(hi)&&hi>lo))throw Error('Invalid measurement wavelength interval');
  const points=[];
@@ -630,7 +658,7 @@ function render(){
    return;
   }
   const data=v.map(s=>useData(s,order));
-  updateMeasureCurveOptions(data);$('analysisResults').textContent='';
+  updateMeasureCurveOptions(data);$('analysisResults').textContent='';$('sensitivityResults').textContent='';
   const B=derivativeAutoFit&&order>0?boundsMini(data,displayXRange()):bounds(data);
   const chart=buildSvg(data,order,B);
   $('chart').outerHTML=chart.svg.replace('<svg ','<svg id="chart" class="chart-svg" role="img" aria-label="Interactive spectrum plot" ');
