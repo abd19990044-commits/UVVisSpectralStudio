@@ -120,6 +120,10 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .language-toggle{min-width:100px}
 
 
+/* Read-only citation is full-width, legible and responsive in both themes. */
+#citationPanel #citationText{display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;min-height:112px;resize:vertical;overflow-wrap:anywhere;white-space:pre-wrap;direction:ltr;text-align:left;padding:14px 16px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--txt);font:15px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}
+#citationPanel #citationText:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+#citationPanel .citation-doi{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -158,12 +162,13 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 <div class="toolbar"><button id="prepApply" class="btn small primary" data-i18n="prepApply">Create processed curve</button></div>
 <p class="note" id="prepStatus" aria-live="polite"></p></section>
 <section class="panel" id="citationPanel"><h2 data-i18n="citationHeader">Cite this software</h2>
-<p class="note" data-i18n="citationNote">Cite the software version used in your work and report processing settings in Methods. A Zenodo DOI has not yet been assigned; add the verified DOI after publication.</p>
-<div class="field"><label for="citationText" data-i18n="citationLabel">Suggested software citation (without DOI)</label>
-<textarea id="citationText" dir="ltr" rows="3" readonly aria-label="Software citation">Hasan, A. S. (2026). UV–Vis Spectral Studio (Version 1.2.0) [Computer software]. https://github.com/abd19990044-commits/UVVisSpectralStudio</textarea></div>
+<p class="note" data-i18n="citationNote">Cite this version using its Zenodo DOI and report the processing settings used in your Methods section.</p>
+<div class="field"><label for="citationText" data-i18n="citationLabel">Suggested citation for version 1.2.0</label>
+<textarea id="citationText" dir="ltr" rows="3" readonly spellcheck="false" aria-label="Software citation">Hasan, A. S. (2026). UV–Vis Spectral Studio (Version 1.2.0) [Computer software]. https://doi.org/10.5281/zenodo.22923132</textarea></div>
+<p class="note citation-doi"><strong>DOI:</strong> <a href="https://doi.org/10.5281/zenodo.22923132" target="_blank" rel="noopener noreferrer">10.5281/zenodo.22923132</a></p>
 <div class="toolbar"><button class="btn small primary" type="button" id="copyCitation" data-i18n="copyCitation">Copy citation</button>
 <a class="btn small" href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/CITATION.cff" target="_blank" rel="noopener noreferrer" data-i18n="citationFile">CITATION.cff</a>
-<a class="btn small" href="https://github.com/abd19990044-commits/UVVisSpectralStudio/releases" target="_blank" rel="noopener noreferrer" data-i18n="citationReleases">GitHub releases</a></div>
+<a class="btn small" href="https://github.com/abd19990044-commits/UVVisSpectralStudio/releases/tag/v1.2.0" target="_blank" rel="noopener noreferrer" data-i18n="citationReleases">GitHub release v1.2.0</a></div>
 <p class="note" id="citationStatus" aria-live="polite"></p></section>
 <section class="panel"><h2 data-i18n="scientificHeader">Scientific interpretation & limitations</h2><div class="note" data-i18n="scientificNote">Absorbance A is dimensionless; the nth derivative with wavelength in nm has units nm⁻ⁿ. Local polynomial derivatives, especially the 3rd/4th, are sensitive to noise, window size, nonuniform sampling and edge effects. The original data are retained. Numerical extrema and user-requested zero-crossing candidates can be reported; they do not prove chemical identity or establish an analytical method. Curve overlap is a visual comparison, not chemical identity evidence. PNG physical width is configurable in inches or cm with embedded DPI; SVG is resolution-independent. A missing reading is not silently bridged.</div></section>
 </div></main><footer><span data-i18n="footer">UV–Vis Spectral Studio · Spectral analysis and scientific visualization</span> · <span data-i18n="developedBy">Developed by</span> <strong dir="ltr">ABDULSALAM S. HASAN</strong> · v1.2.0 · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio" target="_blank" rel="noopener noreferrer">Source</a> · <a href="#citationPanel" data-i18n="citationHeader">Cite this software</a> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></footer>
@@ -203,7 +208,7 @@ Object.assign(STR.en,{
   metricsHeader:'06 / Analytical measurements',metricsNote:'Choose the interval. Reported extrema and zero crossings are numerical candidates, not chemical identifications.',metricsCurve:'Spectrum to measure',metricsStart:'Measurement from (nm)',metricsEnd:'Measurement to (nm)',noiseStart:'Optional noise-region start (nm)',noiseEnd:'Optional noise-region end (nm)',metricsRun:'Measure selected curve',metricsExport:'Export measurements CSV',
   prepHeader:'07 / Non-destructive spectral processing',prepNote:'Adds a new curve; raw data are never overwritten. Uses the explicit processing interval and measured wavelengths.',prepSource:'Source curve',prepReference:'Reference for subtraction / ratio',prepMode:'Transformation',prepBaseline:'Straight-line baseline between chosen endpoints',prepSmooth:'Local-polynomial smoothing (D0)',prepNormalize:'Normalize by maximum absolute signal',prepSubtract:'Subtract reference (marked interpolation)',prepRatio:'Ratio to reference (marked interpolation)',prepLeft:'Baseline anchor from (nm, optional)',prepRight:'Baseline anchor to (nm, optional)',prepApply:'Create processed curve',
   sensitivityRun:'Compare fitting windows',sensitivityExport:'Save window sensitivity CSV',
-  citationHeader:'Cite this software',citationNote:'Cite the version used and report your processing settings in Methods. No Zenodo DOI has yet been assigned; use a verified DOI only after publication.',citationLabel:'Suggested software citation (without DOI)',copyCitation:'Copy citation',citationFile:'CITATION.cff',citationReleases:'GitHub releases',
+  citationHeader:'Cite this software',citationNote:'Cite this version using its Zenodo DOI and report your processing settings in Methods.',citationLabel:'Suggested citation for version 1.2.0',copyCitation:'Copy citation',citationFile:'CITATION.cff',citationReleases:'GitHub release v1.2.0',
   developedBy:'Developed by',headerOverlay:'Spectral overlay · D1–D4',headerAnalysis:'UV–Vis analysis',
  importAria:'Import spectral data',widthAria:'Physical figure width',dpiAria:'PNG resolution',plotAria:'Interactive UV–Vis spectrum plot',
  themeDark:'Dark mode',themeLight:'Light mode',themeDarkAria:'Switch to dark mode',themeLightAria:'Switch to light mode',cursorWavelength:'Wavelength',measuredData:'Measured readings',column:'Column'
@@ -214,7 +219,7 @@ Object.assign(STR.ar,{
   metricsHeader:'06 / القياسات التحليلية',metricsNote:'حدّد المجال. القمم ومواضع عبور الصفر مرشحات عددية وليست إثباتاً لهوية المركب.',metricsCurve:'المنحنى المراد قياسه',metricsStart:'بداية مجال القياس (nm)',metricsEnd:'نهاية مجال القياس (nm)',noiseStart:'بداية مجال الضجيج الاختياري (nm)',noiseEnd:'نهاية مجال الضجيج الاختياري (nm)',metricsRun:'قياس المنحنى المختار',metricsExport:'تصدير القياسات CSV',
   prepHeader:'07 / المعالجة الطيفية غير المتلفة',prepNote:'إضافة منحنى جديد دون استبدال القياسات؛ يُستخدم مجال المعالجة المحدد والأطوال الموجية المقيسة.',prepSource:'المنحنى الأصلي',prepReference:'المنحنى المرجعي للطرح أو النسبة',prepMode:'العملية',prepBaseline:'تصحيح خط أساس مستقيم بين نقطتين',prepSmooth:'تنعيم ملاءمة متعددة الحدود D0',prepNormalize:'تطبيع إلى أقصى قيمة مطلقة',prepSubtract:'طرح المرجع (مع استيفاء معلن)',prepRatio:'القسمة على المرجع (مع استيفاء معلن)',prepLeft:'بداية مرجع خط الأساس (nm)',prepRight:'نهاية مرجع خط الأساس (nm)',prepApply:'إنشاء منحنى معالج',
   sensitivityRun:'مقارنة نوافذ الاشتقاق',sensitivityExport:'حفظ مقارنة النوافذ CSV',
-  citationHeader:'الاستشهاد بالبرنامج',citationNote:'استشهد بالإصدار المستخدم واذكر معاملات المعالجة في منهجية البحث. لم يصدر DOI من Zenodo بعد؛ أضف المعرّف الصحيح بعد نشره.',citationLabel:'صيغة الاستشهاد المقترحة (دون DOI)',copyCitation:'نسخ الاستشهاد',citationFile:'ملف CITATION.cff',citationReleases:'إصدارات GitHub',
+  citationHeader:'الاستشهاد بالبرنامج',citationNote:'استشهد بهذا الإصدار باستخدام DOI من Zenodo واذكر معاملات المعالجة في منهجية البحث.',citationLabel:'صيغة الاستشهاد المقترحة للإصدار 1.2.0',copyCitation:'نسخ الاستشهاد',citationFile:'ملف CITATION.cff',citationReleases:'إصدار GitHub v1.2.0',
   developedBy:'طُوّر بواسطة',headerOverlay:'تراكب الأطياف · المشتقات D1–D4',headerAnalysis:'التحليل الطيفي بالأشعة فوق البنفسجية والمرئية',
  importAria:'استيراد البيانات الطيفية',widthAria:'العرض الفيزيائي للشكل',dpiAria:'دقة تصدير PNG',plotAria:'رسم تفاعلي لأطياف الامتصاص بالأشعة فوق البنفسجية والمرئية',
  brand:'تحليل أطياف الامتصاص بالأشعة فوق البنفسجية والمرئية · الاشتقاق الطيفي · رسوم للبحث العلمي',
