@@ -14,7 +14,7 @@ UV–Vis Spectral Studio is a self-contained, bilingual browser application for 
 ## Reproducibility and citation
 - Version: **1.2.0**
 - Creator: **Abdulsalam S. Hasan**
-- Software citation: `Hasan, A. S. (2026). UV–Vis Spectral Studio (Version 1.2.0) [Computer software]. https://github.com/abd19990044-commits/UVVisSpectralStudio`
+- Software citation: `Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923132`
 - Machine-readable citation: [CITATION.cff](CITATION.cff)
 - License: [UV–Vis Spectral Studio Proprietary License](LICENSE). Public source availability does **not** grant general redistribution or modification rights; permissions associated with earlier MIT-licensed copies are unaffected.
 - Zenodo DOI: **[10.5281/zenodo.22923132](https://doi.org/10.5281/zenodo.22923132)** (version 1.2.0).
