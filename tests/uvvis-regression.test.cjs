@@ -161,6 +161,16 @@ test('Reference arithmetic cannot bridge a gap or divide by zero',()=>{
  assert.throws(()=>ctx.prepareProcessedCurve(source,source,'ratio'),/different reference/);
  vm.runInContext('processingRange={lo:270,hi:400}',ctx);
 });
+test('Sensitivity changes fit spans, not original data or wavelength grid',()=>{
+ vm.runInContext('processingRange={lo:270,hi:400}',ctx);
+ const x=Array.from({length:131},(_,i)=>270+i),y=x.map(w=>.1+Math.exp(-.5*((w-330)/18)**2));
+ const source={id:30,name:'Gaussian',x,y:y.slice(),breaks:[],cache:{}};
+ const rows=ctx.windowSensitivity(source,2,4,[11,15,21,31],280,380);
+ assert.deepEqual(Array.from(rows,r=>r.win),[11,15,21,31]);
+ assert.deepEqual(Array.from(rows,r=>r.medianSpan),[10,14,20,30]);
+ assert.ok(rows.every(r=>r.n>0&&Number.isFinite(r.ordinate)));
+ assert.deepEqual(source.y,y,'Sensitivity analysis must not modify raw absorbance');
+});
 test('Source plotting logic formats D0 in 0.10 multiples and D4 scientifically',()=>{
  vm.runInContext(extract('function pathOf(','function geometry('),ctx);
  vm.runInContext(extract('function geometry(','function boundsMini('),ctx);
