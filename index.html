@@ -271,7 +271,7 @@ function rowsToSpectra(rows,name,manual=null,sourceTableId=null){let maxcols=Mat
  candidates.sort((a,b)=>b.score-a.score);if(!manual&&!candidates.length)throw Error(name+': '+t('waveMissing'));if(!manual&&candidates.length>1&&candidates[0].score-candidates[1].score<.15)throw Error(name+': '+t('waveAmbig'));let xi=manual?manual.xi:candidates[0].j, out=[],warnings=[];const axisHeader=String(header[xi]||'');if(/wavenumber|wave\s*number|cm\s*\^?\s*-?1|cm⁻¹|عدد\s*موجي/i.test(axisHeader))throw Error(name+': '+(lang==='ar'?'المحور محدد بعدد موجي cm⁻¹؛ حوّله صراحةً إلى nm قبل الاستيراد':'Axis appears to be wavenumber (cm^-1); explicitly convert to nm before import'));
  for(let j=0;j<maxcols;j++){if(j===xi||(manual&&!manual.ys.includes(j)))continue;let h=String(header[j]||'');if(!manual&&/^(?:id|index|row|number|time|conc(?:entration)?|serial|رقم|التركيز|زمن)/i.test(h))continue;let pairs=[],total=0,plaus=0,omitted=0;
  for(let ri=0;ri<data.length;ri++){let r=data[ri],x=validNumber(r[xi]),y=validNumber(r[j]);if(Number.isFinite(y)){total++;if(Math.abs(y)<10)plaus++;}if(Number.isFinite(x)&&Number.isFinite(y)&&x>0)pairs.push([x,y,ri]);else if(String(r[xi]??'').trim()||String(r[j]??'').trim())omitted++;}
- if(pairs.length<7||(!manual&&plaus/Math.max(total,1)<.92)||pairs.length/data.length<.65){if(omitted)warnings.push(`${name}/${h||j+1}: ${omitted} ${lang==='ar'?'صفاً غير صالح أو ناقصاً؛ لم يتم استيراد هذا العمود':'invalid or incomplete rows; column was not imported'}`);continue;}if(omitted)warnings.push(`${name}/${h||j+1}: ${omitted} ${lang==='ar'?'قراءة غير صالحة أو ناقصة مستبعدة، ولا توجد قراءة ملفّقة':'invalid or missing readings omitted; no values fabricated'}`);if(manual&&plaus/Math.max(total,1)<.92)warnings.push(`${name}/${h||j+1}: ${lang==='ar'?'الامتصاصية خارج المجال المعتاد ±10؛ تحقق من الوحدات':'absorbance outside usual ±10; verify units'}`);pairs.sort((a,b)=>a[0]-b[0]);if(pairs.some((p,i)=>i&&p[0]===pairs[i-1][0])){warnings.push(`${name}/${h||j+1}: ${t('duplicate')}`);continue;}
+ if(pairs.length<7||(!manual&&plaus/Math.max(total,1)<.92)||pairs.length/data.length<.65){if(omitted)warnings.push(`${name}/${h||j+1}: ${omitted} ${lang==='ar'?'صفاً غير صالح أو ناقصاً؛ لم يتم استيراد هذا العمود':'invalid or incomplete rows; column was not imported'}`);continue;}if(omitted)warnings.push(`${name}/${h||j+1}: ${omitted} ${lang==='ar'?'قراءة غير صالحة أو ناقصة مستبعدة، ولا توجد قراءة ملفّقة':'invalid or missing readings omitted; no values fabricated'}`);if(manual&&plaus/Math.max(total,1)<.92)warnings.push(`${name}/${h||j+1}: ${lang==='ar'?'الامتصاصية خارج المجال المعتاد ±10؛ تحقق من الوحدات':'absorbance outside usual ±10; verify units'}`);if(!/wavelength|wave.?length|λ|nm|طول موجي/i.test(axisHeader)&&pairs.some(p=>p[0]>1500))warnings.push(`${name}: ${lang==='ar'?'مدى محوري غير معتاد؛ تحقق من أن الوحدة nm وليست cm⁻¹':'Unusual UV–Vis axis range; verify that the unit is nm, not cm^-1'}`);pairs.sort((a,b)=>a[0]-b[0]);if(pairs.some((p,i)=>i&&p[0]===pairs[i-1][0])){warnings.push(`${name}/${h||j+1}: ${t('duplicate')}`);continue;}
  let gaps=pairs.slice(1).map((p,i)=>p[0]-pairs[i][0]),med=median(gaps),breaks=[];for(let i=0;i<gaps.length;i++)if(gaps[i]>3*med||Math.abs(pairs[i+1][2]-pairs[i][2])>1)breaks.push(i+1);if(breaks.length)warnings.push(`${name}/${h||j+1}: ${t('gap')}`);if(pairs.length<15)warnings.push(`${name}/${h||j+1}: ${t('sparse')}`);
  const isWorkbook=/\.xlsx(?:\s*·|$)/i.test(name);
  const baseName=name.replace(/\.(txt|csv|tsv|xlsx)(?:\s*·.*)?$/i,'').trim();
@@ -590,7 +590,7 @@ $('clear').onclick=()=>{spectra=[];sourceTables=[];updateMapping();updateSamples
 function exportedCsv(){
  if(!plotState)throw Error(t('noPlot'));
  const {data,B,order}=plotState,aligned=$('csvMode').value==='aligned',unit=order?'nm^-'+order:'dimensionless';
- const all=[...new Set(data.flatMap(d=>d.x.filter(w=>w>=B.xmin&&w<=B.xmax)))].sort((a,b)=>a-b);
+ const all=[...new Set(data.flatMap(d=>d.x.filter(w=>w>=B.xmin&&w<=B.xmax)))].sort((a,b)=>a-b),measuredMaps=data.map(d=>new Map(d.x.map((w,i)=>[w,i])));
  const settings=[
   '# UV-Vis Spectral Studio version: '+APP_VERSION,
   '# Signal: '+(order?'D'+order:'original absorbance'),
@@ -609,8 +609,8 @@ function exportedCsv(){
  rows.push(columns);
  for(const w of all){
   const row=[w];
-  for(const d of data){
-   const i=d.x.indexOf(w);
+  for(let column=0;column<data.length;column++){
+   const d=data[column],i=measuredMaps[column].get(w)??-1;
    if(i>=0){
     const y=d.y[i];
     row.push(Number.isFinite(y)?y:'');
