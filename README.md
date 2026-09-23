@@ -1,6 +1,6 @@
 # UV–Vis Spectral Studio
 
-**A browser-based workspace for UV–visible absorbance spectra, derivative spectrophotometry, non-destructive processing, researcher-controlled numerical measurements, spectral overlays, and manuscript-oriented figures.**
+**A browser-based workspace for UV–visible absorbance spectra, derivative spectrophotometry, non-destructive processing, multi-spectrum reading tables, wavelength-specific measurements, spectral overlays, and manuscript-oriented figures.**
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22923132.svg)](https://doi.org/10.5281/zenodo.22923132)
 
@@ -13,12 +13,13 @@ UV–Vis Spectral Studio is a single-file HTML/CSS/JavaScript application. Spect
 | Area | Capabilities |
 | --- | --- |
 | Import | TXT, CSV, TSV and XLSX; multiple spectra; multi-column and multi-sheet XLSX; manual wavelength/absorbance column mapping |
-| Visualization | Overlaid spectra, original and D1–D4 views (including a derivative gallery), sample visibility, line colors and styles, an interactive wavelength cursor, and horizontal zoom |
+| Visualization | Overlaid spectra, original and D1–D4 views (including a derivative gallery), sample visibility, independently adjustable curve widths, line colors and styles, a below-plot wavelength readout, and horizontal zoom |
 | Derivatives | First through fourth derivatives using local polynomial least-squares fits on actual wavelength coordinates; independent processing and display ranges; adjustable point window, degree and edge mask |
 | Numerical measurements | User-selected extrema, global peak-to-peak and peak-to-zero amplitudes, candidate zero crossings, signed trapezoidal area, optional noise-region statistic, and fitting-window sensitivity comparison |
 | Preprocessing | New curves from endpoint baseline correction, local-polynomial D0 smoothing, maximum-absolute normalization, reference subtraction or ratio; originals are retained |
-| Axes | Editable limits, figure title and axis labels; inward-facing ticks; white scientific plotting area; Fit to data |
-| Output | SVG, PNG at selectable 600/900/1200 DPI and physical width, measured-position or provenance-flagged aligned CSV, and separate measurement/sensitivity CSV exports |
+| Axes | Editable limits via fields or clickable axis endpoints, configurable X/Y tick modes and intervals, separate axis/tick widths, data-dependent D0 upper limit, scale-aware derivative tick labels, figure title and axis labels, inward-facing ticks, white scientific plotting area, and Fit to data |
+| Reading tables | Wavelength-specific lookup at recorded or nearest wavelengths, or explicitly flagged gap-aware linear interpolation; single-curve reading table and combined multi-spectrum D0–D4 table with wavelength filtering, 500-row pages, and complete CSV export |
+| Output | SVG, PNG at selectable 600/900/1200 DPI and physical width, measured-position or provenance-flagged aligned CSV, full combined-table CSV, and separate measurement/sensitivity CSV exports |
 | Presentation | Light-by-default/dark-switchable interface, English/Arabic controls, permanently title/credit-free exported plots and an independently switchable in-plot legend |
 
 ### Analytical notation
@@ -33,7 +34,7 @@ For original absorbance input, the signal is **A** and the horizontal axis is **
 | D3 | d³A/dλ³ (nm⁻³) |
 | D4 | d⁴A/dλ⁴ (nm⁻⁴) |
 
-Absorbance is dimensionless; these wavelength-derivative units follow from using nm. **Normalized and ratio curves are transformed signals, not raw absorbance**, so their ordinate labels may be relative or mixed-signal labels instead. The initial **D0** display limits are **200–800 nm** (X) and **0–2.5** (Y), irrespective of the imported spectrum's extent. Use **Fit to data** if imported measurements fall outside that view. Higher derivatives can use automatic Y scaling and scientific tick notation to avoid repeated `0.00` labels.
+Absorbance is dimensionless; these wavelength-derivative units follow from using nm. **Normalized and ratio curves are transformed signals, not raw absorbance**, so their ordinate labels may be relative or mixed-signal labels instead. The initial **D0** X display limits are **200–800 nm**, irrespective of the imported spectrum's extent. For nonnegative absorbance spectra, the default Y minimum is **0**, and the automatic Y maximum rounds upward in **0.5-absorbance increments** according to the largest visible reading (for example, a maximum of 0.79 gives an upper limit of 1.0). Negative data are not suppressed by this automatic rule. Explicit user-selected Y limits take precedence. **Fit to data** adjusts the display range without changing the underlying observations. D0 Y-axis tick labels use two fixed decimal places, and X-axis tick labels use one fixed decimal place. D1–D4 Y tick labels instead adapt their precision to the derivative scale so distinct small values are not shown as repeated `0.00` labels.
 
 ## Quick start
 
@@ -42,8 +43,10 @@ Absorbance is dimensionless; these wavelength-derivative units follow from using
 3. If automatic wavelength or absorbance detection is ambiguous, use **Manual column mapping**.
 4. For derivatives, choose D1–D4 (or the gallery), adjust the point window and polynomial degree, and review the edge-mask setting.
 5. Set the derivative **processing range** separately from the **display axes**. To process only 270–400 nm, enter those limits under **Derivative processing range** and click **Apply processing range**. Dragging or editing display axes does **not** change derivative values; changing the processing range, fitting parameters or edge mask **does**. Use **Fit to data** to display the visible measurements.
-6. Optionally create a new processed curve, measure a selected spectral interval, or compare fitting windows. These operations do not overwrite the original imported spectra.
-7. Export SVG/PNG figures, displayed numerical CSV, or measurement/sensitivity CSV as appropriate.
+6. Use **Spectral readings & wavelength lookup** to inspect a single D0–D4 curve or enter a wavelength; choose exact recorded wavelength, nearest recorded wavelength, or explicitly flagged linear interpolation.
+7. Open **Combined spectral data table** to inspect multiple spectra side by side. Select D0–D4, restrict the wavelength interval if necessary, page through the grid, or export all matching rows as CSV.
+8. Optionally create a new processed curve, measure a selected spectral interval, or compare fitting windows. These operations do not overwrite the original imported spectra.
+9. Export SVG/PNG figures, displayed numerical CSV, or measurement/sensitivity CSV as appropriate.
 
 A simple **illustrative extract** of a CSV file is:
 
@@ -62,6 +65,14 @@ Wavelength (nm),Sample A,Sample B
 
 For delimiter-separated text, use a comma, tab, semicolon or whitespace as appropriate. A positive wavelength column in **nm** is required: **the application does not invent missing wavelength values**. Valid measured wavelengths below 200 nm and above 3000 nm are retained. A recognized wavenumber heading in cm⁻¹ is rejected; **generic headings are not proof of units**, so confirm that the supplied values are wavelengths in nm before import. For legacy binary `.xls` files, save a copy as `.xlsx` or `.csv` first.
 
+## Spectral readings and combined tables
+
+The **Spectral readings & wavelength lookup** panel supports a selected original spectrum (**D0**) or its first through fourth numerical derivatives (**D1–D4**). Enter a wavelength and choose one of three policies: an exact recorded wavelength only, the nearest recorded wavelength within the available range, or gap-aware **linear interpolation explicitly labeled as interpolated**. No values are extrapolated beyond the available spectrum, and missing or edge-masked derivative values are reported as unavailable. An individual reading table can be restricted to a wavelength interval and exported to CSV; the on-screen individual table shows at most 500 rows while the CSV includes all matching rows.
+
+The **Combined spectral data table** displays a common wavelength column with one column per included spectrum, like an instrument's multi-trace data printout. It can show the currently displayed derivative order or explicitly select **D0–D4**. The **Visible spectra only** checkbox limits the columns to traces currently shown in the plot; when unchecked, all imported spectra are included. The wavelength range can be filtered independently of the plot's display limits. The common grid is the sorted **union of recorded wavelength positions** of the included curves, not a fabricated evenly spaced grid. At each row, a cell is populated only when that spectrum has a finite value at that same recorded wavelength; missing readings and unavailable derivatives remain **blank without interpolation**. For derivatives, wavelength positions refer to recorded wavelengths, while the ordinate values are *computed*, not independently measured. A missing derivative for a given spectrum does not prevent other columns from being displayed.
+
+The combined table has sticky wavelength and column headers, horizontal and vertical scrolling, and pages of **500 rows** for responsive viewing. **Export all rows CSV** writes the complete filtered grid, not merely the current page, with curve names, derivative order and numerical-processing settings. Empty cells are retained in the export. The two tables complement the existing **Save displayed curves as CSV** option; its optional aligned-grid provenance columns can label interpolation, whereas the combined table deliberately does not perform interpolation.
+
 ## Preparing figures for publication
 
 Exported plot graphics omit the embedded figure title and developer credit by default and without an extra mode switch; the **in-plot** curve legend can be shown or hidden independently. The editable title can still appear in the application's page heading. Supply a journal's figure caption separately. Both exported SVG and PNG originate from the same SVG plotting logic used by the on-screen chart; PNG is rasterized at the selected physical width and DPI.
@@ -70,7 +81,7 @@ For a submission, check the target journal's requirements for final figure size,
 
 ## Reproducibility and output provenance
 
-**Version 1.2.0 (2026-09-23)** separates analysis from display. The derivative-processing range is unrestricted by default (so it includes all available measured wavelengths), while the initial D0 display is 200–800 nm and 0–2.5 absorbance. To restrict fitting to 270–400 nm, enter those numbers under **Derivative processing range** and click **Apply processing range**. Display zoom does not alter the processing range; **Fit to data** changes only display axes.
+**The archived v1.2.0 release (2026-09-23)** separates analysis from display. The current `main` branch includes additional changes made after that archive; the Zenodo version DOI below must not be taken to identify those later changes. The derivative-processing range is unrestricted by default (so it includes all available measured wavelengths), while the initial D0 display is 200–800 nm with an automatically selected Y maximum for nonnegative absorbance. To restrict fitting to 270–400 nm, enter those numbers under **Derivative processing range** and click **Apply processing range**. Display zoom does not alter the processing range; **Fit to data** changes only display axes.
 
 Derivative results use local polynomial least squares on measured wavelengths, with edge masking selected by default. The quality strip reports the actual minimum, median and maximum fitting-window spans in nm and identifies notably irregular wavelength sampling.
 
@@ -102,7 +113,7 @@ Suggested citation:
 > Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923132
 
 
-See [CITATION.cff](CITATION.cff) for bibliographic metadata and [CHANGELOG.md](CHANGELOG.md) for version history. **Version 1.2.0 DOI:** [10.5281/zenodo.22923132](https://doi.org/10.5281/zenodo.22923132). Cite the archived version you used and record the relevant spectral-processing parameters in Methods. The current [proprietary license](LICENSE) does not revoke permissions previously granted for copies released under MIT.
+See [CITATION.cff](CITATION.cff) for bibliographic metadata and [CHANGELOG.md](CHANGELOG.md) for version history. The **v1.2.0 archive is distinct from subsequent commits on `main`**: cite the archived version when you use it; for newer functionality, additionally identify the Git commit used. **Version 1.2.0 DOI:** [10.5281/zenodo.22923132](https://doi.org/10.5281/zenodo.22923132). Cite the archived version you used and record the relevant spectral-processing parameters in Methods. The current [proprietary license](LICENSE) does not revoke permissions previously granted for copies released under MIT.
 
 ## Verification
 
@@ -118,7 +129,7 @@ These tests assess their documented cases; they are not a formal validation of a
 - Derivatives are estimated by local polynomial least squares against the **measured wavelength coordinates**, not the point index. The available fit-window and polynomial-degree controls influence smoothness and derivative stability.
 - Higher-order derivatives amplify experimental noise and can be sensitive to window choice, uneven wavelength spacing and edges; inspect the original spectrum and perform parameter-sensitivity checks.
 - Missing readings and sufficiently large wavelength gaps are treated as discontinuities rather than silently joined for derivative estimation.
-- Cursor readings can use the nearest measured point or indicated linear interpolation. CSV defaults to native measured wavelength positions (computed derivative values are explicitly identified); optional aligned-grid CSV marks each interpolated value separately and leaves gaps empty.
+- Cursor readings can use the nearest recorded point or indicated linear interpolation; the detailed lookup additionally offers exact-wavelength-only reads. CSV defaults to native recorded wavelength positions (computed derivative values are explicitly identified); optional aligned-grid CSV marks each interpolated value separately and leaves gaps empty. The combined table uses the union of recorded wavelengths without cross-spectrum interpolation.
 - An overlay or matching profile alone does not establish chemical identity. The software is a processing and visualization aid, **not a substitute for experimental method validation**.
 
 ## Deployment and privacy
