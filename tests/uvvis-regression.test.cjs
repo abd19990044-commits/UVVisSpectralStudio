@@ -115,6 +115,45 @@ test('User-specified noise region is required for finite S/N',()=>{
  assert.equal(measured.noise.n,3);
  assert.ok(Number.isFinite(measured.noise.snr));
 });
+test('Non-destructive preprocessing preserves source and units',()=>{
+ vm.runInContext(extract('function interp(','function visible('),ctx);
+ vm.runInContext(extract('function measuredAt(','function qualityPanel('),ctx);
+ vm.runInContext(extract('function updatePrepOptions(','function analyticalMetrics('),ctx);
+ vm.runInContext('processingRange={lo:270,hi:300}',ctx);
+ const x=Array.from({length:31},(_,i)=>270+i);
+ const originalY=x.map(w=>.5+.01*(w-270));
+ const source={id:1,name:'Measured',x,y:originalY.slice(),breaks:[],cache:{}};
+ const reference={id:2,name:'Blank',x,y:x.map(()=>.2),breaks:[],cache:{}};
+ const baseline=ctx.prepareProcessedCurve(source,null,'baseline');
+ assert.equal(baseline.x[0],270);assert.equal(baseline.x.at(-1),300);
+ assert.ok(baseline.y.every(z=>Math.abs(z)<1e-10));
+ assert.deepEqual(source.y,originalY,'Raw spectrum must never be edited');
+ const norm=ctx.prepareProcessedCurve(source,null,'normalize');
+ assert.equal(norm.scaleType,'relative');
+ assert.ok(Math.abs(Math.max(...norm.y)-1)<1e-12);
+ const difference=ctx.prepareProcessedCurve(source,reference,'subtract');
+ assert.ok(difference.y.every((z,i)=>Math.abs(z-(originalY[i]-.2))<1e-12));
+ assert.equal(difference.scaleType,'absorbance');
+ const ratio=ctx.prepareProcessedCurve(source,reference,'ratio');
+ assert.equal(ratio.scaleType,'ratio');
+ assert.ok(ratio.y.every((z,i)=>Math.abs(z-originalY[i]/.2)<1e-12));
+ controls.edgeMode.checked=false;
+ const smooth=ctx.prepareProcessedCurve(source,null,'smooth');
+ assert.ok(smooth.y.every((z,i)=>Math.abs(z-originalY[i])<1e-10));
+ controls.edgeMode.checked=true;
+ vm.runInContext('processingRange={lo:270,hi:400}',ctx);
+});
+test('Reference arithmetic cannot bridge a gap or divide by zero',()=>{
+ vm.runInContext('processingRange={lo:270,hi:300}',ctx);
+ const x=Array.from({length:31},(_,i)=>270+i);
+ const source={id:10,name:'Drug',x,y:x.map(()=>1),breaks:[],cache:{}};
+ const ref={id:11,name:'Reference',x,y:x.map((_,i)=>i<15?.5:i>15?0:NaN),breaks:[16],cache:{}};
+ const out=ctx.prepareProcessedCurve(source,ref,'subtract');
+ assert.ok(out.x.every(w=>w<285||w>286),'Missing or discontinuous reference values must stay absent');
+ assert.ok(out.breaks.length>0,'Discontinuities must be preserved');
+ assert.throws(()=>ctx.prepareProcessedCurve(source,source,'ratio'),/different reference/);
+ vm.runInContext('processingRange={lo:270,hi:400}',ctx);
+});
 test('Source plotting logic formats D0 in 0.10 multiples and D4 scientifically',()=>{
  vm.runInContext(extract('function pathOf(','function geometry('),ctx);
  vm.runInContext(extract('function geometry(','function boundsMini('),ctx);
