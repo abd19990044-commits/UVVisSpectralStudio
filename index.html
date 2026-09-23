@@ -156,6 +156,18 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 <p id="axisBoundError" class="small-note" role="alert" aria-live="polite"></p>
 <div class="toolbar"><button type="button" id="axisBoundCancel" class="btn" data-i18n="axisBoundCancel">Cancel</button><button type="submit" id="axisBoundApply" class="btn primary" data-i18n="axisBoundApply">Apply limit</button></div>
 </form></dialog><div id="legend" class="legend"></div><div id="quality" class="quality" aria-live="polite"></div><p class="info" id="cursorInfo" data-i18n="cursorInitial">Move the pointer over the plot to read wavelength and each displayed spectrum.</p><div id="overview" class="overview" hidden></div></section>
+<section class="panel" id="spectralReadingsPanel">
+<h2 data-i18n="readingHeader">Spectral readings &amp; wavelength lookup</h2>
+<p class="note" data-i18n="readingNote">Inspect original readings or derivatives D1–D4 at measured wavelengths. Linear interpolation is identified and never crosses missing-data gaps.</p>
+<div class="two">
+<div class="field"><label for="readingCurve" data-i18n="readingCurve">Spectrum</label><select id="readingCurve"></select></div>
+<div class="field"><label for="readingOrder" data-i18n="readingOrder">Signal / derivative</label><select id="readingOrder"><option value="0" data-i18n="readingD0">Original spectrum (D0)</option><option value="1" data-i18n="readingD1">First derivative (D1)</option><option value="2" data-i18n="readingD2">Second derivative (D2)</option><option value="3" data-i18n="readingD3">Third derivative (D3)</option><option value="4" data-i18n="readingD4">Fourth derivative (D4)</option></select></div>
+</div>
+<div class="two"><div class="field"><label for="readingWave" data-i18n="readingWave">Wavelength (nm)</label><input id="readingWave" type="number" step="any" placeholder="270.0" dir="ltr"></div>
+<div class="field"><label for="readingMode" data-i18n="readingMode">Lookup method</label><select id="readingMode"><option value="exact" data-i18n="readingExact">Measured wavelength only</option><option value="interpolate" data-i18n="readingInterp">Allow labeled linear interpolation</option><option value="nearest" data-i18n="readingNearest">Nearest measured wavelength</option></select></div></div>
+<div class="toolbar"><button type="button" id="readingLookup" class="btn primary" data-i18n="readingLookup">Read value</button><button type="button" id="readingTableToggle" class="btn" data-i18n="readingShowTable">Show readings table</button></div>
+<div id="readingResult" class="note" role="status" aria-live="polite"></div>
+<div id="readingTableArea" hidden><div class="toolbar"><label for="readingStart" data-i18n="readingStart">From (nm, optional)</label><input class="export-custom" type="number" step="any" id="readingStart" placeholder="Auto"><label for="readingEnd" data-i18n="readingEnd">To (nm, optional)</label><input class="export-custom" type="number" step="any" id="readingEnd" placeholder="Auto"><button type="button" id="readingTableRefresh" class="btn small" data-i18n="readingRefresh">Refresh table</button><button type="button" id="readingTableExport" class="btn small" data-i18n="readingExport">Export table CSV</button></div><p id="readingTableInfo" class="note"></p><div class="result"><table><thead><tr><th data-i18n="readingWave">Wavelength (nm)</th><th data-i18n="readingValue">Signal value</th><th data-i18n="readingProvenance">Provenance</th></tr></thead><tbody id="readingTableBody"></tbody></table></div></div></section>
 <section class="panel"><h2 data-i18n="exportHeader">05 / Export displayed numerical values</h2><div class="toolbar"><label for="csvMode" data-i18n="csvModeLabel">CSV value provenance</label><select id="csvMode"><option value="measured" data-i18n="csvMeasured">Original wavelength positions only</option><option value="aligned" data-i18n="csvAligned">Aligned grid with per-value provenance flags</option></select><button class="btn small" id="exportData" data-i18n="exportCsv">Save displayed curves as CSV</button></div><p class="note" data-i18n="exportNote">CSV defaults to original wavelength positions without filling missing readings. The aligned option labels measured, interpolated and unavailable values per curve. Each CSV records the app version, processing range and fitting parameters.</p></section>
 <section class="panel" id="measurementPanel"><h2 data-i18n="metricsHeader">06 / Analytical measurements</h2>
 <p class="note" data-i18n="metricsNote">Researcher-selected interval; candidate extrema and zero crossings are numerical features, not chemical identifications. Derivative amplitudes depend on fitting parameters.</p>
@@ -225,6 +237,7 @@ const STR={
 Object.assign(STR.en,{
   showCurveLegend:'Show curve legend inside the plot and exports',editCurveName:'Edit displayed curve name',
   fitData:'Fit to data',processingTitle:'Derivative processing range (nm) — independent of zoom',applyProcess:'Apply processing range',processHint:'Blank means full measured spectrum. Drag and display axes do not change derivative computation.',csvModeLabel:'CSV data provenance',csvMeasured:'Original wavelengths only; blank for missing derivative values',csvAligned:'Aligned wavelengths + measured/interpolated flags',
+  readingHeader:'Spectral readings & wavelength lookup',readingNote:'Inspect original readings or derivatives D1–D4 at measured wavelengths. Linear interpolation is identified and never crosses missing-data gaps.',readingCurve:'Spectrum',readingOrder:'Signal / derivative',readingD0:'Original spectrum (D0)',readingD1:'First derivative (D1)',readingD2:'Second derivative (D2)',readingD3:'Third derivative (D3)',readingD4:'Fourth derivative (D4)',readingWave:'Wavelength (nm)',readingMode:'Lookup method',readingExact:'Recorded wavelength only',readingInterp:'Allow labeled linear interpolation',readingNearest:'Nearest recorded wavelength',readingLookup:'Read value',readingShowTable:'Show readings table',readingHideTable:'Hide readings table',readingStart:'From (nm)',readingEnd:'To (nm)',readingRefresh:'Refresh table',readingExport:'Export table CSV',readingValue:'Signal value',readingProvenance:'Provenance',readingUnavailable:'Unavailable',readingRecorded:'Original measured reading',readingComputed:'Computed derivative at recorded wavelength',readingInterpolated:'Linearly interpolated value',readingNoSpectrum:'Select a spectrum first.',readingNoWave:'Enter a valid wavelength.',readingOutRange:'Wavelength is outside the available spectrum or processing range.',readingNoExact:'No recorded wavelength matches this value.',readingNoValid:'No valid signal at the requested wavelength; check gaps, processing interval or derivative edge mask.',readingNone:'No finite values in the selected range.',readingRows:'Rows',readingTableLimit:'Showing first 500 rows; CSV exports all matching rows.',
   metricsHeader:'06 / Analytical measurements',metricsNote:'Choose the interval. Reported extrema and zero crossings are numerical candidates, not chemical identifications.',metricsCurve:'Spectrum to measure',metricsStart:'Measurement from (nm)',metricsEnd:'Measurement to (nm)',noiseStart:'Optional noise-region start (nm)',noiseEnd:'Optional noise-region end (nm)',metricsRun:'Measure selected curve',metricsExport:'Export measurements CSV',
   prepHeader:'07 / Non-destructive spectral processing',prepNote:'Adds a new curve; raw data are never overwritten. Uses the explicit processing interval and measured wavelengths.',prepSource:'Source curve',prepReference:'Reference for subtraction / ratio',prepMode:'Transformation',prepBaseline:'Straight-line baseline between chosen endpoints',prepSmooth:'Local-polynomial smoothing (D0)',prepNormalize:'Normalize by maximum absolute signal',prepSubtract:'Subtract reference (marked interpolation)',prepRatio:'Ratio to reference (marked interpolation)',prepLeft:'Baseline anchor from (nm, optional)',prepRight:'Baseline anchor to (nm, optional)',prepApply:'Create processed curve',
   sensitivityRun:'Compare fitting windows',sensitivityExport:'Save window sensitivity CSV',
@@ -236,6 +249,7 @@ Object.assign(STR.en,{
 Object.assign(STR.ar,{
   showCurveLegend:'إظهار مفتاح المنحنيات داخل الرسم وفي الصور المصدّرة',editCurveName:'تعديل اسم المنحنى المعروض',
   fitData:'ملاءمة المحاور للبيانات',processingTitle:'مجال حساب المشتقات (nm) — مستقل عن التكبير',applyProcess:'تطبيق مجال الاشتقاق',processHint:'ترك الحقول فارغة يعني الطيف كاملاً. التكبير وتعديل محاور العرض لا يغيران حساب المشتقات.',csvModeLabel:'مصدر قيم CSV',csvMeasured:'الأطوال المقيسة فقط والقيم المفقودة فارغة',csvAligned:'شبكة موحّدة مع وسم القياس والاستيفاء',
+  readingHeader:'القراءات الطيفية والبحث بالطول الموجي',readingNote:'استعرض القراءات الأصلية أو المشتقات D1–D4 عند الأطوال الموجية المسجّلة. يُوسَم الاستيفاء الخطي صراحةً ولا يُجرى عبر فجوات البيانات.',readingCurve:'الطيف',readingOrder:'الإشارة / المشتقة',readingD0:'الطيف الأصلي (D0)',readingD1:'المشتقة الأولى (D1)',readingD2:'المشتقة الثانية (D2)',readingD3:'المشتقة الثالثة (D3)',readingD4:'المشتقة الرابعة (D4)',readingWave:'الطول الموجي (nm)',readingMode:'طريقة القراءة',readingExact:'الطول الموجي المسجّل فقط',readingInterp:'السماح باستيفاء خطي موسوم',readingNearest:'أقرب طول موجي مسجّل',readingLookup:'قراءة القيمة',readingShowTable:'عرض جدول القراءات',readingHideTable:'إخفاء جدول القراءات',readingStart:'من (nm)',readingEnd:'إلى (nm)',readingRefresh:'تحديث الجدول',readingExport:'تصدير الجدول CSV',readingValue:'قيمة الإشارة',readingProvenance:'مصدر القيمة',readingUnavailable:'غير متاح',readingRecorded:'قراءة أصلية مقاسة',readingComputed:'مشتقة محسوبة عند طول موجي مسجّل',readingInterpolated:'قيمة مستوفاة خطياً',readingNoSpectrum:'اختر طيفاً أولاً.',readingNoWave:'أدخل طولاً موجياً صالحاً.',readingOutRange:'الطول الموجي خارج مدى الطيف أو مجال المعالجة.',readingNoExact:'لا توجد قراءة عند هذا الطول الموجي تحديداً.',readingNoValid:'القيمة غير متاحة؛ افحص الفجوات أو مجال المعالجة أو حجب أطراف المشتقة.',readingNone:'لا توجد قيم منتهية ضمن المجال المختار.',readingRows:'عدد الصفوف',readingTableLimit:'تُعرض أول 500 قراءة، ويشمل ملف CSV جميع الصفوف المطابقة.',
   metricsHeader:'06 / القياسات التحليلية',metricsNote:'حدّد المجال. القمم ومواضع عبور الصفر مرشحات عددية وليست إثباتاً لهوية المركب.',metricsCurve:'المنحنى المراد قياسه',metricsStart:'بداية مجال القياس (nm)',metricsEnd:'نهاية مجال القياس (nm)',noiseStart:'بداية مجال الضجيج الاختياري (nm)',noiseEnd:'نهاية مجال الضجيج الاختياري (nm)',metricsRun:'قياس المنحنى المختار',metricsExport:'تصدير القياسات CSV',
   prepHeader:'07 / المعالجة الطيفية غير المتلفة',prepNote:'إضافة منحنى جديد دون استبدال القياسات؛ يُستخدم مجال المعالجة المحدد والأطوال الموجية المقيسة.',prepSource:'المنحنى الأصلي',prepReference:'المنحنى المرجعي للطرح أو النسبة',prepMode:'العملية',prepBaseline:'تصحيح خط أساس مستقيم بين نقطتين',prepSmooth:'تنعيم ملاءمة متعددة الحدود D0',prepNormalize:'تطبيع إلى أقصى قيمة مطلقة',prepSubtract:'طرح المرجع (مع استيفاء معلن)',prepRatio:'القسمة على المرجع (مع استيفاء معلن)',prepLeft:'بداية مرجع خط الأساس (nm)',prepRight:'نهاية مرجع خط الأساس (nm)',prepApply:'إنشاء منحنى معالج',
   sensitivityRun:'مقارنة نوافذ الاشتقاق',sensitivityExport:'حفظ مقارنة النوافذ CSV',
@@ -323,6 +337,8 @@ function setLanguage(next,save=false){
    $('mapAbs').querySelectorAll('input[type=checkbox]').forEach(el=>el.checked=selectedAbs.includes(el.value));
  }
  updateSamples();render();
+ updateReadingSelect();
+ $('readingTableToggle').textContent=t($('readingTableArea').hidden?'readingShowTable':'readingHideTable');
 }
 function switchLanguage(){setLanguage(lang==='en'?'ar':'en',true);}
 
@@ -539,6 +555,78 @@ function analyticalMetrics(d,lo,hi,noiseRange=null){
   peakToZero:Math.max(Math.abs(highest.y),Math.abs(lowest.y)),
   area,segments,zeros,noise};
 }
+function updateReadingSelect(){
+ const select=$('readingCurve'),prior=select.value;
+ select.innerHTML=spectra.map(s=>'<option value="'+s.id+'">'+E(s.name)+'</option>').join('');
+ if([...select.options].some(o=>o.value===prior))select.value=prior;
+}
+function selectedReading(){
+ const curve=spectra.find(s=>s.id===Number($('readingCurve').value));
+ if(!curve)throw Error(t('readingNoSpectrum'));
+ const order=Number($('readingOrder').value);
+ if(!Number.isInteger(order)||order<0||order>4)throw Error(t('fit'));
+ return{curve,order,data:useData(curve,order)};
+}
+function readingUnit(curve,order){
+ const base=(curve.scaleType||'absorbance')==='absorbance'?'A':(curve.scaleType==='relative'?'relative signal':'signal ratio');
+ return order?base+' nm⁻'+order:base;
+}
+function exactReading(d,w){
+ let lo=0,hi=d.x.length-1;
+ while(lo<=hi){const i=(lo+hi)>>1;if(d.x[i]===w)return{index:i,value:d.y[i]};if(d.x[i]<w)lo=i+1;else hi=i-1;}
+ return null;
+}
+function readingTableRows(d,from,to){
+ const rows=[];for(let i=0;i<d.x.length;i++)if(d.x[i]>=from&&d.x[i]<=to)rows.push({w:d.x[i],value:d.y[i]});return rows;
+}
+function readingLimits(){
+ const a=$('readingStart').value.trim(),b=$('readingEnd').value.trim(),from=a===''?-Infinity:Number(a),to=b===''?Infinity:Number(b);
+ if(Number.isNaN(from)||Number.isNaN(to)||from>=to)throw Error(t('axesX'));
+ return{from,to};
+}
+function refreshReadingTable(){
+ const info=$('readingTableInfo'),body=$('readingTableBody');
+ try{
+  const{curve,order,data}=selectedReading(),{from,to}=readingLimits(),rows=readingTableRows(data,from,to);
+  info.textContent=t('readingRows')+': '+rows.length+' · '+readingUnit(curve,order)+(rows.length>500?' · '+t('readingTableLimit'):'');
+  body.innerHTML=rows.slice(0,500).map(r=>`<tr><td dir="ltr">${E(String(r.w))}</td><td dir="ltr">${Number.isFinite(r.value)?E(String(r.value)):'—'}</td><td>${t(!Number.isFinite(r.value)?'readingUnavailable':order?'readingComputed':'readingRecorded')}</td></tr>`).join('');
+  if(!rows.length)body.innerHTML='<tr><td colspan="3">'+E(t('readingNone'))+'</td></tr>';
+ }catch(err){body.innerHTML='';info.textContent=err.message;}
+}
+function readAtWavelength(){
+ const out=$('readingResult');
+ try{
+  const{curve,order,data}=selectedReading(),raw=$('readingWave').value.trim();
+  if(!raw||!Number.isFinite(Number(raw)))throw Error(t('readingNoWave'));
+  const w=Number(raw),mode=$('readingMode').value;
+  if(!data.x.length||w<data.x[0]||w>data.x.at(-1))throw Error(t('readingOutRange'));
+  const exact=exactReading(data,w);
+  let result=exact?{x:w,value:exact.value,key:order?'readingComputed':'readingRecorded'}:null;
+  if(!result&&mode==='nearest'){const near=nearestData(data,w);if(near)result={x:near.x,value:near.y,key:order?'readingComputed':'readingRecorded'};}
+  if(!result&&mode==='interpolate'){const value=interp(data,w);if(Number.isFinite(value))result={x:w,value,key:'readingInterpolated'};}
+  if(!result)throw Error(mode==='exact'?t('readingNoExact'):t('readingNoValid'));
+  if(!Number.isFinite(result.value))throw Error(t('readingNoValid'));
+  out.textContent=curve.name+' · D'+order+' · λ = '+result.x+' nm · '+readingUnit(curve,order)+' = '+result.value+' · '+t(result.key);
+ }catch(err){out.textContent=err.message;}
+}
+$('readingLookup').onclick=readAtWavelength;
+$('readingWave').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();readAtWavelength();}};
+$('readingTableToggle').onclick=()=>{
+ const area=$('readingTableArea');area.hidden=!area.hidden;
+ $('readingTableToggle').textContent=t(area.hidden?'readingShowTable':'readingHideTable');
+ if(!area.hidden)refreshReadingTable();
+};
+for(const id of ['readingCurve','readingOrder','readingStart','readingEnd'])$(id).addEventListener('change',()=>{if(!$('readingTableArea').hidden)refreshReadingTable();});
+$('readingTableRefresh').onclick=refreshReadingTable;
+$('readingTableExport').onclick=()=>{
+ try{
+  const{curve,order,data}=selectedReading(),{from,to}=readingLimits(),rows=readingTableRows(data,from,to);
+  const header=['Wavelength (nm)','Value ('+readingUnit(curve,order)+')','Provenance'];
+  const csv=[header,...rows.map(r=>[r.w,Number.isFinite(r.value)?r.value:'',!Number.isFinite(r.value)?'unavailable':order?'computed derivative at recorded wavelength':'original measured reading'])];
+  const metadata='# UV-Vis Spectral Studio v'+APP_VERSION+'; curve='+curve.name.replace(/[\\r\\n]/g,' ')+'; D'+order+'; window='+$('window').value+'; degree='+$('degree').value+'; edge mask='+$('edgeMode').checked+'; processing='+processingRange.lo+'..'+processingRange.hi;
+  download(new Blob(['\\uFEFF'+metadata+'\\r\\n'+csv.map(row=>row.map(csvEscape).join(',')).join('\\r\\n')],{type:'text/csv;charset=utf-8'}),'uvvis_readings_D'+order+'.csv');
+ }catch(err){$('readingTableInfo').textContent=err.message;}
+};
 function updateMeasureCurveOptions(data){
  const select=$('analysisCurve'),prior=select.value;
  select.innerHTML=data.map((d,i)=>'<option value="'+i+'">'+E(d.s.name)+'</option>').join('');
@@ -584,6 +672,7 @@ function qualityPanel(v,order){
 function activeOrder(){return $('view').value==='all'?0:Number($('view').value);}
 function updateSamples(){
  const v=spectra;
+ updateReadingSelect();
  $('count').textContent=v.length+' '+t('loaded');
  $('samples').innerHTML=v.length?v.map(s=>`<div class="sample"><input type="checkbox" data-check="${s.id}" ${s.visible?'checked':''} aria-label="${t('show')}"><input type="color" data-color="${s.id}" value="${s.color}" aria-label="${t('style')}"><select data-style="${s.id}" title="${t('style')}"><option value="solid" ${s.style==='solid'?'selected':''}>${t('solid')}</option><option value="dash" ${s.style==='dash'?'selected':''}>${t('dash')}</option><option value="dot" ${s.style==='dot'?'selected':''}>${t('dot')}</option></select><input class="curve-width-input" data-curve-width="${s.id}" type="number" min="0.3" max="8" step="0.1" placeholder="${$('curveWidth').value}" value="${s.lineWidth??''}" title="${E(t('curveIndividualWidth'))}" aria-label="${E(t('curveIndividualWidth'))}"><div class="name"><input class="curve-name-input" type="text" maxlength="120" data-name="${s.id}" value="${E(s.name)}" aria-label="${E(t('editCurveName'))}" title="${E(t('editCurveName'))}"><small>${s.x.length} ${t('points')} · ${fmt(s.x[0],3)}–${fmt(s.x.at(-1),3)} nm</small></div><button data-remove="${s.id}" title="${t('remove')}" aria-label="${t('remove')}">✕</button></div>`).join(''):`<div class="note">${t('none')}</div>`;
  $('samples').querySelectorAll('[data-check]').forEach(el=>el.onchange=()=>{spectra.find(s=>s.id===+el.dataset.check).visible=el.checked;render();});
@@ -746,6 +835,7 @@ function render(){
   $('chart').outerHTML=chart.svg.replace('<svg ','<svg id="chart" class="chart-svg" role="img" aria-label="Interactive spectrum plot" ');
   plotState={data,B,order,p:chart.p};
   attachCursor();
+  if(!$('readingTableArea').hidden)refreshReadingTable();
   $('legend').innerHTML=data.map(d=>`<span><i class="swatch" style="background:${d.s.color}"></i>${E(d.s.name)}</span>`).join('');
   if(derivativeGalleryOpen){
    for(let n=1;n<=4;n++){
