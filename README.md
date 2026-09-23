@@ -125,5 +125,3 @@ This repository publishes the static application from [`index.html`](index.html)
 ## License
 
 **Copyright © 2026 ABDULSALAM S. HASAN. All rights reserved.** The current repository is distributed under a [proprietary license](LICENSE). Public visibility is not a general grant to modify or redistribute its covered source code. The license permits access to the officially hosted application and preserves applicable exceptions and third-party rights. **Earlier copies distributed under MIT retain the permissions granted for those copies.** See the complete license for scope and conditions.
-
-**Copyright © 2026 ABDULSALAM S. HASAN. All rights reserved.** The current repository is distributed under a [proprietary license](LICENSE): public access does not grant permission to copy, modify, redistribute, or republish the covered source code. Normal operation of the officially hosted app, applicable legal exceptions, and rights required by GitHub's terms are unaffected. **Earlier copies distributed under the MIT License retain their previously granted MIT permissions**; changing this repository's license does not revoke those earlier grants.
