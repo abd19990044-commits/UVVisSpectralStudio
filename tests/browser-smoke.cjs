@@ -57,6 +57,18 @@ async function run(){
   await page.locator('#langToggle').click();
   assert.ok((await page.locator('#chart').innerHTML()).includes('Wavelength (nm)'));
 
+  await page.locator('#measurementStart').fill('300');
+  await page.locator('#measurementEnd').fill('380');
+  await page.locator('#noiseStart').fill('290');
+  await page.locator('#noiseEnd').fill('305');
+  await page.locator('#analyzeSpectrum').click();
+  assert.match(await page.locator('#analysisResults').textContent(),/Global peak-to-peak/);
+  assert.match(await page.locator('#analysisResults').textContent(),/signal \/ sample SD/);
+  const metricsDownload=page.waitForEvent('download');
+  await page.locator('#exportMetrics').click();
+  const metrics=fs.readFileSync(await (await metricsDownload).path(),'utf8');
+  assert.ok(metrics.includes('Global peak-to-peak'));
+  assert.ok(metrics.includes('Noise sample SD'));
   const csvPromise=page.waitForEvent('download');
   await page.locator('#exportData').click();
   const csv=fs.readFileSync(await (await csvPromise).path(),'utf8');
