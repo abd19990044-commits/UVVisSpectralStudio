@@ -172,6 +172,25 @@ test('Sensitivity changes fit spans, not original data or wavelength grid',()=>{
  assert.ok(rows.every(r=>r.n>0&&Number.isFinite(r.ordinate)));
  assert.deepEqual(source.y,y,'Sensitivity analysis must not modify raw absorbance');
 });
+test('OLS calibration recovers known slope, intercept, blanks and unknown',()=>{
+ vm.runInContext(extract('function validNumber(','function splitRow('),ctx);
+ vm.runInContext(extract('function parseCalibrationPairs(','function windowSensitivity('),ctx);
+ const pairs=ctx.parseCalibrationPairs('Concentration,Signal\\n'+
+  Array.from({length:6},(_,i)=>i+','+(.01+.08*i)).join('\\n'));
+ const r=ctx.calibrationOLS(pairs,[.002,.003,.004],.17);
+ assert.ok(Math.abs(r.slope-.08)<1e-13);
+ assert.ok(Math.abs(r.intercept-.01)<1e-13);
+ assert.ok(Math.abs(r.r2-1)<1e-13);
+ assert.ok(Math.abs(r.estimated-2)<1e-12);
+ assert.ok(Math.abs(r.blank.sd-.001)<1e-12);
+ assert.ok(Math.abs(r.blank.lod-.04125)<1e-12);
+ assert.ok(Math.abs(r.blank.loq-.125)<1e-12);
+ assert.equal(r.outside,false);
+ const noBlank=ctx.calibrationOLS(pairs,[],.9);
+ assert.equal(noBlank.blank,null);
+ assert.equal(noBlank.outside,true);
+ assert.throws(()=>ctx.parseCalibrationPairs('0,0\\n1,1\\n2,2'),/five distinct/);
+});
 test('Source plotting logic formats D0 in 0.10 multiples and D4 scientifically',()=>{
  vm.runInContext(extract('function pathOf(','function geometry('),ctx);
  vm.runInContext(extract('function geometry(','function boundsMini('),ctx);
