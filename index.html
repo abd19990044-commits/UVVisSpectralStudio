@@ -555,7 +555,45 @@ $('langToggle').onclick=switchLanguage;
 $('upload').onchange=e=>{importFiles([...e.target.files]);e.target.value='';};let drop=$('drop');drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag');};drop.ondragleave=()=>drop.classList.remove('drag');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');importFiles([...e.dataTransfer.files]);};
 $('demo').onclick=()=>{let x=Array.from({length:301},(_,i)=>200+i),defs=[{name:'Sample A · synthetic',f:w=>.04+.75*Math.exp(-.5*((w-274)/17)**2)+.12*Math.exp(-.5*((w-355)/36)**2)},{name:'Sample B · synthetic',f:w=>.05+.65*Math.exp(-.5*((w-286)/21)**2)+.10*Math.exp(-.5*((w-348)/28)**2)},{name:'Sample C · synthetic',f:w=>.04+.52*Math.exp(-.5*((w-265)/24)**2)+.14*Math.exp(-.5*((w-375)/24)**2)}];for(let d of defs)spectra.push({id:++seq,name:d.name,x:[...x],y:x.map(d.f),breaks:[],color:PALETTE[(seq-1)%PALETTE.length],style:'solid',visible:true,cache:{}});updateSamples();render();status('demoStatus');};
 $('clear').onclick=()=>{spectra=[];sourceTables=[];updateMapping();updateSamples();render();status('cleared');};$('view').onchange=()=>{let order=$('view').value==='all'?4:Number($('view').value);if(order>Number($('degree').value))$('degree').value=String(order);if($('view').value==='all')derivativeGalleryOpen=true;derivativeAutoFit=order>0&&!manualYLimits;if(!manualYLimits){if(order>0){$('ymin').value='';$('ymax').value='';}else{$('ymin').value='0';$('ymax').value='2.5';}}render();};for(let id of ['ymin','ymax'])$(id).oninput=()=>{yInputsEdited=true;};for(let id of ['window','degree','edgeMode'])$(id).onchange=render;for(let id of ['chartTitle','xLabel','yLabel','showCurveLegend'])$(id).onchange=render;$('axisApply').onclick=()=>{const roi=displayXRange();if(!manualYLimits&&!yInputsEdited&&activeOrder()===0&&(roi.lo!==200||roi.hi!==800)){$('ymin').value='';$('ymax').value='';}manualYLimits=Boolean(yInputsEdited&&($('ymin').value.trim()||$('ymax').value.trim())||manualYLimits);yInputsEdited=false;derivativeAutoFit=activeOrder()>0&&!manualYLimits;render();};$('axisReset').onclick=()=>{manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;$('xmin').value='200';$('xmax').value='800';if(activeOrder()===0){$('ymin').value='0';$('ymax').value='2.5';}else{$('ymin').value='';$('ymax').value='';}render();};$('fitData').onclick=()=>{const v=visible();if(!v.length){status('noPlot','warn');return;}const lo=Math.min(...v.map(s=>s.x[0])),hi=Math.max(...v.map(s=>s.x.at(-1)));$('xmin').value=String(lo);$('xmax').value=String(hi);$('ymin').value='';$('ymax').value='';manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;render();};$('applyProcess').onclick=()=>{const l=$('processMin').value.trim(),h=$('processMax').value.trim(),lo=l===''?-Infinity:Number(l),hi=h===''?Infinity:Number(h);if(Number.isNaN(lo)||Number.isNaN(hi)||lo>=hi){statusRaw(lang==='ar'?'مجال الاشتقاق غير صالح':'Invalid derivative processing range','warn');return;}processingRange={lo,hi};render();};$('exportSvg').onclick=exportSvg;$('exportPng').onclick=exportPng;
-$('exportData').onclick=()=>{if(!plotState){status('noPlot','warn');return;}let {data,B,order}=plotState,all=[...new Set(data.flatMap(d=>d.x.filter(w=>w>=B.xmin&&w<=B.xmax)))].sort((a,b)=>a-b),unit=order?`nm^-${order}`:'dimensionless';let rows=[['Wavelength (nm)',...data.map(d=>d.s.name+' / '+(order?'D'+order:'A')+' ('+unit+')')],...all.map(w=>[w,...data.map(d=>{let y=interp(d,w);return Number.isFinite(y)?y:'';})])];download(new Blob(['\uFEFF'+rows.map(r=>r.map(csvEscape).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),'uvvis_overlay_D'+order+'.csv');};
+function exportedCsv(){
+ if(!plotState)throw Error(t('noPlot'));
+ const {data,B,order}=plotState,aligned=$('csvMode').value==='aligned',unit=order?'nm^-'+order:'dimensionless';
+ const all=[...new Set(data.flatMap(d=>d.x.filter(w=>w>=B.xmin&&w<=B.xmax)))].sort((a,b)=>a-b);
+ const settings=[
+  '# UV-Vis Spectral Studio version: '+APP_VERSION,
+  '# Signal: '+(order?'D'+order:'original absorbance'),
+  '# Display wavelength (nm): '+B.xmin+' .. '+B.xmax,
+  '# Derivative processing wavelength (nm): '+(Number.isFinite(processingRange.lo)?processingRange.lo:'full lower')+' .. '+(Number.isFinite(processingRange.hi)?processingRange.hi:'full upper'),
+  '# Fit points: '+$('window').value+'; polynomial degree: '+$('degree').value+'; mask edges: '+$('edgeMode').checked,
+  '# Data mode: '+(aligned?'aligned grid with provenance for every cell':'original measured wavelength positions; no inter-spectrum interpolation'),
+  '# NOTE: derivative values are computed from locally fitted measured absorbances; a measured wavelength is not a measured derivative.'
+ ];
+ const rows=[];
+ const columns=['Wavelength (nm)'];
+ for(const d of data){
+  columns.push(d.s.name+' / '+(order?'D'+order:'A')+' ('+unit+')');
+  if(aligned)columns.push(d.s.name+' / provenance');
+ }
+ rows.push(columns);
+ for(const w of all){
+  const row=[w];
+  for(const d of data){
+   const i=d.x.indexOf(w);
+   if(i>=0){
+    const y=d.y[i];
+    row.push(Number.isFinite(y)?y:'');
+    if(aligned)row.push(Number.isFinite(y)?'measured wavelength; computed derivative if D>0':'unavailable');
+   }else if(aligned){
+    const y=interp(d,w);
+    row.push(Number.isFinite(y)?y:'');
+    row.push(Number.isFinite(y)?'linearly interpolated; derivative if D>0':'unavailable');
+   }else row.push('');
+  }
+  rows.push(row);
+ }
+ return '\uFEFF'+settings.map(s=>s+'\r\n').join('')+rows.map(r=>r.map(csvEscape).join(',')).join('\r\n');
+}
+$('exportData').onclick=()=>{if(!plotState){status('noPlot','warn');return;}try{download(new Blob([exportedCsv()],{type:'text/csv;charset=utf-8'}),'uvvis_overlay_D'+plotState.order+'.csv');}catch(e){statusRaw(e.message,'bad');}};
 let savedLanguage='en';try{if(localStorage.getItem(LANGUAGE_STORAGE_KEY)==='ar')savedLanguage='ar';}catch(_){/* Browser storage may be disabled. */}
 setLanguage(savedLanguage);$('xmin').value=$('xmin').value||'200';$('xmax').value=$('xmax').value||'800';$('ymin').value=$('ymin').value||'0';$('ymax').value=$('ymax').value||'2.5';status('welcome');
 })();
