@@ -158,7 +158,7 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 <div class="toolbar"><button id="prepApply" class="btn small primary" data-i18n="prepApply">Create processed curve</button></div>
 <p class="note" id="prepStatus" aria-live="polite"></p></section>
 <section class="panel"><h2 data-i18n="scientificHeader">Scientific interpretation & limitations</h2><div class="note" data-i18n="scientificNote">Absorbance A is dimensionless; the nth derivative with wavelength in nm has units nm⁻ⁿ. Local polynomial derivatives, especially the 3rd/4th, are sensitive to noise, window size, nonuniform sampling and edge effects. The original data are retained. No peak, crossing, isosbestic point or zero-crossing is assigned automatically. Curve overlap is a visual comparison, not chemical identity evidence. PNG physical width is configurable in inches or cm with embedded DPI; SVG is resolution-independent. A missing reading is not silently bridged.</div></section>
-</div></main><footer><span data-i18n="footer">UV–Vis Spectral Studio · Spectral analysis and scientific visualization</span> · <span data-i18n="developedBy">Developed by</span> <strong dir="ltr">ABDULSALAM S. HASAN</strong> · v1.1.0 · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio" target="_blank" rel="noopener noreferrer">Source</a> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></footer>
+</div></main><footer><span data-i18n="footer">UV–Vis Spectral Studio · Spectral analysis and scientific visualization</span> · <span data-i18n="developedBy">Developed by</span> <strong dir="ltr">ABDULSALAM S. HASAN</strong> · v1.2.0 · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio" target="_blank" rel="noopener noreferrer">Source</a> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></footer>
 <script>
  'use strict';
 (() => {
@@ -166,7 +166,7 @@ const $=id=>document.getElementById(id);
 const NS='http://www.w3.org/2000/svg';
 const PALETTE=['#145c9a','#bb4f21','#6540b5','#00765e','#ba2772','#8b6200','#276b89','#8c3b73','#3c721f','#99441b'];
 let lang='en', spectra=[], seq=0, plotState=null, locked=false, drag=null, lastStatus=null, sourceTables=[], manualYLimits=false, derivativeGalleryOpen=false, derivativeAutoFit=false, yInputsEdited=false, processingRange={lo:-Infinity,hi:Infinity};
-const APP_VERSION='1.1.0';
+const APP_VERSION='1.2.0';
 const THEME_STORAGE_KEY='uvvis-spectral-studio-theme';
 function applyTheme(theme,save=false){
  const dark=theme==='dark';
@@ -721,6 +721,18 @@ $('langToggle').onclick=switchLanguage;
 $('upload').onchange=e=>{importFiles([...e.target.files]);e.target.value='';};let drop=$('drop');drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag');};drop.ondragleave=()=>drop.classList.remove('drag');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');importFiles([...e.dataTransfer.files]);};
 $('demo').onclick=()=>{let x=Array.from({length:301},(_,i)=>200+i),defs=[{name:'Sample A · synthetic',f:w=>.04+.75*Math.exp(-.5*((w-274)/17)**2)+.12*Math.exp(-.5*((w-355)/36)**2)},{name:'Sample B · synthetic',f:w=>.05+.65*Math.exp(-.5*((w-286)/21)**2)+.10*Math.exp(-.5*((w-348)/28)**2)},{name:'Sample C · synthetic',f:w=>.04+.52*Math.exp(-.5*((w-265)/24)**2)+.14*Math.exp(-.5*((w-375)/24)**2)}];for(let d of defs)spectra.push({id:++seq,name:d.name,x:[...x],y:x.map(d.f),breaks:[],color:PALETTE[(seq-1)%PALETTE.length],style:'solid',visible:true,cache:{}});updateSamples();render();status('demoStatus');};
 $('clear').onclick=()=>{spectra=[];sourceTables=[];updateMapping();updateSamples();render();status('cleared');};$('view').onchange=()=>{let order=$('view').value==='all'?4:Number($('view').value);if(order>Number($('degree').value))$('degree').value=String(order);if($('view').value==='all')derivativeGalleryOpen=true;derivativeAutoFit=order>0&&!manualYLimits;if(!manualYLimits){if(order>0){$('ymin').value='';$('ymax').value='';}else{$('ymin').value='0';$('ymax').value='2.5';}}render();};for(let id of ['ymin','ymax'])$(id).oninput=()=>{yInputsEdited=true;};for(let id of ['window','degree','edgeMode'])$(id).onchange=render;for(let id of ['chartTitle','xLabel','yLabel','showCurveLegend'])$(id).onchange=render;$('axisApply').onclick=()=>{const roi=displayXRange();if(!manualYLimits&&!yInputsEdited&&activeOrder()===0&&(roi.lo!==200||roi.hi!==800)){$('ymin').value='';$('ymax').value='';}manualYLimits=Boolean(yInputsEdited&&($('ymin').value.trim()||$('ymax').value.trim())||manualYLimits);yInputsEdited=false;derivativeAutoFit=activeOrder()>0&&!manualYLimits;render();};$('axisReset').onclick=()=>{manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;$('xmin').value='200';$('xmax').value='800';if(activeOrder()===0){$('ymin').value='0';$('ymax').value='2.5';}else{$('ymin').value='';$('ymax').value='';}render();};$('fitData').onclick=()=>{const v=visible();if(!v.length){status('noPlot','warn');return;}const lo=Math.min(...v.map(s=>s.x[0])),hi=Math.max(...v.map(s=>s.x.at(-1)));$('xmin').value=String(lo);$('xmax').value=String(hi);$('ymin').value='';$('ymax').value='';manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;render();};$('applyProcess').onclick=()=>{const l=$('processMin').value.trim(),h=$('processMax').value.trim(),lo=l===''?-Infinity:Number(l),hi=h===''?Infinity:Number(h);if(Number.isNaN(lo)||Number.isNaN(hi)||lo>=hi){statusRaw(lang==='ar'?'مجال الاشتقاق غير صالح':'Invalid derivative processing range','warn');return;}processingRange={lo,hi};render();};$('exportSvg').onclick=exportSvg;$('exportPng').onclick=exportPng;
+$('prepApply').onclick=()=>{
+ try{
+  const source=spectra.find(s=>s.id===Number($('prepSource').value));
+  const ref=spectra.find(s=>s.id===Number($('prepReference').value));
+  if(!source)throw Error('Select a source curve');
+  const mode=$('prepMode').value,generated=prepareProcessedCurve(source,ref,mode,$('prepLeft').value.trim(),$('prepRight').value.trim());
+  generated.name=uniqueCurveName(generated.name);
+  spectra.push({...generated,id:++seq,color:PALETTE[(seq-1)%PALETTE.length],style:'solid',visible:true,cache:{},sourceTableId:null});
+  updateSamples();render();
+  $('prepStatus').textContent=(lang==='ar'?'أُضيف منحنى جديد مع حفظ القياسات الأصلية: ':'New derived curve added without modifying original measurements: ')+generated.name;
+ }catch(e){$('prepStatus').textContent=e.message;statusRaw(e.message,'warn');}
+};
 let lastMeasurement=null;
 $('analyzeSpectrum').onclick=()=>{
  if(!plotState){status('noPlot','warn');return;}
