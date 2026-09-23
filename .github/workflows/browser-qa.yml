@@ -18,5 +18,7 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install chromium
+      - name: Generate standard-library XLSX fixture
+        run: python tests/make_xlsx_fixture.py
       - name: Run browser smoke tests
         run: node tests/browser-smoke.cjs
