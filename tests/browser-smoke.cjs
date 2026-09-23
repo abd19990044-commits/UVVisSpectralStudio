@@ -21,7 +21,19 @@ async function run(){
   const citation=page.locator('#citationText');
   assert.match(await citation.inputValue(),/Hasan, A\. S\. \(2026\)/);
   assert.match(await citation.inputValue(),/Version 1\.2\.0/);
-  assert.ok(!(await citation.inputValue()).includes('doi.org/10.'));
+  assert.match(await citation.inputValue(),/https:\/\/doi\.org\/10\.5281\/zenodo\.22923132/);
+  assert.equal(await page.locator('#citationPanel .citation-doi a').getAttribute('href'),
+    'https://doi.org/10.5281/zenodo.22923132');
+  const citationLayout=await citation.evaluate(el=>({
+    panelWidth:el.closest('.field').getBoundingClientRect().width,
+    width:el.getBoundingClientRect().width,
+    height:el.getBoundingClientRect().height,
+    fontSize:parseFloat(getComputedStyle(el).fontSize)
+  }));
+  assert.ok(citationLayout.width>=citationLayout.panelWidth-3,
+    'Citation textarea must fill its parent instead of collapsing to a narrow default width');
+  assert.ok(citationLayout.height>=100,'Citation must be tall enough to read');
+  assert.ok(citationLayout.fontSize>=14,'Citation text must be legible');
   await page.locator('#copyCitation').click();
   await page.waitForFunction(()=>/copied|نُسخ|Select the text|حدّد النص/i.test(document.querySelector('#citationStatus').textContent));
   await page.locator('#langToggle').click();
