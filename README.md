@@ -59,16 +59,23 @@ For a submission, check the target journal's requirements for final figure size,
 
 ## Reproducibility and output provenance
 
-**Version 1.1.0 (2026-09-23)** separates analysis from display. Processing range defaults to the full measured wavelength extent, while the initial display is 200–800 nm and 0–2.5 absorbance. To restrict fitting to 270–400 nm, enter those numbers under **Derivative processing range** and click **Apply processing range**. Keep the display range independent. `Fit to data` changes only display axes.
+**Version 1.2.0 (2026-09-23)** separates analysis from display. Processing range defaults to the full measured wavelength extent, while the initial display is 200–800 nm and 0–2.5 absorbance. To restrict fitting to 270–400 nm, enter those numbers under **Derivative processing range** and click **Apply processing range**. Keep the display range independent. `Fit to data` changes only display axes.
 
 Derivative results use local polynomial least squares on measured wavelengths, with edge masking selected by default. The quality strip reports the actual minimum, median and maximum fitting-window spans in nm and identifies notably irregular wavelength sampling.
 
 CSV metadata lines beginning with `#` record the software version, display and processing intervals, polynomial degree, point window and edge-mask setting. `Original wavelengths only` never fills cross-spectrum gaps; derivative values remain computed quantities at those wavelengths. `Aligned grid` explicitly adds per-spectrum provenance columns for interpolated, available and missing readings. If spreadsheet software does not skip comment lines, import the CSV beginning at the first `Wavelength (nm)` header row.
 
+## Researcher-controlled analytical measurements
+
+Choose one currently displayed curve and an explicit wavelength interval. The analytical panel reports the maximum/minimum ordinates and their measured wavelengths, a **global** peak-to-peak amplitude (the two extrema need not be adjacent), absolute peak-to-zero amplitude, gap-aware signed trapezoidal area, and zero-crossing candidates. A sign-change crossing is linearly interpolated **between adjacent finite points only** and is marked as interpolated; it is not an experimentally measured zero. Measurements can be exported with the derivative order, processing interval, fit configuration and edge-mask setting.
+
+An optional user-chosen noise interval produces a descriptive amplitude/sample-standard-deviation ratio. This is **not a determination of LOD, LOQ, instrumental S/N, or analytical selectivity**; the software does not infer a blank region automatically. Features are computed quantities, not chemical identifications.
+
 ## Verification
 
-- [Automated numerical regression](tests/uvvis-regression.test.cjs) verifies known polynomial derivatives, restricted processing, non-mutating raw data, and SVG axis formatting.
-- [Chromium smoke tests](tests/browser-smoke.cjs) cover interactions, imported files, derivative panels, and PNG/SVG/CSV output.
+- [Automated numerical regression](tests/uvvis-regression.test.cjs) verifies known polynomial derivatives, processing/display independence, discontinuity isolation, gap-aware analytical measurements, retained raw data, and SVG axis formatting.
+- [Independent SciPy references](tests/scipy_reference.py) compare all four derivative orders at internal points and unmasked endpoints and check a nonuniform wavelength grid against known analytic derivatives.
+- [Chromium smoke tests](tests/browser-smoke.cjs) verify import formats including two-sheet XLSX, numeric values before/after zoom, the PNG dimensions and embedded pHYs resolution, derivative panels, and SVG/CSV/PNG and analytical-metrics output.
 - [Scientific QA](.github/workflows/scientific-qa.yml) and [Browser QA](.github/workflows/browser-qa.yml) run on pushes and pull requests.
 
 These tests assess their documented cases; they are not a formal validation of an experimental analytical method or an independent certification of every browser or detector.
