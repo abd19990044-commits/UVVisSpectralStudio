@@ -1,11 +1,11 @@
 cff-version: 1.2.0
-message: "If you use UV-Vis Spectral Studio in published research, cite the archived software version using its Zenodo DOI and specify the processing settings."
+message: "Please cite this software as: Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923132"
 type: software
 title: "UV-Vis Spectral Studio"
 authors:
   - family-names: Hasan
     given-names: "Abdulsalam S."
-version: "1.2.0"
+version: "v1.2.0"
 doi: 10.5281/zenodo.22923132
 date-released: "2026-09-23"
 url: "https://abd19990044-commits.github.io/UVVisSpectralStudio/"
