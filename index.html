@@ -1417,7 +1417,10 @@ $('analyzeSpectrum').onclick=()=>{
   const noise=ns?{lo:Number(ns),hi:Number(ne)}:null;
   const m=analyticalMetrics(d,lo,hi,noise);
   lastMeasurement={m,d,order,noise,range:{lo,hi}};
-  const unit=order?'nm^-'+order:'absorbance';
+  const scaleType=d.s.scaleType||'absorbance';
+  const baseUnit=scaleType==='absorbance'?'A':scaleType==='relative'?'relative signal':'signal ratio';
+  const unit=order?baseUnit+' nm^-'+order:baseUnit;
+  const areaUnit=baseUnit+(order?' nm^'+(1-order):' nm');
   const rows=[
    (lang==='ar'?'المنحنى: ':'Curve: ')+d.s.name+' · D'+order,
    (lang==='ar'?'النقاط الصالحة: ':'Finite points: ')+m.n,
@@ -1425,10 +1428,14 @@ $('analyzeSpectrum').onclick=()=>{
    'Minimum: '+fmt(m.lowest.y,10)+' '+unit+' @ '+fmt(m.lowest.x,8)+' nm',
    'Global peak-to-peak: '+fmt(m.peakToPeak,10)+' '+unit+' (not necessarily adjacent peaks)',
    'Peak-to-zero |D|: '+fmt(m.peakToZero,10)+' '+unit,
-   'Signed trapezoidal area: '+fmt(m.area,10)+' '+(order?'nm^'+(1-order):'nm')+'; valid intervals: '+m.segments,
+   'Signed trapezoidal area: '+fmt(m.area,10)+' '+areaUnit+'; valid intervals: '+m.segments,
    'Zero crossings (candidates): '+(m.zeros.length?m.zeros.map(z=>fmt(z.x,8)+' nm ['+z.kind+']').join('; '):'none'),
    m.noise?'Exploratory signal / sample SD in user-selected noise region: '+fmt(m.noise.snr,7)+' (n='+m.noise.n+', SD='+fmt(m.noise.sd,10)+'); not an LOQ determination':'S/N not computed: no user-defined noise region.'
   ];
+  if(scaleType!=='absorbance')rows.push(lang==='ar'
+    ?'تنبيه: المساحة والسعات تخص إشارة محوّلة ولا يجوز تفسيرها مباشرةً على أنها تركيز أو امتصاصية أصلية.'
+    :'Caution: areas and amplitudes of transformed signals are not directly interpretable as concentration or raw absorbance.');
+  if(order>=3)rows.push(t('higherDerivativeCaution'));
   if(m.noise&&Number.isFinite(m.noise.snr)&&m.noise.snr<10)rows.push('Caution: low exploratory S/N; do not infer analytical LOQ from this ratio.');
   $('analysisResults').textContent=rows.join('\n');
   $('analysisResults').style.whiteSpace='pre-wrap';
@@ -1440,6 +1447,7 @@ $('exportMetrics').onclick=()=>{
  const rows=[
   ['Metric','Value','Unit','Details'],
   ['Curve',d.s.name,'',''],
+  ['Signal type',d.s.scaleType||'absorbance','','Original absorbance versus transformed relative/ratio signal'],
   ['Derivative order',order,'',''],
   ['Processing minimum',processingRange.lo,'nm',''],
   ['Processing maximum',processingRange.hi,'nm',''],
@@ -1449,12 +1457,12 @@ $('exportMetrics').onclick=()=>{
   ['Polynomial degree',$('degree').value,'',''],
   ['Edge mask',$('edgeMode').checked,'',''],
   ['Max wavelength',m.highest.x,'nm',''],
-  ['Max ordinate',m.highest.y,order?'nm^-'+order:'absorbance',''],
+  ['Max ordinate',m.highest.y,readingUnit(d.s,order),''],
   ['Min wavelength',m.lowest.x,'nm',''],
-  ['Min ordinate',m.lowest.y,order?'nm^-'+order:'absorbance',''],
-  ['Global peak-to-peak',m.peakToPeak,order?'nm^-'+order:'absorbance','not necessarily adjacent extrema'],
-  ['Peak-to-zero absolute amplitude',m.peakToZero,order?'nm^-'+order:'absorbance',''],
-  ['Trapezoidal signed area',m.area,order?'nm^'+(1-order):'nm','discontinuous intervals not bridged'],
+  ['Min ordinate',m.lowest.y,readingUnit(d.s,order),''],
+  ['Global peak-to-peak',m.peakToPeak,readingUnit(d.s,order),'not necessarily adjacent extrema'],
+  ['Peak-to-zero absolute amplitude',m.peakToZero,readingUnit(d.s,order),''],
+  ['Trapezoidal signed area',m.area,readingUnit(d.s,order)+' nm','discontinuous intervals not bridged; transformed signals are not raw concentration'],
   ...m.zeros.map(z=>['Zero-crossing candidate',z.x,'nm',z.kind]),
   ...(m.noise?[['Exploratory S/N',m.noise.snr,'','not a quantification limit'],['Noise sample SD',m.noise.sd,order?'nm^-'+order:'absorbance','sample SD; n='+m.noise.n]]:[])
  ];
