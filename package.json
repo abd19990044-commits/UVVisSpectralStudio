@@ -1,0 +1,14 @@
+{
+  "name": "uvvis-spectral-studio",
+  "version": "1.3.0",
+  "private": true,
+  "description": "Verification tools for the standalone UV-Vis Spectral Studio HTML application",
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "node --test tests/uvvis-regression.test.cjs",
+    "test:browser": "node tests/browser-smoke.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

@@ -3,10 +3,12 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const {pathToFileURL}=require('node:url');
-const {chromium}=require('playwright');
+const playwright=require('playwright');
+const browserName=process.env.BROWSER||'chromium';
+assert.ok(['chromium','firefox','webkit'].includes(browserName));
 
 async function run(){
- const browser=await chromium.launch({headless:true});
+ const browser=await playwright[browserName].launch({headless:true});
  const page=await browser.newPage({acceptDownloads:true,viewport:{width:1440,height:900}});
  const errors=[];
  page.on('pageerror',err=>errors.push(err.message));
@@ -147,6 +149,7 @@ async function run(){
   assert.equal(params.display.zoomMode,'x');
   assert.equal(params.spectra.length,3);
 
+  await page.locator('details.axis-options > summary').click();
   await page.locator('#derivativeAxisFormat').selectOption('raw');
   assert.ok((await page.locator('#chart').innerHTML()).includes('e-'),
     'Raw derivative axis must print physical derivative values in scientific notation');
@@ -205,8 +208,60 @@ async function run(){
   const derivedCsv=fs.readFileSync(await (await derivedCsvPromise).path(),'utf8');
   assert.ok(derivedCsv.includes('Curve provenance'));
   assert.ok(derivedCsv.includes('operation=baseline'));
+  // Persist actual observations, derived curves and settings across a reload.
+  const projectPromise=page.waitForEvent('download');
+  await page.locator('#saveProject').click();
+  const projectBytes=fs.readFileSync(await (await projectPromise).path());
+  const project=JSON.parse(projectBytes);
+  assert.equal(project.applicationVersion,'1.3.0');
+  assert.equal(project.spectra.length,9);
+  assert.ok(project.sourceTables.length>=4);
+  assert.ok(project.spectra.every(c=>!Object.hasOwn(c,'cache')));
+  const beforeReload=await page.locator('#chart').innerHTML();
+  await page.reload();
+  assert.equal(await page.locator('#samples [data-name]').count(),0);
+  await page.locator('#loadProject').setInputFiles({name:'project.json',mimeType:'application/json',buffer:projectBytes});
+  await page.waitForFunction(()=>document.querySelectorAll('#samples [data-name]').length===9);
+  assert.equal(await page.locator('#view').inputValue(),'4');
+  assert.equal(await page.locator('#processMin').inputValue(),'270');
+  assert.equal(await page.locator('#chart').innerHTML(),beforeReload,'Restored spectra and settings reproduce exactly the same SVG');
+  const restoredPromise=page.waitForEvent('download');
+  await page.locator('#exportData').click();
+  const restored=fs.readFileSync(await (await restoredPromise).path(),'utf8');
+  assert.deepEqual(numericRows(restored),numericRows(derivedCsv),'Restored derivative CSV preserves all numeric observations');
+  const againPromise=page.waitForEvent('download');
+  await page.locator('#saveProject').click();
+  const again=JSON.parse(fs.readFileSync(await (await againPromise).path(),'utf8'));
+  for(let i=0;i<project.spectra.length;i++){
+   for(const key of ['x','y','breaks','name','color','visible','style'])assert.deepEqual(again.spectra[i][key],project.spectra[i][key]);
+  }
+  assert.deepEqual(again.sourceTables,project.sourceTables);
+  assert.deepEqual(again.controls,project.controls);
+  for(const corrupt of [p=>{p.spectra[0].y[0]=null;},p=>{p.spectra[0].color='" onmouseover="alert(1)';},p=>{p.controls.window='999999';}]){
+   const bad=JSON.parse(projectBytes);corrupt(bad);
+   await page.locator('#loadProject').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(bad))});
+   await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('Invalid project'));
+   assert.equal(await page.locator('#samples [data-name]').count(),9,'Rejected project must leave active session intact');
+   assert.equal(await page.locator('#chart').innerHTML(),beforeReload);
+  }
+  await page.locator('#clear').click();
+  await page.locator('#view').selectOption('0');
+  await page.locator('#upload').setInputFiles({name:'quoted.csv',mimeType:'text/csv',buffer:Buffer.from(
+   '"Wavelength (nm)","Constant, A"\n'+Array.from({length:7},(_,i)=>'"'+(200+i)+'","1"').join('\n'))});
+  await page.waitForFunction(()=>document.querySelectorAll('#samples [data-name]').length===1);
+  await page.locator('#fitData').click();
+  await page.locator('#measurementStart').fill('200.5');
+  await page.locator('#measurementEnd').fill('205.5');
+  await page.locator('#noiseStart').fill('');await page.locator('#noiseEnd').fill('');
+  await page.locator('#analyzeSpectrum').click();
+  assert.match(await page.locator('#analysisResults').textContent(),/Signed trapezoidal area: 5(?:\.0+)? A nm/);
+  assert.match(await page.locator('#analysisResults').textContent(),/Integrated coverage: 5/);
+  const areaPromise=page.waitForEvent('download');await page.locator('#exportMetrics').click();
+  const areaCsv=fs.readFileSync(await (await areaPromise).path(),'utf8');
+  assert.match(areaCsv,/Trapezoidal signed area,5,/);
+  assert.match(areaCsv,/Unintegrated width,0,/);
   assert.deepEqual(errors,[],'No uncaught browser errors');
-  process.stdout.write('Browser smoke tests passed: ROI, gallery, theme, Arabic labels, SVG, PNG, duplicate prevention.\n');
+  process.stdout.write('Browser smoke tests passed: ROI, gallery, axes, zoom, SVG/PNG, XLSX/quoted CSV, AUC, project round-trip and invalid-project rejection.\n');
  }finally{await browser.close();}
 }
 run().catch(e=>{console.error(e);process.exitCode=1;});

@@ -1,4 +1,218 @@
 <!doctype html>
+<!--
+UV-Vis Spectral Studio
+Copyright 2026 Abdulsalam S. Hasan
+
+Licensed under the Apache License, Version 2.0.
+Repository: https://github.com/abd19990044-commits/UVVisSpectralStudio
+
+SPDX-License-Identifier: Apache-2.0
+Current release: 1.3.0; changed 2026-09-24 (scientific and import hardening).
+The complete license is embedded so this HTML can be distributed alone.
+
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -140,7 +354,7 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 <body>
 <header><div class="brand"><div class="logo">λ</div><div><h1>UV–Vis Spectral Studio</h1><small data-i18n="brand">Interactive UV–Vis spectrum analysis · Derivatives · Research-ready plots</small></div></div><div class="toolbar"><button type="button" id="langToggle" class="theme-toggle language-toggle" aria-label="Switch interface language to Arabic" title="Switch interface language" dir="auto">العربية</button><button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false"><span id="themeIcon" aria-hidden="true">☾</span><span id="themeLabel">Dark mode</span></button><div class="pills"><span class="pill"><b>●</b> <span data-i18n="headerAnalysis">UV–Vis Analysis</span></span><span class="pill" data-i18n="headerOverlay">Spectral Overlay · D1–D4</span><span class="pill">nm · Abs.</span></div></div></header>
 <main><aside class="sidebar">
-<section class="panel"><h2><span data-i18n="importHeader">01 / Import spectra</span><span class="muted-sm">TXT · CSV · XLSX</span></h2><div id="drop" class="drop"><input id="upload" type="file" accept=".txt,.csv,.tsv,.xlsx,.xls" multiple aria-label="Import spectral data" data-aria-i18n="importAria"><div style="font-size:28px">⇧</div><strong data-i18n="drop">Drop files or click to choose</strong><span data-i18n="dropHint">Separate spectra or multi-column / multi-sheet Excel</span></div><p class="note" data-i18n="localNote">Data stay in your browser. A wavelength column is required; missing wavelengths are never fabricated.</p><div class="toolbar"><button class="btn small" id="demo" data-i18n="demo">Load synthetic example</button><button class="btn small danger" id="clear" data-i18n="clear">Remove all spectra</button></div><details><summary data-i18n="exampleFormat">Accepted TXT format</summary><div class="note" dir="ltr">Wavelength, Sample A, Sample B<br>200, 0.032, 0.050<br>201, 0.035, 0.051</div><div class="note" data-i18n="separator">Comma, tab, space or semicolon separated; wavelength is detected from data and headers.</div></details></section>
+<section class="panel"><h2><span data-i18n="importHeader">01 / Import spectra</span><span class="muted-sm">TXT · CSV · XLSX</span></h2><div id="drop" class="drop"><input id="upload" type="file" accept=".txt,.csv,.tsv,.xlsx,.xls" multiple aria-label="Import spectral data" data-aria-i18n="importAria"><div style="font-size:28px">⇧</div><strong data-i18n="drop">Drop files or click to choose</strong><span data-i18n="dropHint">Separate spectra or multi-column / multi-sheet Excel</span></div><p class="note" data-i18n="localNote">Data stay in your browser. A wavelength column is required; missing wavelengths are never fabricated.</p><div class="toolbar"><button class="btn small" id="demo" data-i18n="demo">Load synthetic example</button><button class="btn small danger" id="clear" data-i18n="clear">Remove all spectra</button></div><div class="toolbar" style="margin-top:10px"><button id="saveProject" class="btn small" data-i18n="saveProject">Save project</button><label class="btn small" for="loadProject" data-i18n="loadProject">Open project</label><input id="loadProject" type="file" accept=".json" hidden></div><p class="note" data-i18n="projectHint">Save spectra and settings before closing. Opening a project replaces the current session.</p><details><summary data-i18n="exampleFormat">Accepted TXT format</summary><div class="note" dir="ltr">Wavelength, Sample A, Sample B<br>200, 0.032, 0.050<br>201, 0.035, 0.051</div><div class="note" data-i18n="separator">Comma, tab, space or semicolon separated; wavelength is detected from data and headers.</div></details></section>
 <section class="panel"><h2 data-i18n="mappingHeader">Manual column mapping</h2><p class="note" data-i18n="mappingInfo">After importing, choose a file/sheet and correct the wavelength and absorbance columns if auto-detection was ambiguous.</p><div class="field"><label for="mapSource" data-i18n="mapSource">Imported table</label><select id="mapSource"><option value="">No imported tables</option></select></div><div class="field"><label for="mapWave" data-i18n="mapWave">Wavelength column (nm)</label><select id="mapWave"></select></div><div class="field"><label data-i18n="mapAbs">Absorbance columns</label><div class="mapping-picks" id="mapAbs"></div></div><button id="mapApply" class="btn primary" data-i18n="mapApply">Import using selected columns</button><p class="small-note" data-i18n="mapNote">Manual mapping imports additional curves; it never silently replaces previous data.</p></section>
 <section class="panel"><h2><span data-i18n="samplesHeader">02 / Spectra & overlays</span><span class="muted-sm" id="count">0 loaded</span></h2>
 <div class="field"><label for="curveWidth" data-i18n="curveWidthLabel">Default spectral curve width (px)</label><input id="curveWidth" type="number" min="0.3" max="8" step="0.1" value="1.7"></div>
@@ -234,7 +448,7 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 <a class="btn small" href="https://github.com/abd19990044-commits/UVVisSpectralStudio/releases/tag/v1.2.0" target="_blank" rel="noopener noreferrer" data-i18n="citationReleases">GitHub release v1.2.0</a></div>
 <p class="note" id="citationStatus" aria-live="polite"></p></section>
 <section class="panel"><h2 data-i18n="scientificHeader">Scientific basis and interpretation</h2><div class="note" data-i18n="scientificNote">Absorbance, A = −log₁₀(T), is dimensionless; this relation applies to absorbance data, not to every normalized or ratio signal. For a dimensionless ordinate differentiated n times with respect to wavelength in nm, the derivative has units nm⁻ⁿ; other signal units are retained and multiplied by nm⁻ⁿ. Derivatives are estimated by local polynomial fitting at the recorded wavelengths, rather than by differentiation of an exact continuous spectrum. Their amplitudes and zero crossings depend on noise, sampling, polynomial degree, fitting-window width and boundary treatment, particularly at higher orders. Extrema, zero-crossing candidates, integrated areas and spectral overlays are numerical or graphical descriptors whose interpretation requires suitable controls and experimental context. Original measurements are preserved; missing-data gaps are not bridged in the plotted curves, and any interpolation in an aligned CSV is explicitly identified. Analytical selectivity, analyte identity and method validation require independent experimental evidence. PNG dimensions and DPI describe export settings; SVG preserves vector geometry independently of raster resolution.</div></section>
-</div></main><footer><span data-i18n="footer">UV–Vis Spectral Studio · Spectral analysis and scientific visualization</span> · <span data-i18n="developedBy">Developed by</span> <strong dir="ltr">ABDULSALAM S. HASAN</strong> · v1.2.0 · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio" target="_blank" rel="noopener noreferrer">Source</a> · <a href="#citationPanel" data-i18n="citationHeader">Cite this software</a> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></footer>
+</div></main><footer><span data-i18n="footer">UV–Vis Spectral Studio · Spectral analysis and scientific visualization</span> · <span data-i18n="developedBy">Developed by</span> <strong dir="ltr">ABDULSALAM S. HASAN</strong> · v1.3.0 · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio" target="_blank" rel="noopener noreferrer">Source</a> · <a href="#citationPanel" data-i18n="citationHeader">Cite this software</a> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></footer>
 <script>
  'use strict';
 (() => {
@@ -242,7 +456,7 @@ const $=id=>document.getElementById(id);
 const NS='http://www.w3.org/2000/svg';
 const PALETTE=['#145c9a','#bb4f21','#6540b5','#00765e','#ba2772','#8b6200','#276b89','#8c3b73','#3c721f','#99441b'];
 let lang='en', spectra=[], seq=0, plotState=null, locked=false, drag=null, lastStatus=null, sourceTables=[], manualYLimits=false, derivativeGalleryOpen=false, derivativeAutoFit=false, yInputsEdited=false, processingRange={lo:-Infinity,hi:Infinity};
-const APP_VERSION='1.2.0';
+const APP_VERSION='1.3.0';
 const THEME_STORAGE_KEY='uvvis-spectral-studio-theme';
 function applyTheme(theme,save=false){
  const dark=theme==='dark';
@@ -267,7 +481,7 @@ const STR={
 /* Reviewed analytical-chemistry terminology and publication-ready Arabic UI. */
 Object.assign(STR.en,{
   derivativeAxisFormat:'Derivative Y number style',axisScaled:'Scaled axis (10ⁿ × derivative)',axisRaw:'Unscaled scientific notation',
-  zoomMode:'Drag zoom mode',zoomX:'X only',zoomY:'Y only',zoomXY:'Box zoom (X and Y)',printVectorPdf:'Print / Save PDF (vector)',zoomBack:'Zoom back',zoomReset:'Reset zoom',exportParameters:'Save method JSON',higherDerivativeCaution:'D3/D4 can amplify spectral noise: review window sensitivity, sampling and experimental controls. No universal S/N threshold establishes validity.',
+  saveProject:'Save project',loadProject:'Open project',projectHint:'Save spectra and settings before closing. Opening a project replaces the current session.',projectSaved:'Project download started: spectra, source tables and settings included.',projectLoaded:'Project restored; analysis outputs will be recomputed.',zoomMode:'Drag zoom mode',zoomX:'X only',zoomY:'Y only',zoomXY:'Box zoom (X and Y)',printVectorPdf:'Print / Save PDF (vector)',zoomBack:'Zoom back',zoomReset:'Reset zoom',exportParameters:'Save method JSON',higherDerivativeCaution:'D3/D4 can amplify spectral noise: review window sensitivity, sampling and experimental controls. No universal S/N threshold establishes validity.',
   publicationMode:'Publication layout for derivatives D1–D4',publicationModeNote:'For D1–D4 only: fit X to available data, include scientific scale in the Y title and use rounded Y bounds. Turn off to restore prior axes.',
   showCurveLegend:'Show curve legend inside the plot and exports',editCurveName:'Edit displayed curve name',
   fitData:'Fit to data',processingTitle:'Derivative processing range (nm) — independent of zoom',applyProcess:'Apply processing range',processHint:'Blank means full measured spectrum. Drag and display axes do not change derivative computation.',csvModeLabel:'CSV data provenance',csvMeasured:'Original wavelengths only; blank for missing derivative values',csvAligned:'Aligned wavelengths + measured/interpolated flags',
@@ -276,14 +490,14 @@ Object.assign(STR.en,{
   metricsHeader:'06 / Analytical measurements',metricsNote:'Choose the interval. Reported extrema and zero crossings are numerical candidates, not chemical identifications.',metricsCurve:'Spectrum to measure',metricsStart:'Measurement from (nm)',metricsEnd:'Measurement to (nm)',noiseStart:'Optional noise-region start (nm)',noiseEnd:'Optional noise-region end (nm)',metricsRun:'Measure selected curve',metricsExport:'Export measurements CSV',
   prepHeader:'07 / Non-destructive spectral processing',prepNote:'Adds a new curve; raw data are never overwritten. Uses the explicit processing interval and measured wavelengths.',prepSource:'Source curve',prepReference:'Reference for subtraction / ratio',prepMode:'Transformation',prepBaseline:'Straight-line baseline between chosen endpoints',prepSmooth:'Local-polynomial smoothing (D0)',prepNormalize:'Normalize by maximum absolute signal',prepSubtract:'Subtract reference (marked interpolation)',prepRatio:'Ratio to reference (marked interpolation)',prepLeft:'Baseline anchor from (nm, optional)',prepRight:'Baseline anchor to (nm, optional)',prepApply:'Create processed curve',
   sensitivityRun:'Compare fitting windows',sensitivityExport:'Save window sensitivity CSV',
-  citationHeader:'Cite this software',citationNote:'Cite this version using its Zenodo DOI and report your processing settings in Methods.',citationLabel:'Suggested citation for version 1.2.0',copyCitation:'Copy citation',citationFile:'CITATION.cff',citationReleases:'GitHub release v1.2.0',
+  citationHeader:'Cite this software',citationNote:'The DOI below identifies archived v1.2.0. For v1.3.0, also record the software version and Git commit with your processing settings.',citationLabel:'Suggested citation for version 1.2.0',copyCitation:'Copy citation',citationFile:'CITATION.cff',citationReleases:'GitHub release v1.2.0',
   developedBy:'Developed by',headerOverlay:'Spectral overlay · D1–D4',headerAnalysis:'UV–Vis analysis',
  importAria:'Import spectral data',widthAria:'Physical figure width',dpiAria:'PNG resolution',plotAria:'Interactive UV–Vis spectrum plot',
  themeDark:'Dark mode',themeLight:'Light mode',themeDarkAria:'Switch to dark mode',themeLightAria:'Switch to light mode',cursorWavelength:'Wavelength',measuredData:'Measured readings',column:'Column'
 });
 Object.assign(STR.ar,{
   derivativeAxisFormat:'نمط أرقام المحور Y للمشتقات',axisScaled:'محور مُحجّم (10ⁿ × المشتقة)',axisRaw:'صيغة علمية بلا تحجيم',
-  zoomMode:'نمط التكبير بالسحب',zoomX:'المحور X فقط',zoomY:'المحور Y فقط',zoomXY:'تكبير مستطيل للمحورين',printVectorPdf:'طباعة / حفظ PDF متجهي',zoomBack:'التكبير السابق',zoomReset:'إعادة ضبط التكبير',exportParameters:'حفظ إعدادات الطريقة JSON',higherDerivativeCaution:'قد تضخّم المشتقات D3/D4 الضوضاء: افحص حساسية النافذة وكثافة العينات والضوابط التجريبية؛ لا توجد عتبة S/N عامة تثبت صلاحيتها.',
+  saveProject:'حفظ المشروع',loadProject:'فتح مشروع',projectHint:'احفظ الأطياف والإعدادات قبل الإغلاق. فتح مشروع يستبدل الجلسة الحالية.',projectSaved:'بدأ تنزيل المشروع شاملاً الأطياف والجداول والإعدادات.',projectLoaded:'تمت استعادة المشروع؛ يعاد حساب النتائج التحليلية.',zoomMode:'نمط التكبير بالسحب',zoomX:'المحور X فقط',zoomY:'المحور Y فقط',zoomXY:'تكبير مستطيل للمحورين',printVectorPdf:'طباعة / حفظ PDF متجهي',zoomBack:'التكبير السابق',zoomReset:'إعادة ضبط التكبير',exportParameters:'حفظ إعدادات الطريقة JSON',higherDerivativeCaution:'قد تضخّم المشتقات D3/D4 الضوضاء: افحص حساسية النافذة وكثافة العينات والضوابط التجريبية؛ لا توجد عتبة S/N عامة تثبت صلاحيتها.',
   publicationMode:'تنسيق النشر للمشتقات D1–D4',publicationModeNote:'للمشتقات D1–D4 فقط: ضبط X على مدى البيانات المتاحة، ودمج الأس في عنوان Y، واختيار حدود مناسبة. إيقاف الوضع يعيد حدود المحاور السابقة.',
   showCurveLegend:'إظهار مفتاح المنحنيات داخل الرسم وفي الصور المصدّرة',editCurveName:'تعديل اسم المنحنى المعروض',
   fitData:'ملاءمة المحاور للبيانات',processingTitle:'مجال حساب المشتقات (nm) — مستقل عن التكبير',applyProcess:'تطبيق مجال الاشتقاق',processHint:'ترك الحقول فارغة يعني الطيف كاملاً. التكبير وتعديل محاور العرض لا يغيران حساب المشتقات.',csvModeLabel:'مصدر قيم CSV',csvMeasured:'الأطوال المقيسة فقط والقيم المفقودة فارغة',csvAligned:'شبكة موحّدة مع وسم القياس والاستيفاء',
@@ -292,7 +506,7 @@ Object.assign(STR.ar,{
   metricsHeader:'06 / القياسات التحليلية',metricsNote:'حدّد المجال. القمم ومواضع عبور الصفر مرشحات عددية وليست إثباتاً لهوية المركب.',metricsCurve:'المنحنى المراد قياسه',metricsStart:'بداية مجال القياس (nm)',metricsEnd:'نهاية مجال القياس (nm)',noiseStart:'بداية مجال الضجيج الاختياري (nm)',noiseEnd:'نهاية مجال الضجيج الاختياري (nm)',metricsRun:'قياس المنحنى المختار',metricsExport:'تصدير القياسات CSV',
   prepHeader:'07 / المعالجة الطيفية غير المتلفة',prepNote:'إضافة منحنى جديد دون استبدال القياسات؛ يُستخدم مجال المعالجة المحدد والأطوال الموجية المقيسة.',prepSource:'المنحنى الأصلي',prepReference:'المنحنى المرجعي للطرح أو النسبة',prepMode:'العملية',prepBaseline:'تصحيح خط أساس مستقيم بين نقطتين',prepSmooth:'تنعيم ملاءمة متعددة الحدود D0',prepNormalize:'تطبيع إلى أقصى قيمة مطلقة',prepSubtract:'طرح المرجع (مع استيفاء معلن)',prepRatio:'القسمة على المرجع (مع استيفاء معلن)',prepLeft:'بداية مرجع خط الأساس (nm)',prepRight:'نهاية مرجع خط الأساس (nm)',prepApply:'إنشاء منحنى معالج',
   sensitivityRun:'مقارنة نوافذ الاشتقاق',sensitivityExport:'حفظ مقارنة النوافذ CSV',
-  citationHeader:'الاستشهاد بالبرنامج',citationNote:'استشهد بهذا الإصدار باستخدام DOI من Zenodo واذكر معاملات المعالجة في منهجية البحث.',citationLabel:'صيغة الاستشهاد المقترحة للإصدار 1.2.0',copyCitation:'نسخ الاستشهاد',citationFile:'ملف CITATION.cff',citationReleases:'إصدار GitHub v1.2.0',
+  citationHeader:'الاستشهاد بالبرنامج',citationNote:'يشير DOI أدناه إلى الأرشيف v1.2.0. عند استخدام v1.3.0 سجّل أيضاً إصدار البرنامج ومعرّف Git وإعدادات المعالجة.',citationLabel:'صيغة الاستشهاد المقترحة للإصدار 1.2.0',copyCitation:'نسخ الاستشهاد',citationFile:'ملف CITATION.cff',citationReleases:'إصدار GitHub v1.2.0',
   developedBy:'طُوّر بواسطة',headerOverlay:'تراكب الأطياف · المشتقات D1–D4',headerAnalysis:'التحليل الطيفي بالأشعة فوق البنفسجية والمرئية',
  importAria:'استيراد البيانات الطيفية',widthAria:'العرض الفيزيائي للشكل',dpiAria:'دقة تصدير PNG',plotAria:'رسم تفاعلي لأطياف الامتصاص بالأشعة فوق البنفسجية والمرئية',
  brand:'تحليل أطياف الامتصاص بالأشعة فوق البنفسجية والمرئية · الاشتقاق الطيفي · رسوم للبحث العلمي',
@@ -385,8 +599,64 @@ function switchLanguage(){setLanguage(lang==='en'?'ar':'en',true);}
 
 function median(arr){let a=[...arr].sort((x,y)=>x-y),n=a.length;return n?(n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2):NaN;}
 function validNumber(s){if(typeof s==='number')return Number.isFinite(s)?s:NaN;let v=String(s??'').trim().replace(/[−–]/g,'-').replace(/\u00a0/g,'');if(!v)return NaN;v=v.replace(/^(?:λ|nm)\s*[:=]?/i,'').replace(/\s*nm$/i,'').trim();if(/^[-+]?\d+,\d+(?:[eE][-+]?\d+)?$/.test(v))v=v.replace(',','.');if(!/^[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?$/.test(v))return NaN;let n=Number(v);return Number.isFinite(n)?n:NaN;}
-function splitRow(line,d){return d==='ws'?line.trim().split(/\s+/):line.split(d).map(v=>v.trim());}
-function parseText(text,name){let lines=text.replace(/^\uFEFF/,'').split(/\r?\n|\r/).filter(x=>x.trim()&&!/^\s*[#;]/.test(x));if(!lines.length)throw Error(name+': '+t('fileEmpty'));let probe=lines.slice(0,20).join('\n'),commaDecimals=lines.slice(0,20).filter(l=>/^\s*[-+]?\d+(?:[.,]\d+)?\s+[-+]?\d+,\d+(?:\s|$)/.test(l)).length>=Math.min(3,lines.length),d=probe.includes('\t')?'\t':probe.includes(';')?';':commaDecimals?'ws':probe.includes(',')?',':'ws';let rows=lines.map(l=>splitRow(l,d));const sourceTableId=sourceTables.length;sourceTables.push({name,rows});return rowsToSpectra(rows,name,null,sourceTableId);}
+// Logical records retain quoted newlines; comments are recognized only outside quotes.
+function textRecords(text){
+ const records=[];let record='',quoted=false;
+ for(let i=0;i<text.length;i++){
+  const c=text[i];
+  if(!quoted&&!record.trim()&&(c==='#'||c===';')){
+   while(i<text.length&&!/[\r\n]/.test(text[i]))i++;
+   record='';continue;
+  }
+  if(c==='"'){
+   record+=c;
+   if(quoted&&text[i+1]==='"'){record+=text[++i];continue;}
+   quoted=!quoted;
+  }else if(!quoted&&(c==='\n'||c==='\r')){
+   if(record.trim())records.push(record);record='';
+   if(records.length>150000)throw Error('Text exceeds 150000 records');
+  }else record+=c;
+ }
+ if(quoted)throw Error('Unclosed quoted field');
+ if(record.trim())records.push(record);
+ if(records.length>150000)throw Error('Text exceeds 150000 records');
+ return records;
+}
+function splitRow(line,d){
+ const row=[];let value='',quoted=false,closed=false;
+ const push=()=>{row.push(value.trim());value='';closed=false;};
+ for(let i=0;i<line.length;i++){
+  const c=line[i];
+  if(quoted){
+   if(c==='"'){if(line[i+1]==='"'){value+='"';i++;}else{quoted=false;closed=true;}}
+   else value+=c;
+  }else if(c==='"'){
+   if(value.trim()||closed)throw Error('Unexpected quote in field');
+   value='';quoted=true;
+  }else if(d==='ws'?/\s/.test(c):c===d){
+   if(d!=='ws'||value||closed)push();
+  }else{
+   if(closed&&!/\s/.test(c))throw Error('Unexpected text after quoted field');
+   value+=c;
+  }
+ }
+ if(quoted)throw Error('Unclosed quoted field');
+ if(d!=='ws'||value||closed)push();
+ if(row.length>80)throw Error('Text exceeds 80 columns');
+ return row;
+}
+function parseText(text,name){
+ const lines=textRecords(text.replace(/^\uFEFF/,''));
+ if(!lines.length)throw Error(name+': '+t('fileEmpty'));
+ // Count delimiters outside quoted fields, including headers containing commas.
+ let probe='',quoted=false;
+ for(const c of lines.slice(0,20).join('\n')){if(c==='"')quoted=!quoted;else if(!quoted)probe+=c;}
+ const commaDecimals=lines.slice(0,20).filter(l=>/^\s*[-+]?\d+(?:[.,]\d+)?\s+[-+]?\d+,\d+(?:\s|$)/.test(l)).length>=Math.min(3,lines.length);
+ const d=probe.includes('\t')?'\t':probe.includes(';')?';':commaDecimals?'ws':probe.includes(',')?',':'ws';
+ const rows=lines.map(l=>splitRow(l,d)),sourceTableId=sourceTables.length;
+ sourceTables.push({name,rows});
+ return rowsToSpectra(rows,name,null,sourceTableId);
+}
 function rowsToSpectra(rows,name,manual=null,sourceTableId=null){let maxcols=Math.min(80,Math.max(0,...rows.slice(0,400).map(r=>r.length)));if(maxcols<2)throw Error(name+': '+t('needColumns'));
  let header=rows[0].some(v=>Number.isNaN(validNumber(v)))?rows[0]:[], data=header.length?rows.slice(1):rows;
  let candidates=[];for(let j=0;j<maxcols;j++){let h=String(header[j]||'');if(/^(?:id|index|row|number|time|conc(?:entration)?|serial|رقم|التركيز|زمن)/i.test(h))continue;let a=data.map(r=>validNumber(r[j])).filter(Number.isFinite);if(a.length<7)continue;let inRange=a.filter(v=>v>0&&Number.isFinite(v)).length/a.length, unique=new Set(a).size/a.length, dx=a.slice(1).map((v,i)=>v-a[i]), mono=Math.max(dx.filter(z=>z>0).length,dx.filter(z=>z<0).length)/Math.max(1,dx.length),span=a.reduce((v,x)=>[Math.min(v[0],x),Math.max(v[1],x)],[Infinity,-Infinity]),named=/wavelength|wave.?length|λ|nm|طول موجي/i.test(h);if(inRange>.96&&unique>.96&&mono>.96&&(span[1]-span[0])>=.1&&a.length/data.length>.8)candidates.push({j,named,score:(named?20:0)+mono*3+unique+Math.log10(1+Math.max(0,span[1]-span[0]))});}
@@ -426,10 +696,59 @@ const summary=(lang==='ar'?'أضيفت منحنيات: ':'Curves added: ')+added
  (r.warnings.length?' · '+r.warnings.join(' | '):'');
 statusRaw(summary,r.warnings.length?'warn':'');}catch(e){statusRaw(e.message,'bad');}};
 const U16=(a,p)=>a[p]|(a[p+1]<<8),U32=(a,p)=>(a[p]|a[p+1]<<8|a[p+2]<<16|a[p+3]*16777216)>>>0;
-async function unzipXlsx(buffer){let a=new Uint8Array(buffer),end=-1;for(let i=a.length-22;i>=Math.max(0,a.length-65557);i--)if(U32(a,i)===0x06054b50){end=i;break;}if(end<0)throw Error(t('zipEnd'));let n=U16(a,end+10),offset=U32(a,end+16),entries={};if(n>3000)throw Error(t('zipFiles'));let limit=0;
- for(let i=0;i<n;i++){if(U32(a,offset)!==0x02014b50)throw Error(t('zipDir'));let method=U16(a,offset+10),packed=U32(a,offset+20),size=U32(a,offset+24),nl=U16(a,offset+28),el=U16(a,offset+30),cl=U16(a,offset+32),local=U32(a,offset+42),name=new TextDecoder().decode(a.slice(offset+46,offset+46+nl));limit+=size;if(limit>150*1024*1024)throw Error(t('zipLarge'));if(/^(xl\/workbook\.xml|xl\/_rels\/workbook\.xml\.rels|xl\/sharedStrings\.xml|xl\/worksheets\/[^/]+\.xml)$/.test(name)){if(U32(a,local)!==0x04034b50)throw Error(t('zipHeader'));let start=local+30+U16(a,local+26)+U16(a,local+28),bytes=a.slice(start,start+packed);if(method===8){if(!('DecompressionStream'in window))throw Error(t('noDeflate'));try{bytes=new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());}catch(e){throw Error(t('decompress')+': '+e.message);}}else if(method!==0)throw Error(t('compression'));if(bytes.length!==size)throw Error(t('zipSize'));entries[name]=new TextDecoder().decode(bytes);}
- offset+=46+nl+el+cl;}
- return entries;}
+// Stop the decompressor before retaining more bytes than the permitted size.
+async function readBoundedStream(stream,maxBytes){
+ const reader=stream.getReader(),chunks=[];let total=0,complete=false;
+ try{
+  while(true){
+   const {done,value}=await reader.read();if(done){complete=true;break;}
+   total+=value.byteLength;
+   if(total>maxBytes)throw Error(t('zipLarge'));
+   chunks.push(value);
+  }
+ }finally{try{if(!complete)await reader.cancel();}finally{reader.releaseLock();}}
+ const bytes=new Uint8Array(total);let offset=0;
+ for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
+ return bytes;
+}
+async function unzipXlsx(buffer){
+ const a=new Uint8Array(buffer),maxBytes=150*1024*1024;let end=-1;
+ for(let i=a.length-22;i>=Math.max(0,a.length-65557);i--){
+  if(U32(a,i)===0x06054b50&&i+22+U16(a,i+20)===a.length){end=i;break;}
+ }
+ if(end<0)throw Error(t('zipEnd'));
+ const n=U16(a,end+10),directoryEnd=U32(a,end+16)+U32(a,end+12);
+ let offset=U32(a,end+16),declaredTotal=0,actualTotal=0;
+ if(U16(a,end+4)||U16(a,end+6)||U16(a,end+8)!==n||directoryEnd>end)throw Error(t('zipDir'));
+ if(n>3000)throw Error(t('zipFiles'));
+ const entries=Object.create(null),names=new Set();
+ for(let i=0;i<n;i++){
+  if(offset+46>directoryEnd||U32(a,offset)!==0x02014b50)throw Error(t('zipDir'));
+  const flags=U16(a,offset+8),method=U16(a,offset+10),crc=U32(a,offset+16),packed=U32(a,offset+20),size=U32(a,offset+24),
+   nl=U16(a,offset+28),el=U16(a,offset+30),cl=U16(a,offset+32),local=U32(a,offset+42);
+  if(offset+46+nl+el+cl>directoryEnd||flags&1)throw Error(t('zipDir'));
+  const name=new TextDecoder().decode(a.subarray(offset+46,offset+46+nl));
+  if(names.has(name))throw Error('Duplicate ZIP entry');names.add(name);
+  declaredTotal+=size;if(declaredTotal>maxBytes)throw Error(t('zipLarge'));
+  if(/^(xl\/workbook\.xml|xl\/_rels\/workbook\.xml\.rels|xl\/sharedStrings\.xml|xl\/worksheets\/[^/]+\.xml)$/.test(name)){
+   if(local+30>U32(a,end+16)||U32(a,local)!==0x04034b50||U16(a,local+8)!==method||U16(a,local+6)!==flags)throw Error(t('zipHeader'));
+   const start=local+30+U16(a,local+26)+U16(a,local+28);
+   if(start>U32(a,end+16)||packed>U32(a,end+16)-start)throw Error(t('zipHeader'));
+   let bytes=a.subarray(start,start+packed);
+   if(method===8){
+    if(!('DecompressionStream'in window))throw Error(t('noDeflate'));
+    bytes=await readBoundedStream(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw')),Math.min(size,maxBytes-actualTotal));
+   }else if(method!==0)throw Error(t('compression'));
+   if(bytes.length!==size)throw Error(t('zipSize'));
+   actualTotal+=bytes.length;if(actualTotal>maxBytes)throw Error(t('zipLarge'));
+   if(crc32(bytes)!==crc)throw Error('ZIP checksum mismatch');
+   entries[name]=new TextDecoder('utf-8',{fatal:true}).decode(bytes);
+  }
+  offset+=46+nl+el+cl;
+ }
+ if(offset!==directoryEnd)throw Error(t('zipDir'));
+ return entries;
+}
 function xml(s,label){if(!s)throw Error(t('missingExcel')+': '+label);let d=new DOMParser().parseFromString(s,'text/xml');if(d.getElementsByTagName('parsererror').length)throw Error(t('badXml')+': '+label);return d;}
 function byLocal(node,name){return Array.from(node.getElementsByTagName('*')).filter(n=>n.localName===name);}
 function textOfTag(parent,tag){let n=byLocal(parent,tag)[0];return n?n.textContent:'';}
@@ -563,25 +882,31 @@ function windowSensitivity(source,order,degree,windows,measureLo,measureHi){
 }
 function analyticalMetrics(d,lo,hi,noiseRange=null){
  if(!(Number.isFinite(lo)&&Number.isFinite(hi)&&hi>lo))throw Error('Invalid measurement wavelength interval');
- const points=[];
+ const points=[],breaks=new Set(d.breaks||[]);let area=0,segments=0,coveredWidth=0;
+ const add=(x,y,i,interpolated=false)=>points.push({i,x,y,interpolated});
  for(let i=0;i<d.x.length;i++){
-  if(d.x[i]>=lo&&d.x[i]<=hi&&Number.isFinite(d.y[i]))points.push({i,x:d.x[i],y:d.y[i]});
+  const x=d.x[i],y=d.y[i];
+  if(x>=lo&&x<=hi&&Number.isFinite(y))add(x,y,i);
+  if(!i||breaks.has(i)||!Number.isFinite(y)||!Number.isFinite(d.y[i-1]))continue;
+  const x0=d.x[i-1],y0=d.y[i-1],left=Math.max(lo,x0),right=Math.min(hi,x);
+  if(!(right>left)||!(x>x0))continue;
+  const yl=y0+(y-y0)*(left-x0)/(x-x0),yr=y0+(y-y0)*(right-x0)/(x-x0);
+  area+=(right-left)*(yl+yr)/2;coveredWidth+=right-left;segments++;
+  if(left>x0)add(left,yl,i-1,true);
+  if(right<x)add(right,yr,i,true);
  }
- if(points.length<2)throw Error('At least two finite data points are required in the measurement interval');
- let highest=points[0],lowest=points[0],area=0,segments=0,zeros=[],previous=null;
- for(const p of points){
-  if(p.y>highest.y)highest=p;
-  if(p.y<lowest.y)lowest=p;
-  if(p.y===0&&!zeros.some(q=>q.x===p.x))zeros.push({x:p.x,kind:'measured zero'});
-  if(previous&&p.i===previous.i+1&&!d.breaks.includes(p.i)){
-   area+=(p.x-previous.x)*(p.y+previous.y)/2;segments++;
-   if(previous.y*p.y<0){
-    const zx=previous.x+(p.x-previous.x)*(-previous.y)/(p.y-previous.y);
-    if(!zeros.some(q=>Math.abs(q.x-zx)<1e-9))zeros.push({x:zx,kind:'linearly interpolated zero'});
-   }
-  }
-  previous=p;
+ if(!segments)throw Error('No continuous finite interval available for integration');
+ points.sort((a,b)=>a.x-b.x);
+ let highest=points[0],lowest=points[0],zeros=[];
+ for(const p of points){if(p.y>highest.y)highest=p;if(p.y<lowest.y)lowest=p;}
+ for(let i=0;i<d.x.length;i++){
+  const x=d.x[i],y=d.y[i];
+  if(x>=lo&&x<=hi&&y===0)zeros.push({x,kind:'measured zero'});
+  if(!i||breaks.has(i)||!Number.isFinite(y)||!Number.isFinite(d.y[i-1])||d.y[i-1]*y>=0)continue;
+  const zx=d.x[i-1]+(x-d.x[i-1])*(-d.y[i-1])/(y-d.y[i-1]);
+  if(zx>=lo&&zx<=hi)zeros.push({x:zx,kind:'linearly interpolated zero'});
  }
+ const missingWidth=Math.max(0,hi-lo-coveredWidth);
  let noise=null;
  if(noiseRange){
   if(!(Number.isFinite(noiseRange.lo)&&Number.isFinite(noiseRange.hi)&&noiseRange.hi>noiseRange.lo))throw Error('Invalid noise-region interval');
@@ -592,7 +917,7 @@ function analyticalMetrics(d,lo,hi,noiseRange=null){
   const amplitude=Math.max(Math.abs(highest.y-mean),Math.abs(lowest.y-mean));
   noise={n:samples.length,mean,sd,snr:sd>0?amplitude/sd:NaN};
  }
- return{n:points.length,lo,hi,highest,lowest,peakToPeak:highest.y-lowest.y,
+ return{n:points.filter(p=>!p.interpolated).length,lo,hi,highest,lowest,coveredWidth,missingWidth,peakToPeak:highest.y-lowest.y,
   peakToZero:Math.max(Math.abs(highest.y),Math.abs(lowest.y)),
   area,segments,zeros,noise};
 }
@@ -829,12 +1154,12 @@ function publicationBounds(data){
  // Use measured wavelength positions and preserve all finite derivative data; no amplitude threshold cropping.
  const finite=data.flatMap(d=>d.x.filter((x,i)=>Number.isFinite(d.y[i])));
  if(!finite.length)throw Error(lang==='ar'?'لا توجد نقاط مشتقة صالحة':'No valid derivative values');
- const xmin=$('xmin').value.trim()?Number($('xmin').value):Math.min(...finite);
- const xmax=$('xmax').value.trim()?Number($('xmax').value):Math.max(...finite);
+ const xmin=$('xmin').value.trim()?Number($('xmin').value):finite.reduce((a,b)=>Math.min(a,b),Infinity);
+ const xmax=$('xmax').value.trim()?Number($('xmax').value):finite.reduce((a,b)=>Math.max(a,b),-Infinity);
  if(!Number.isFinite(xmin)||!Number.isFinite(xmax)||xmax<=xmin)throw Error(t('axesX'));
  const values=data.flatMap(d=>d.x.map((x,i)=>x>=xmin&&x<=xmax?d.y[i]:NaN)).filter(Number.isFinite);
  if(!values.length)throw Error(lang==='ar'?'لا توجد مشتقات ضمن مجال العرض':'No derivatives in display range');
- let low=Math.min(...values),high=Math.max(...values);
+ let low=values.reduce((a,b)=>Math.min(a,b),Infinity),high=values.reduce((a,b)=>Math.max(a,b),-Infinity);
  if(!(high>low)){const pad=Math.max(Math.abs(high)*.1,1e-10);low-=pad;high+=pad;}
  const span=high-low,step=niceTickStep(span*1.06,5);
  const rawMin=$('ymin').value.trim(),rawMax=$('ymax').value.trim();
@@ -1277,6 +1602,95 @@ function exportMethodParameters(){
   image:{width:Number(v('imageWidth')),widthUnit:v('widthUnit'),dpi:Number(v('dpi'))}};
  download(new Blob([JSON.stringify(payload,null,2)+'\n'],{type:'application/json;charset=utf-8'}),'uvvis_method_parameters.json');
 }
+const PROJECT_CONTROL_IDS=('curveWidth view window degree edgeMode xmin xmax ymin ymax xTickMode xTickCount xTickStep yTickMode yTickCount yTickStep derivativeAxisFormat axisWidth tickWidth processMin processMax zoomMode cursorMode chartTitle xLabel yLabel publicationMode showCurveLegend imageWidth widthUnit dpi overlayTableOrder overlayTableVisible overlayTableFrom overlayTableTo readingOrder readingWave readingMode readingStart readingEnd csvMode measurementStart measurementEnd noiseStart noiseEnd prepMode prepLeft prepRight').split(' ');
+const PROJECT_FLAG_IDS=['manualYLimits','derivativeGalleryOpen','derivativeAutoFit','yInputsEdited'];
+function projectSnapshot(){
+ const controls={};for(const id of PROJECT_CONTROL_IDS){const el=$(id);controls[id]=el.type==='checkbox'?el.checked:el.value;}
+ return {format:'uvvis-spectral-studio-project',schemaVersion:1,applicationVersion:APP_VERSION,
+  createdUTC:new Date().toISOString(),controls,
+  processingRange:{lo:Number.isFinite(processingRange.lo)?processingRange.lo:null,hi:Number.isFinite(processingRange.hi)?processingRange.hi:null},
+  flags:{manualYLimits,derivativeGalleryOpen,derivativeAutoFit,yInputsEdited},
+  spectra:spectra.map(({cache,...curve})=>curve),sourceTables};
+}
+function validateProject(value){
+ const fail=message=>{throw Error('Invalid project: '+message);};
+ const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
+ const text=(v,max=4096)=>typeof v==='string'&&v.length<=max;
+ if(!object(value)||value.format!=='uvvis-spectral-studio-project'||value.schemaVersion!==1)fail('unsupported format/schema');
+ if(!object(value.controls)||!object(value.processingRange)||!object(value.flags))fail('missing settings');
+ const controls={};
+ for(const id of PROJECT_CONTROL_IDS){
+  const el=$(id),v=value.controls[id];
+  if(el.type==='checkbox'){if(typeof v!=='boolean')fail(id);}
+  else{
+   if(!text(v))fail(id);
+   if(el.tagName==='SELECT'&&![...el.options].some(o=>o.value===v))fail(id);
+   if(el.type==='number'){
+    if(v.trim()!==''&&(!Number.isFinite(Number(v))||(el.min!==''&&Number(v)<Number(el.min))||(el.max!==''&&Number(v)>Number(el.max))))fail(id);
+    if(['curveWidth','axisWidth','tickWidth','imageWidth','xTickCount','yTickCount','xTickStep','yTickStep'].includes(id)&&!(Number(v)>0))fail(id);
+   }
+  }
+  controls[id]=v;
+ }
+ for(const [l,h] of [['xmin','xmax'],['ymin','ymax']])if(controls[l]!==''&&controls[h]!==''&&Number(controls[l])>=Number(controls[h]))fail('axis range');
+ const requestedOrder=controls.view==='all'?4:Number(controls.view);
+ if(Number(controls.degree)<requestedOrder||Number(controls.window)<=Number(controls.degree))fail('derivative configuration');
+ const {lo,hi}=value.processingRange;
+ if((lo!==null&&!Number.isFinite(lo))||(hi!==null&&!Number.isFinite(hi))||(lo??-Infinity)>=(hi??Infinity))fail('processing range');
+ const flags={};for(const id of PROJECT_FLAG_IDS){if(typeof value.flags[id]!=='boolean')fail(id);flags[id]=value.flags[id];}
+ if(!Array.isArray(value.spectra)||value.spectra.length>128||!Array.isArray(value.sourceTables)||value.sourceTables.length>1000)fail('spectrum/table count');
+ const ids=new Set();let totalPoints=0,totalCells=0;
+ const tables=value.sourceTables.map(tab=>{
+  if(!object(tab)||!text(tab.name)||!Array.isArray(tab.rows)||tab.rows.length>150000)fail('source table');
+  const rows=tab.rows.map(row=>{
+   if(!Array.isArray(row)||row.length>81)fail('source row');
+   totalCells+=row.length;if(totalCells>2000000)fail('too many source cells');
+   return row.map(cell=>{if(cell!==null&&!text(cell,100000)&&!Number.isFinite(cell))fail('source cell');return cell;});
+  });return {name:tab.name,rows};
+ });
+ const curves=value.spectra.map(c=>{
+  if(!object(c)||!Number.isSafeInteger(c.id)||c.id<1||ids.has(c.id))fail('curve id');ids.add(c.id);
+  if(!text(c.name,4096)||!c.name.trim()||!Array.isArray(c.x)||!Array.isArray(c.y)||c.x.length!==c.y.length||c.x.length<2)fail('curve data');
+  totalPoints+=c.x.length;if(totalPoints>1000000)fail('too many spectral points');
+  for(let i=0;i<c.x.length;i++)if(!Number.isFinite(c.x[i])||c.x[i]<=0||(i&&c.x[i]<=c.x[i-1])||!Number.isFinite(c.y[i]))fail('nonfinite/unsorted observations');
+  if(!Array.isArray(c.breaks)||c.breaks.some((b,i)=>!Number.isInteger(b)||b<1||b>=c.x.length||(i&&b<=c.breaks[i-1])))fail('gap indices');
+  if(!/^#[0-9a-f]{6}$/i.test(c.color)||!['solid','dash','dot'].includes(c.style)||typeof c.visible!=='boolean')fail('curve display');
+  if(c.lineWidth!=null&&(!Number.isFinite(c.lineWidth)||c.lineWidth<.3||c.lineWidth>8))fail('curve width');
+  if(c.scaleType!=null&&!['absorbance','relative','ratio'].includes(c.scaleType))fail('signal type');
+  if(c.provenance!=null&&!text(c.provenance,100000))fail('provenance');
+  const curve={id:c.id,name:c.name,x:c.x.slice(),y:c.y.slice(),breaks:c.breaks.slice(),color:c.color,style:c.style,visible:c.visible,lineWidth:c.lineWidth??null,scaleType:c.scaleType||'absorbance',provenance:c.provenance||null,cache:{}};
+  if(c.sourceTableId!=null){
+   if(!Number.isInteger(c.sourceTableId)||!tables[c.sourceTableId]||!Number.isInteger(c.xColumn)||!Number.isInteger(c.yColumn)||c.xColumn<0||c.yColumn<0||c.xColumn>80||c.yColumn>80)fail('source mapping');
+   curve.sourceTableId=c.sourceTableId;curve.xColumn=c.xColumn;curve.yColumn=c.yColumn;
+  }
+  return curve;
+ });
+ return {controls,processingRange:{lo:lo??-Infinity,hi:hi??Infinity},flags,spectra:curves,sourceTables:tables};
+}
+$('saveProject').onclick=()=>{
+ try{
+  const snapshot=projectSnapshot();validateProject(snapshot);
+  const blob=new Blob([JSON.stringify(snapshot)+'\n'],{type:'application/json;charset=utf-8'});
+  if(blob.size>25*1024*1024)throw Error('Project exceeds 25 MiB; save spectra separately or reduce the session');
+  download(blob,'uvvis_project.json');statusRaw(t('projectSaved'));
+ }catch(e){statusRaw(e.message,'bad');}
+};
+$('loadProject').onchange=async event=>{
+ const file=event.target.files[0];if(!file)return;
+ try{
+  if(file.size>25*1024*1024)throw Error(t('tooLarge'));
+  const next=validateProject(JSON.parse(await file.text()));
+  // Validate everything before replacing any active observations or settings.
+  spectra=next.spectra;sourceTables=next.sourceTables;seq=spectra.reduce((m,c)=>Math.max(m,c.id),0);
+  processingRange=next.processingRange;
+  ({manualYLimits,derivativeGalleryOpen,derivativeAutoFit,yInputsEdited}=next.flags);
+  for(const id of PROJECT_CONTROL_IDS){const el=$(id);if(el.type==='checkbox')el.checked=next.controls[id];else el.value=next.controls[id];}
+  zoomHistory.length=0;axesBeforePublication=null;locked=false;drag=null;plotState=null;
+  updateZoomBack();updateMapping();updateSamples();render();statusRaw(t('projectLoaded'));
+ }catch(e){statusRaw(e.message,'bad');}
+ finally{event.target.value='';}
+};
+
 function exportSvg(){if(!plotState){status('noPlot','warn');return;}let {order}=plotState,svg=exportPlotMarkup(plotState);download(new Blob([svg],{type:'image/svg+xml;charset=utf-8'}),'uvvis_overlay_D'+order+'.svg');}
 const PNG_SIG=[137,80,78,71,13,10,26,10];let crcTable=null;
 function crc32(bytes){if(!crcTable){crcTable=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xedb88320^(c>>>1):c>>>1;crcTable[n]=c>>>0;}}let c=0xffffffff;for(let b of bytes)c=crcTable[(c^b)&255]^(c>>>8);return(c^0xffffffff)>>>0;}
@@ -1331,7 +1745,7 @@ function setPublicationAxes(force=false){
  const curves=visible().map(s=>useData(s,activeOrder()));
  const finite=curves.flatMap(d=>d.x.filter((x,i)=>Number.isFinite(d.y[i])));
  if(!finite.length){statusRaw(lang==='ar'?'لا تتوفر نقاط مشتقة صالحة لتهيئة المحاور':'No valid derivative data for axis fitting','warn');return;}
- const lower=Math.min(...finite),upper=Math.max(...finite),span=upper-lower;
+ const lower=finite.reduce((a,b)=>Math.min(a,b),Infinity),upper=finite.reduce((a,b)=>Math.max(a,b),-Infinity),span=upper-lower;
  const step=span<=400?50:niceTickStep(span,6,true);
  // Keep an explicitly chosen ROI; automatic publication framing applies only to default/auto X limits.
  const autoX=force||($('xmin').value==='200'&&$('xmax').value==='800')||
@@ -1424,11 +1838,12 @@ $('analyzeSpectrum').onclick=()=>{
   const rows=[
    (lang==='ar'?'المنحنى: ':'Curve: ')+d.s.name+' · D'+order,
    (lang==='ar'?'النقاط الصالحة: ':'Finite points: ')+m.n,
-   'Maximum: '+fmt(m.highest.y,10)+' '+unit+' @ '+fmt(m.highest.x,8)+' nm',
-   'Minimum: '+fmt(m.lowest.y,10)+' '+unit+' @ '+fmt(m.lowest.x,8)+' nm',
+   'Maximum: '+fmt(m.highest.y,10)+' '+unit+' @ '+fmt(m.highest.x,8)+' nm'+(m.highest.interpolated?' [interpolated boundary]':''),
+   'Minimum: '+fmt(m.lowest.y,10)+' '+unit+' @ '+fmt(m.lowest.x,8)+' nm'+(m.lowest.interpolated?' [interpolated boundary]':''),
    'Global peak-to-peak: '+fmt(m.peakToPeak,10)+' '+unit+' (not necessarily adjacent peaks)',
    'Peak-to-zero |D|: '+fmt(m.peakToZero,10)+' '+unit,
    'Signed trapezoidal area: '+fmt(m.area,10)+' '+areaUnit+'; valid intervals: '+m.segments,
+   'Integrated coverage: '+fmt(m.coveredWidth,8)+' / '+fmt(hi-lo,8)+' nm; unintegrated (gaps/outside data): '+fmt(m.missingWidth,8)+' nm; boundary values linearly interpolated when necessary',
    'Zero crossings (candidates): '+(m.zeros.length?m.zeros.map(z=>fmt(z.x,8)+' nm ['+z.kind+']').join('; '):'none'),
    m.noise?'Exploratory signal / sample SD in user-selected noise region: '+fmt(m.noise.snr,7)+' (n='+m.noise.n+', SD='+fmt(m.noise.sd,10)+'); not an LOQ determination':'S/N not computed: no user-defined noise region.'
   ];
@@ -1456,15 +1871,17 @@ $('exportMetrics').onclick=()=>{
   ['Fit window',$('window').value,'points',''],
   ['Polynomial degree',$('degree').value,'',''],
   ['Edge mask',$('edgeMode').checked,'',''],
-  ['Max wavelength',m.highest.x,'nm',''],
+  ['Integrated coverage',m.coveredWidth,'nm','No extrapolation or gap bridging'],
+  ['Unintegrated width',m.missingWidth,'nm','Gaps or requested interval outside finite data'],
+  ['Max wavelength',m.highest.x,'nm',m.highest.interpolated?'interpolated boundary':'recorded wavelength'],
   ['Max ordinate',m.highest.y,readingUnit(d.s,order),''],
-  ['Min wavelength',m.lowest.x,'nm',''],
+  ['Min wavelength',m.lowest.x,'nm',m.lowest.interpolated?'interpolated boundary':'recorded wavelength'],
   ['Min ordinate',m.lowest.y,readingUnit(d.s,order),''],
   ['Global peak-to-peak',m.peakToPeak,readingUnit(d.s,order),'not necessarily adjacent extrema'],
   ['Peak-to-zero absolute amplitude',m.peakToZero,readingUnit(d.s,order),''],
   ['Trapezoidal signed area',m.area,readingUnit(d.s,order)+' nm','discontinuous intervals not bridged; transformed signals are not raw concentration'],
   ...m.zeros.map(z=>['Zero-crossing candidate',z.x,'nm',z.kind]),
-  ...(m.noise?[['Exploratory S/N',m.noise.snr,'','not a quantification limit'],['Noise sample SD',m.noise.sd,order?'nm^-'+order:'absorbance','sample SD; n='+m.noise.n]]:[])
+  ...(m.noise?[['Exploratory S/N',m.noise.snr,'','not a quantification limit'],['Noise sample SD',m.noise.sd,readingUnit(d.s,order),'sample SD; n='+m.noise.n]]:[])
  ];
  const content='\uFEFF# UV-Vis Spectral Studio v'+APP_VERSION+'\r\n'+rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
  download(new Blob([content],{type:'text/csv;charset=utf-8'}),'uvvis_measurements_D'+order+'.csv');
@@ -1475,7 +1892,7 @@ function exportedCsv(){
  const all=[...new Set(data.flatMap(d=>d.x.filter(w=>w>=B.xmin&&w<=B.xmax)))].sort((a,b)=>a-b),measuredMaps=data.map(d=>new Map(d.x.map((w,i)=>[w,i])));
  const settings=[
   '# UV-Vis Spectral Studio version: '+APP_VERSION,
-  '# Signal: '+(order?'D'+order:'original absorbance'),
+  '# Signal: '+(order?'D'+order:'D0')+'; per-curve units and provenance below',
   '# Display wavelength (nm): '+B.xmin+' .. '+B.xmax,
   '# Derivative processing wavelength (nm): '+(Number.isFinite(processingRange.lo)?processingRange.lo:'full lower')+' .. '+(Number.isFinite(processingRange.hi)?processingRange.hi:'full upper'),
   '# Fit points: '+$('window').value+'; polynomial degree: '+$('degree').value+'; mask edges: '+$('edgeMode').checked,
@@ -1486,7 +1903,7 @@ function exportedCsv(){
  const rows=[];
  const columns=['Wavelength (nm)'];
  for(const d of data){
-  columns.push(d.s.name+' / '+(order?'D'+order:'A')+' ('+unit+')');
+  columns.push(d.s.name+' / D'+order+' ('+readingUnit(d.s,order)+')');
   if(aligned)columns.push(d.s.name+' / provenance');
  }
  rows.push(columns);

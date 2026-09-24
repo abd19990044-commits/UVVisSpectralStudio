@@ -1,21 +1,27 @@
 name: UV-Vis numerical regression
 on:
-  push:
-    branches: [main]
+  workflow_call:
   pull_request:
 permissions:
   contents: read
 jobs:
   scientific-qa:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        node: ['22', '24']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: ${{ matrix.node }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Install independent scientific reference packages
-        run: python -m pip install --disable-pip-version-check numpy scipy
-      - name: Validate script and analytical invariants
-        run: node --test tests/uvvis-regression.test.cjs
+        run: python -m pip install --disable-pip-version-check numpy==2.2.6 scipy==1.15.3
+      - name: Validate script, scientific invariants and import safeguards
+        run: npm test
       - name: Compare production derivatives with SciPy and analytic functions
         run: python -m unittest discover -s tests -p scipy_reference.py -v

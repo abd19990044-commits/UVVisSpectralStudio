@@ -1,24 +1,30 @@
 name: UV-Vis browser smoke
 on:
-  push:
-    branches: [main]
+  workflow_call:
   pull_request:
 permissions:
   contents: read
 jobs:
   browser-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install browser test dependencies
+          cache: npm
+      - name: Install pinned browser test dependencies
         run: |
-          npm install --no-save playwright
-          npx playwright install chromium
+          npm ci
+          npx playwright install --with-deps ${{ matrix.browser }}
       - name: Generate standard-library XLSX fixture
         run: python tests/make_xlsx_fixture.py
       - name: Run browser smoke tests
-        run: node tests/browser-smoke.cjs
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: npm run test:browser

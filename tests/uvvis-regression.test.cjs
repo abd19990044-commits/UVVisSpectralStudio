@@ -190,11 +190,81 @@ test('Source plotting logic formats D0 at fixed decimals and D4 with a scientifi
  assert.ok(svg.includes('>200.0</text>'));
  const small=ctx.buildSvg([d],4,{xmin:270,xmax:400,ymin:-2e-5,ymax:3e-5}).svg;
  assert.match(small,/×10⁻⁵/);
- assert.ok(!small.includes('>0.00</text>'));
+ // Zero is a legitimate tick. Nonzero derivatives must remain distinguishable
+ // and recover their physical values after the displayed scale is applied.
+ const values=[-2e-5,-1e-5,0,1e-5,2e-5,3e-5];
+ const scale=ctx.derivativeAxisScale(values,1e-5);
+ const labels=values.map(v=>ctx.derivativeAxisLabel(v,scale,1e-5));
+ assert.equal(new Set(labels).size,values.length);
+ labels.forEach((label,i)=>assert.ok(Math.abs(Number(label)*scale.factor-values[i])<1e-14));
+ const rendered=[...small.matchAll(/<text[^>]*text-anchor="end"[^>]*>([-+0-9.]+)<\/text>/g)].map(m=>Number(m[1]));
+ assert.equal(new Set(rendered).size,rendered.length);
+ for(const v of values)assert.ok(rendered.some(t=>Math.abs(t*scale.factor-v)<1e-14));
 });
 test('SVG and PNG share source plotting function',()=>{
  assert.ok(script.includes('function exportPlotMarkup(plot){return buildSvg(plot.data,plot.order,plot.B,false,false).svg;}'));
  assert.ok(script.includes('if(!preview&&interactive)'));
  assert.ok(script.includes('svgImage(exportPlotMarkup(plot))'));
  assert.ok(script.includes('svg=exportPlotMarkup(plotState)'));
+});
+
+test('AUC clips and interpolates both requested boundaries, including sub-grid intervals',()=>{
+ const flat={x:[200,201,202,203,204,205,206],y:Array(7).fill(1),breaks:[]};
+ assert.equal(ctx.analyticalMetrics(flat,200.5,205.5).area,5);
+ const linear={x:[1,2,3],y:[2,4,6],breaks:[]};
+ const sub=ctx.analyticalMetrics(linear,1.2,1.8);
+ assert.ok(Math.abs(sub.area-1.8)<1e-12);
+ assert.equal(sub.n,0);assert.equal(sub.highest.interpolated,true);
+ assert.equal(sub.highest.x,1.8);assert.equal(sub.lowest.x,1.2);
+});
+test('AUC reports missing coverage and never bridges gaps, NaNs or extrapolates',()=>{
+ const d={x:[1,2,3,4,5,6],y:[1,1,NaN,1,1,1],breaks:[5]};
+ const m=ctx.analyticalMetrics(d,.5,6.5);
+ assert.equal(m.area,2);assert.equal(m.coveredWidth,2);assert.equal(m.missingWidth,4);
+ assert.throws(()=>ctx.analyticalMetrics(d,2.2,2.8),/No continuous/);
+ const zero=ctx.analyticalMetrics({x:[1,2],y:[-1,1],breaks:[]},1.25,1.75);
+ assert.equal(zero.area,0);assert.deepEqual(Array.from(zero.zeros,z=>z.x),[1.5]);
+});
+test('Quoted CSV, embedded delimiters/newlines and escaped quotes retain exact observations',()=>{
+ const c={t:x=>x,lang:'en',sourceTables:[]};vm.createContext(c);
+ vm.runInContext(extract('function median(','function uniqueCurveName('),c);
+ for(const delimiter of [',',';','\t']){
+  const header='"Wavelength (nm)"'+delimiter+'"Sample, ""A""\nreplicate"\n';
+  const body=Array.from({length:10},(_,i)=>'"'+(200+i)+'"'+delimiter+'"'+(.1+i*.01)+'"').join('\r\n');
+  const parsed=c.parseText('# exported metadata\n'+header+body,'quoted.csv');
+  assert.deepEqual(Array.from(parsed.out[0].x),Array.from({length:10},(_,i)=>200+i));
+  assert.deepEqual(Array.from(parsed.out[0].y),Array.from({length:10},(_,i)=>.1+i*.01));
+ }
+ assert.throws(()=>c.parseText('"unclosed\n200,1','bad.csv'),/Unclosed/);
+ assert.throws(()=>c.splitRow('"200"x,1',','),/Unexpected/);
+ assert.deepEqual(Array.from(c.splitRow('"a""b",2',',')),['a"b','2']);
+});
+
+function zipContext(){
+ const c={Uint8Array,TextDecoder,Blob,DecompressionStream,window:{DecompressionStream},t:x=>x};
+ vm.createContext(c);vm.runInContext('let crcTable=null;'+extract('function crc32(','function write32('),c);
+ vm.runInContext(extract('const U16=','function xml('),c);return c;
+}
+function zipEntry(c,data,declared=data.length){
+ const name=Buffer.from('xl/workbook.xml'),packed=require('node:zlib').deflateRawSync(data),crc=c.crc32(data);
+ const local=Buffer.alloc(30+name.length);local.writeUInt32LE(0x04034b50);local.writeUInt16LE(8,8);
+ local.writeUInt32LE(crc,14);local.writeUInt32LE(packed.length,18);local.writeUInt32LE(declared,22);local.writeUInt16LE(name.length,26);name.copy(local,30);
+ const central=Buffer.alloc(46+name.length);central.writeUInt32LE(0x02014b50);central.writeUInt16LE(8,10);
+ central.writeUInt32LE(crc,16);central.writeUInt32LE(packed.length,20);central.writeUInt32LE(declared,24);central.writeUInt16LE(name.length,28);name.copy(central,46);
+ const end=Buffer.alloc(22);end.writeUInt32LE(0x06054b50);end.writeUInt16LE(1,8);end.writeUInt16LE(1,10);end.writeUInt32LE(central.length,12);end.writeUInt32LE(local.length+packed.length,16);
+ return Buffer.concat([local,packed,central,end]);
+}
+test('Bounded decompression cancels on the first oversized chunk',async()=>{
+ const c=zipContext();let reads=0,cancelled=false,released=false;
+ const stream={getReader:()=>({read:async()=>{reads++;return {done:false,value:new Uint8Array(64)};},cancel:async()=>{cancelled=true;},releaseLock:()=>{released=true;}})};
+ await assert.rejects(c.readBoundedStream(stream,100),/zipLarge/);
+ assert.equal(reads,2);assert.equal(cancelled,true);assert.equal(released,true);
+});
+test('XLSX archive validates actual expanded size, checksums and truncated directories',async()=>{
+ const c=zipContext(),data=Buffer.from('<workbook/>'),good=zipEntry(c,data);
+ assert.equal((await c.unzipXlsx(good))['xl/workbook.xml'],data.toString());
+ await assert.rejects(c.unzipXlsx(zipEntry(c,Buffer.alloc(2*1024*1024,65),1)),/zipLarge/);
+ const bad=Buffer.from(good),central=bad.indexOf(Buffer.from([0x50,0x4b,0x01,0x02]));bad.writeUInt32LE(0,central+16);
+ await assert.rejects(c.unzipXlsx(bad),/checksum/);
+ await assert.rejects(c.unzipXlsx(good.subarray(0,good.length-3)),/zipEnd/);
 });
