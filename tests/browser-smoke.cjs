@@ -136,6 +136,40 @@ async function run(){
   assert.ok(Math.abs(ppm[0]-Math.round(600/0.0254))<=1,'PNG X DPI metadata');
   assert.ok(Math.abs(ppm[1]-Math.round(600/0.0254))<=1,'PNG Y DPI metadata');
 
+  // End-to-end checks for single-file zoom and reproducible method metadata.
+  const paramsPromise=page.waitForEvent('download');
+  await page.locator('#exportParameters').click();
+  const params=JSON.parse(fs.readFileSync(await (await paramsPromise).path(),'utf8'));
+  assert.equal(params.schemaVersion,1);
+  assert.equal(params.derivative.order,4);
+  assert.equal(params.derivative.processingRangeNm.from,270);
+  assert.equal(params.derivative.processingRangeNm.to,400);
+  assert.equal(params.display.zoomMode,'x');
+  assert.equal(params.spectra.length,3);
+
+  await page.locator('#derivativeAxisFormat').selectOption('raw');
+  assert.ok((await page.locator('#chart').innerHTML()).includes('e-'),
+    'Raw derivative axis must print physical derivative values in scientific notation');
+  await page.locator('#derivativeAxisFormat').selectOption('scaled');
+
+  await page.locator('#zoomMode').selectOption('xy');
+  const beforeZoom=await Promise.all(['xmin','xmax','ymin','ymax'].map(id=>page.locator('#'+id).inputValue()));
+  await page.locator('#chart').scrollIntoViewIfNeeded();
+  const bounds=await page.locator('#chart').boundingBox();
+  const startX=bounds.x+bounds.width*.40,startY=bounds.y+bounds.height*.34;
+  const endX=bounds.x+bounds.width*.62,endY=bounds.y+bounds.height*.65;
+  await page.mouse.move(startX,startY);
+  await page.mouse.down();
+  await page.mouse.move(endX,endY,{steps:6});
+  await page.mouse.up();
+  assert.ok(Number(await page.locator('#xmin').inputValue())>Number(beforeZoom[0]));
+  assert.ok(Number(await page.locator('#xmax').inputValue())<Number(beforeZoom[1]));
+  assert.ok((await page.locator('#ymin').inputValue()).length>0);
+  assert.ok((await page.locator('#ymax').inputValue()).length>0);
+  await page.locator('#zoomBack').click();
+  assert.deepEqual(await Promise.all(['xmin','xmax','ymin','ymax'].map(id=>page.locator('#'+id).inputValue())),beforeZoom);
+  assert.ok(await page.locator('#zoomBack').isDisabled());
+
   await page.locator('#upload').setInputFiles({
    name:'Imported.csv',mimeType:'text/csv',buffer:Buffer.from(
     'Wavelength (nm),NAP\n'+Array.from({length:31},(_,i)=>
