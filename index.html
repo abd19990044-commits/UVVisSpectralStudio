@@ -848,7 +848,17 @@ function axisLabel(order){
 function xAxisLabel(){return $('xLabel').value.trim()||STR.en.wavelength;}
 function pathOf(d,B,p){let out='',pen=false,bi=0,next=d.breaks[0];for(let i=0;i<d.x.length;i++){let x=d.x[i],y=d.y[i];if(i===next){pen=false;next=d.breaks[++bi];}if(!Number.isFinite(y)){pen=false;continue;}if(x<B.xmin||x>B.xmax){/* keep full path for mathematically faithful clip */}
  let X=p.x+(x-B.xmin)/(B.xmax-B.xmin)*p.w,Y=p.y+(B.ymax-y)/(B.ymax-B.ymin)*p.h;out+=(pen?'L':'M')+X.toFixed(4)+' '+Y.toFixed(4);pen=true;}return out;}
-function geometry(preview=false,count=0){let W=1100,showLegend=preview||$('showCurveLegend').checked,rows=preview?0:(showLegend?Math.ceil(Math.min(count,12)/3):0),extra=rows*18,H=preview?460:610+extra;return{W,H,p:{x:104,y:preview?35:(showLegend?54+extra:28),w:W-158,h:H-(preview?120:(showLegend?164:138))}};}
+function geometry(preview=false,count=0,insideLegend=false){
+ let W=1100,showLegend=preview||$('showCurveLegend').checked;
+ const rows=preview||insideLegend?0:(showLegend?Math.ceil(Math.min(count,12)/3):0),extra=rows*18,H=preview?460:610+extra;
+ return{W,H,p:{x:104,y:preview?35:(showLegend&&!insideLegend?54+extra:28),w:W-158,h:H-(preview?120:(showLegend&&!insideLegend?164:138))}};
+}
+function publicationLegendInside(data,B,order,preview=false){
+ if(preview||order===0||!$('publicationMode').checked||!$('showCurveLegend').checked||!data.length||data.length>4)return false;
+ const cutoff=B.xmax-(B.xmax-B.xmin)*.34,cap=B.ymax-(B.ymax-B.ymin)*.27;
+ // No trace is allowed through the top-right legend area; fall back to the external legend.
+ return data.every(d=>d.x.every((x,i)=>x<cutoff||x>B.xmax||!Number.isFinite(d.y[i])||d.y[i]<cap));
+}
 function niceTickStep(span,target,integer=false){
  const raw=span/target,pow=10**Math.floor(Math.log10(raw));
  for(const m of [1,2,2.5,5,10]){const step=m*pow;if(step>=raw*(1-1e-12)&&(!integer||step>=1))return step;}
@@ -904,7 +914,8 @@ function publicationAxisTitle(label,order,exponent){
 }
 function plotWidth(id,lo,hi){const v=Number($(id).value);if(!Number.isFinite(v)||v<lo||v>hi)throw Error(id+': line width must be '+lo+'–'+hi+' px');return v;}
 function buildSvg(data,order,B,preview=false,interactive=true){
- let {W,H,p}=geometry(preview,data.length),xlab=xAxisLabel(),ylab=axisLabel(order),title=$('chartTitle').value.trim()||'UV–Vis Spectral Overlay';
+ const insideLegend=publicationLegendInside(data,B,order,preview);
+ let {W,H,p}=geometry(preview,data.length,insideLegend),xlab=xAxisLabel(),ylab=axisLabel(order),title=$('chartTitle').value.trim()||'UV–Vis Spectral Overlay';
  const pub=order>0&&$('publicationMode').checked;
  const axisColor='#4b5563', textColor='#111827', zeroColor='#8a95a3',tickFont=pub?16:14,labelFont=pub?20:18;
  let out=`<svg xmlns="${NS}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#fff"/><defs><clipPath id="plotClip"><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}"/></clipPath></defs>`;
@@ -937,8 +948,9 @@ function buildSvg(data,order,B,preview=false,interactive=true){
  out+=`<text x="${p.x+p.w/2}" y="${H-42}" text-anchor="middle" direction="ltr" fill="${textColor}" font-family="Arial,sans-serif" font-size="${labelFont}">${E(xlab)}</text>`;
  out+=`<text x="31" y="${p.y+p.h/2}" text-anchor="middle" transform="rotate(-90 31 ${p.y+p.h/2})" direction="ltr" fill="${textColor}" font-family="Arial,sans-serif" font-size="${labelFont}">${E(ylab)}</text>`;
  if(!preview&&$('showCurveLegend').checked){
+   if(insideLegend)out+=`<rect x="${p.x+p.w-320}" y="${p.y+13}" width="310" height="${data.length*23+14}" fill="#fff" fill-opacity=".88"/>`;
    for(let j=0;j<Math.min(12,data.length);j++){
-     let d=data[j],x=p.x+(j%3)*320,y=48+Math.floor(j/3)*18,name=d.s.name.length>33?d.s.name.slice(0,30)+'…':d.s.name;
+     let d=data[j],x=insideLegend?p.x+p.w-310:p.x+(j%3)*320,y=insideLegend?p.y+37+j*23:48+Math.floor(j/3)*18,name=d.s.name.length>33?d.s.name.slice(0,30)+'…':d.s.name;
      out+=`<path d="M${x} ${y-4}h20" stroke="${d.s.color}" stroke-width="${Math.max(pub?2:1.2,Math.min(5,d.s.lineWidth??curveStroke))}" stroke-dasharray="${d.s.style==='dash'?'8 5':d.s.style==='dot'?'2 4':'none'}"/><text x="${x+26}" y="${y}" fill="#334155" font-family="Arial,sans-serif" font-size="12">${E(name)}</text>`;
    }
    if(data.length>12)out+=`<text x="${p.x+p.w}" y="29" text-anchor="end" fill="#475569" font-family="Arial,sans-serif" font-size="11">+${data.length-12} more curves · see on-screen legend</text>`;
@@ -1110,7 +1122,7 @@ async function exportPng(){
   const dpi=Number($('dpi').value),requested=Number($('imageWidth').value),unit=$('widthUnit').value;
   const inches=unit==='cm'?requested/2.54:requested;
   if(!Number.isFinite(inches)||inches<.5||inches>30)throw Error(lang==='ar'?'عرض الصورة يجب أن يقع بين 0.5 و30 بوصة':'Figure width must be between 0.5 and 30 inches');
-  const {W,H}=geometry(false,plot.data.length);
+  const {W,H}=geometry(false,plot.data.length,publicationLegendInside(plot.data,plot.B,plot.order));
   const width=Math.round(inches*dpi),height=Math.round(width*H/W);
   if(width*height>5e7)throw Error(t('pngTooBig'));
   canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
