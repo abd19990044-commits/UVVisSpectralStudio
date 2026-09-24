@@ -18,6 +18,12 @@ const controls={
  degree:{value:'4'},edgeMode:{checked:true},
  chartTitle:{value:''},showCurveLegend:{checked:false}
 };
+for(const id of ['overlayTableToggle','overlayTableRefresh','overlayTablePrev','overlayTableNext','overlayTableCsv',
+ 'overlayTableOrder','overlayTableVisible','overlayTableFrom','overlayTableTo',
+ 'readingLookup','readingWave','readingTableToggle','readingCurve','readingOrder',
+ 'readingStart','readingEnd','readingTableRefresh','readingTableExport']){
+ controls[id]={value:'',checked:false,addEventListener(){},setAttribute(){},options:[]};
+}
 const ctx={
  $:id=>{assert.ok(controls[id],'Unknown mocked control: '+id);return controls[id];},
  t:key=>key, E:s=>String(s), fmt:v=>String(v),
