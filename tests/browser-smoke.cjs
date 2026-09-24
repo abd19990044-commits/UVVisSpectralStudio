@@ -40,7 +40,7 @@ async function run(){
   await page.locator('#langToggle').click();
   assert.match(await page.locator('#citationPanel h2').textContent(),/الاستشهاد/);
   await page.locator('#langToggle').click();
-  assert.match(await citation.inputValue(),/UV–Vis Spectral Studio/);
+  assert.match(await citation.inputValue(),/UV[-–]Vis Spectral Studio/);
   await page.locator('#demo').click();
   await page.locator('#xmin').fill('270');
   await page.locator('#xmax').fill('400');
