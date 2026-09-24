@@ -156,9 +156,9 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 
 <div class="field"><label for="axisWidth" data-i18n="axisWidthLabel">Axis width (px)</label><input id="axisWidth" type="number" min="0.3" max="5" step="0.1" value="1.3"></div>
 <div class="field"><label for="tickWidth" data-i18n="tickWidthLabel">Tick width (px)</label><input id="tickWidth" type="number" min="0.3" max="5" step="0.1" value="1.2"></div></div></details>
-<div class="toolbar"><button id="axisApply" class="btn primary" data-i18n="apply">Apply axes</button><button id="axisReset" class="btn" data-i18n="reset">Reset axes</button><button id="fitData" class="btn" data-i18n="fitData">Fit to data</button></div><div class="field"><label data-i18n="processingTitle" for="processMin">Derivative processing range (nm) — independent of zoom</label><div class="two"><input id="processMin" type="number" step="any" placeholder="Full: minimum" aria-label="Processing minimum wavelength"><input id="processMax" type="number" step="any" placeholder="Full: maximum" aria-label="Processing maximum wavelength"></div><button type="button" id="applyProcess" class="btn small" data-i18n="applyProcess">Apply processing range</button><p class="note" data-i18n="processHint">Blank means full measured spectrum. Dragging and display axis changes never recompute the processing range.</p></div><div class="field"><label for="cursorMode" data-i18n="cursorMode">Cursor readings</label><select id="cursorMode"><option value="interpolate" data-i18n="cursorInterpolated">Linear interpolation (indicated)</option><option value="nearest" data-i18n="cursorNearest">Nearest actual measured wavelength, per spectrum</option></select></div><p class="note" data-i18n="cursorHint">Drag horizontally over the plot to zoom; click to lock or unlock the wavelength cursor.</p><div class="field"><label for="chartTitle" data-i18n="titleLabel">Plot title</label><input id="chartTitle" value="UV–Vis Spectral Overlay"></div><div class="two"><div class="field"><label for="xLabel" data-i18n="xLabel">X-axis title</label><input id="xLabel" value="Wavelength (nm)" dir="ltr" lang="en"></div><div class="field"><label for="yLabel" data-i18n="yLabel">Custom Y-axis title (optional)</label><input id="yLabel" placeholder="Auto: physically consistent" data-placeholder="yAuto" dir="ltr" lang="en"></div></div><label class="small-note" style="display:block;margin-top:12px"><input type="checkbox" id="publicationMode" checked> <span data-i18n="publicationMode">Publication layout for derivatives D1–D4</span></label><p class="note" data-i18n="publicationModeNote">For D1–D4 only: fit X to available data, include scientific scale in the Y title and use rounded Y bounds. Turn off to restore prior axes.</p><label class="small-note" style="display:block;margin-top:12px"><input type="checkbox" id="showCurveLegend" checked> <span data-i18n="showCurveLegend">Show curve legend inside the plot and exports</span></label></section>
+<div class="toolbar"><button id="axisApply" class="btn primary" data-i18n="apply">Apply axes</button><button id="axisReset" class="btn" data-i18n="reset">Reset axes</button><button id="fitData" class="btn" data-i18n="fitData">Fit to data</button></div><div class="field"><label data-i18n="processingTitle" for="processMin">Derivative processing range (nm) — independent of zoom</label><div class="two"><input id="processMin" type="number" step="any" placeholder="Full: minimum" aria-label="Processing minimum wavelength"><input id="processMax" type="number" step="any" placeholder="Full: maximum" aria-label="Processing maximum wavelength"></div><button type="button" id="applyProcess" class="btn small" data-i18n="applyProcess">Apply processing range</button><p class="note" data-i18n="processHint">Blank means full measured spectrum. Dragging and display axis changes never recompute the processing range.</p></div><div class="field"><label for="zoomMode" data-i18n="zoomMode">Drag zoom mode</label><select id="zoomMode"><option value="x" data-i18n="zoomX">X only</option><option value="y" data-i18n="zoomY">Y only</option><option value="xy" data-i18n="zoomXY">Box zoom (X and Y)</option></select></div><div class="toolbar"><button class="btn small" id="zoomBack" disabled data-i18n="zoomBack">Zoom back</button><button class="btn small" id="zoomReset" data-i18n="zoomReset">Reset zoom</button></div><div class="field"><label for="cursorMode" data-i18n="cursorMode">Cursor readings</label><select id="cursorMode"><option value="interpolate" data-i18n="cursorInterpolated">Linear interpolation (indicated)</option><option value="nearest" data-i18n="cursorNearest">Nearest actual measured wavelength, per spectrum</option></select></div><p class="note" data-i18n="cursorHint">Drag horizontally over the plot to zoom; click to lock or unlock the wavelength cursor.</p><div class="field"><label for="chartTitle" data-i18n="titleLabel">Plot title</label><input id="chartTitle" value="UV–Vis Spectral Overlay"></div><div class="two"><div class="field"><label for="xLabel" data-i18n="xLabel">X-axis title</label><input id="xLabel" value="Wavelength (nm)" dir="ltr" lang="en"></div><div class="field"><label for="yLabel" data-i18n="yLabel">Custom Y-axis title (optional)</label><input id="yLabel" placeholder="Auto: physically consistent" data-placeholder="yAuto" dir="ltr" lang="en"></div></div><label class="small-note" style="display:block;margin-top:12px"><input type="checkbox" id="publicationMode" checked> <span data-i18n="publicationMode">Publication layout for derivatives D1–D4</span></label><p class="note" data-i18n="publicationModeNote">For D1–D4 only: fit X to available data, include scientific scale in the Y title and use rounded Y bounds. Turn off to restore prior axes.</p><label class="small-note" style="display:block;margin-top:12px"><input type="checkbox" id="showCurveLegend" checked> <span data-i18n="showCurveLegend">Show curve legend inside the plot and exports</span></label></section>
 </aside><div class="workspace"><div id="status" class="status"></div>
-<section class="panel chart-panel"><div class="chart-head"><div><h2 id="plotHeading">UV–Vis Spectral Overlay</h2><div id="plotSubtitle" class="muted-sm"></div></div><div class="toolbar"><button class="btn small" id="exportSvg" data-i18n="saveSvg">Save SVG</button><label class="export-label" for="imageWidth" data-i18n="widthLabel">Figure width</label><input class="export-custom" id="imageWidth" aria-label="Export physical width" data-aria-i18n="widthAria" type="number" min="1" max="30" step="0.1" value="7"><select class="btn small" id="widthUnit" aria-label="Physical width unit"><option value="in">in</option><option value="cm">cm</option></select><select class="btn small" id="dpi" aria-label="PNG resolution" data-aria-i18n="dpiAria"><option value="600">600 DPI</option><option value="900" selected>900 DPI</option><option value="1200">1200 DPI</option></select><button class="btn small primary" id="exportPng" data-i18n="savePng">Save PNG</button></div></div><div class="chart-wrap" id="chartWrap"><svg id="chart" class="chart-svg" viewBox="0 0 1100 590" role="img" aria-label="Interactive spectrum plot" data-aria-i18n="plotAria"></svg></div><div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+<section class="panel chart-panel"><div class="chart-head"><div><h2 id="plotHeading">UV–Vis Spectral Overlay</h2><div id="plotSubtitle" class="muted-sm"></div></div><div class="toolbar"><button class="btn small" id="exportSvg" data-i18n="saveSvg">Save SVG</button><button class="btn small" id="exportParameters" data-i18n="exportParameters">Save method JSON</button><label class="export-label" for="imageWidth" data-i18n="widthLabel">Figure width</label><input class="export-custom" id="imageWidth" aria-label="Export physical width" data-aria-i18n="widthAria" type="number" min="1" max="30" step="0.1" value="7"><select class="btn small" id="widthUnit" aria-label="Physical width unit"><option value="in">in</option><option value="cm">cm</option></select><select class="btn small" id="dpi" aria-label="PNG resolution" data-aria-i18n="dpiAria"><option value="600">600 DPI</option><option value="900" selected>900 DPI</option><option value="1200">1200 DPI</option></select><button class="btn small primary" id="exportPng" data-i18n="savePng">Save PNG</button></div></div><div class="chart-wrap" id="chartWrap"><svg id="chart" class="chart-svg" viewBox="0 0 1100 590" role="img" aria-label="Interactive spectrum plot" data-aria-i18n="plotAria"></svg></div><div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
 <dialog id="axisBoundDialog" class="axis-bound-dialog" aria-labelledby="axisBoundTitle">
 <form method="dialog" id="axisBoundForm"><h2 id="axisBoundTitle"></h2>
 <p class="note" data-i18n="axisBoundHint">Change a displayed axis boundary without modifying measured wavelengths or derivative processing.</p>
@@ -265,6 +265,7 @@ const STR={
  };
 /* Reviewed analytical-chemistry terminology and publication-ready Arabic UI. */
 Object.assign(STR.en,{
+  zoomMode:'Drag zoom mode',zoomX:'X only',zoomY:'Y only',zoomXY:'Box zoom (X and Y)',zoomBack:'Zoom back',zoomReset:'Reset zoom',exportParameters:'Save method JSON',higherDerivativeCaution:'D3/D4 can amplify spectral noise: review window sensitivity, sampling and experimental controls. No universal S/N threshold establishes validity.',
   publicationMode:'Publication layout for derivatives D1–D4',publicationModeNote:'For D1–D4 only: fit X to available data, include scientific scale in the Y title and use rounded Y bounds. Turn off to restore prior axes.',
   showCurveLegend:'Show curve legend inside the plot and exports',editCurveName:'Edit displayed curve name',
   fitData:'Fit to data',processingTitle:'Derivative processing range (nm) — independent of zoom',applyProcess:'Apply processing range',processHint:'Blank means full measured spectrum. Drag and display axes do not change derivative computation.',csvModeLabel:'CSV data provenance',csvMeasured:'Original wavelengths only; blank for missing derivative values',csvAligned:'Aligned wavelengths + measured/interpolated flags',
@@ -279,6 +280,7 @@ Object.assign(STR.en,{
  themeDark:'Dark mode',themeLight:'Light mode',themeDarkAria:'Switch to dark mode',themeLightAria:'Switch to light mode',cursorWavelength:'Wavelength',measuredData:'Measured readings',column:'Column'
 });
 Object.assign(STR.ar,{
+  zoomMode:'نمط التكبير بالسحب',zoomX:'المحور X فقط',zoomY:'المحور Y فقط',zoomXY:'تكبير مستطيل للمحورين',zoomBack:'التكبير السابق',zoomReset:'إعادة ضبط التكبير',exportParameters:'حفظ إعدادات الطريقة JSON',higherDerivativeCaution:'قد تضخّم المشتقات D3/D4 الضوضاء: افحص حساسية النافذة وكثافة العينات والضوابط التجريبية؛ لا توجد عتبة S/N عامة تثبت صلاحيتها.',
   publicationMode:'تنسيق النشر للمشتقات D1–D4',publicationModeNote:'للمشتقات D1–D4 فقط: ضبط X على مدى البيانات المتاحة، ودمج الأس في عنوان Y، واختيار حدود مناسبة. إيقاف الوضع يعيد حدود المحاور السابقة.',
   showCurveLegend:'إظهار مفتاح المنحنيات داخل الرسم وفي الصور المصدّرة',editCurveName:'تعديل اسم المنحنى المعروض',
   fitData:'ملاءمة المحاور للبيانات',processingTitle:'مجال حساب المشتقات (nm) — مستقل عن التكبير',applyProcess:'تطبيق مجال الاشتقاق',processHint:'ترك الحقول فارغة يعني الطيف كاملاً. التكبير وتعديل محاور العرض لا يغيران حساب المشتقات.',csvModeLabel:'مصدر قيم CSV',csvMeasured:'الأطوال المقيسة فقط والقيم المفقودة فارغة',csvAligned:'شبكة موحّدة مع وسم القياس والاستيفاء',
@@ -1069,6 +1071,7 @@ function render(){
  gallery.hidden=!derivativeGalleryOpen||!v.length;
  gallery.innerHTML='';
  qualityPanel(v,order);
+ $('quality').setAttribute('data-higher-derivative-warning',order>=3||$('view').value==='all'?t('higherDerivativeCaution'):'');
  try{
   if(!v.length){
    plotState=null;
@@ -1156,20 +1159,98 @@ $('axisBoundForm').onsubmit=e=>{
  manualYLimits=true;yInputsEdited=false;derivativeAutoFit=false;
  $('axisBoundDialog').close();pendingAxisBound=null;render();
 };
+const zoomHistory=[];
+function zoomSnapshot(){return Object.fromEntries(['xmin','xmax','ymin','ymax'].map(id=>[id,$(id).value]));}
+function updateZoomBack(){$('zoomBack').disabled=zoomHistory.length===0;}
+$('zoomBack').onclick=()=>{
+ const state=zoomHistory.pop();if(!state)return;
+ for(const id of ['xmin','xmax','ymin','ymax'])$(id).value=state[id];
+ manualYLimits=!!(state.ymin||state.ymax);derivativeAutoFit=activeOrder()>0&&!manualYLimits;yInputsEdited=false;render();updateZoomBack();
+};
+$('zoomReset').onclick=()=>{
+ if(!plotState)return;zoomHistory.push(zoomSnapshot());
+ $('xmin').value='';$('xmax').value='';$('ymin').value='';$('ymax').value='';
+ manualYLimits=false;derivativeAutoFit=activeOrder()>0;yInputsEdited=false;
+ if(activeOrder()>0&&$('publicationMode').checked)setPublicationAxes();
+ render();updateZoomBack();
+};
 function attachCursor(){let svg=$('chart'),tip=$('tooltip');
+ const local=e=>{
+  const rect=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal,p=plotState.p,B=plotState.B;
+  const x=Math.max(p.x,Math.min(p.x+p.w,(e.clientX-rect.left)*vb.width/rect.width));
+  const y=Math.max(p.y,Math.min(p.y+p.h,(e.clientY-rect.top)*vb.height/rect.height));
+  return{px:x,py:y,x:B.xmin+(x-p.x)/p.w*(B.xmax-B.xmin),
+   y:B.ymax-(y-p.y)/p.h*(B.ymax-B.ymin)};
+ };
  const withinPlot=e=>{
   if(!plotState||e.target.closest?.('[data-axis-bound]'))return false;
-  const rect=svg.getBoundingClientRect(),p=plotState.p;
-  if(!rect.width||!rect.height)return false;
-  const x=(e.clientX-rect.left)*1100/rect.width;
-  const y=(e.clientY-rect.top)*Number(svg.viewBox.baseVal.height)/rect.height;
+  const r=svg.getBoundingClientRect(),p=plotState.p,vb=svg.viewBox.baseVal;
+  if(!r.width||!r.height)return false;
+  const x=(e.clientX-r.left)*vb.width/r.width,y=(e.clientY-r.top)*vb.height/r.height;
   return x>=p.x&&x<=p.x+p.w&&y>=p.y&&y<=p.y+p.h;
  };
  const getX=e=>{let r=svg.getBoundingClientRect(),p=plotState.p,px=(e.clientX-r.left)/r.width*1100;return Math.max(plotState.B.xmin,Math.min(plotState.B.xmax,plotState.B.xmin+(px-p.x)/p.w*(plotState.B.xmax-plotState.B.xmin)));};const show=w=>{if(!plotState)return;let {B,p,data}=plotState,xx=p.x+(w-B.xmin)/(B.xmax-B.xmin)*p.w,line=svg.querySelector('#cursorLine');if(line){line.setAttribute('x1',xx);line.setAttribute('x2',xx);line.setAttribute('opacity','1');}tip.innerHTML=`<b>${t('cursorWavelength')} = ${fmt(w,6)} nm</b><br>`+data.map(d=>`<span style="color:${d.s.color}">●</span> ${E(d.s.name)}: <b>${fmt($('cursorMode').value==='nearest'?(nearestData(d,w)?.y??NaN):interp(d,w),8)}</b> <small>(${$('cursorMode').value==='nearest'?(nearestData(d,w)?t('cursorWavelength')+'='+fmt(nearestData(d,w).x,6)+' nm · '+t('qExact'):t('qUnavailable')):(measuredAt(d,w)===true?t('qExact'):Number.isFinite(interp(d,w))?t('qInterpolated'):t('qUnavailable'))})</small>`).join('<br>')+`<br><span style="color:#aec7e0">${$('cursorMode').value==='nearest'?t('measuredData'):t('valuesInterpolated')} · ${t('unit'+plotState.order)}</span>`;tip.style.display='block';$('cursorInfo').textContent=`${t('cursorWavelength')} = ${fmt(w,6)} nm | `+data.map(d=>d.s.name+': '+fmt($('cursorMode').value==='nearest'?(nearestData(d,w)?.y??NaN):interp(d,w),8)).join(' | ');};
+
  svg.addEventListener('keydown',e=>{const node=e.target.closest?.('[data-axis-bound]');if(node&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openAxisBound(node.dataset.axisBound);}});
- svg.onpointerdown=e=>{const endpoint=e.target.closest?.('[data-axis-bound]');if(endpoint){tip.style.display='none';e.preventDefault();e.stopPropagation();openAxisBound(endpoint.dataset.axisBound);return;}if(!plotState||!withinPlot(e))return;drag={x:getX(e),px:e.clientX};let brush=document.createElementNS(NS,'rect');brush.setAttribute('class','zoom-brush');brush.setAttribute('y',plotState.p.y);brush.setAttribute('height',plotState.p.h);brush.setAttribute('x',plotState.p.x+(drag.x-plotState.B.xmin)/(plotState.B.xmax-plotState.B.xmin)*plotState.p.w);brush.setAttribute('width',0);brush.setAttribute('id','zoomBrush');svg.append(brush);try{svg.setPointerCapture(e.pointerId);}catch(_){}};svg.onpointermove=e=>{if(withinPlot(e)){if(!locked&&plotState)show(getX(e));}else tip.style.display='none';if(drag&&plotState){let w=getX(e),B=plotState.B,p=plotState.p,brush=svg.querySelector('#zoomBrush');if(brush){brush.setAttribute('x',p.x+(Math.min(w,drag.x)-B.xmin)/(B.xmax-B.xmin)*p.w);brush.setAttribute('width',Math.abs(w-drag.x)/(B.xmax-B.xmin)*p.w);}}};svg.onpointerup=e=>{if(!drag)return;svg.querySelector('#zoomBrush')?.remove();let last=getX(e);if(Math.abs(e.clientX-drag.px)>18){let l=Math.min(last,drag.x),r=Math.max(last,drag.x);if(r-l>.000001){$('xmin').value=Number(l.toFixed(8));$('xmax').value=Number(r.toFixed(8));$('ymin').value='';$('ymax').value='';manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;drag=null;render();return;}}locked=!locked;show(last);drag=null;};svg.onpointercancel=()=>{drag=null;svg.querySelector('#zoomBrush')?.remove();};svg.onpointerleave=()=>{tip.style.display='none';};}
+ svg.onpointerdown=e=>{
+  const endpoint=e.target.closest?.('[data-axis-bound]');
+  if(endpoint){tip.style.display='none';e.preventDefault();e.stopPropagation();openAxisBound(endpoint.dataset.axisBound);return;}
+  if(!plotState||!withinPlot(e)||e.button!==0)return;
+  const v=local(e),mode=$('zoomMode').value,p=plotState.p;
+  drag={...v,mode};drag.clientX=e.clientX;drag.clientY=e.clientY;
+  const brush=document.createElementNS(NS,'rect');brush.setAttribute('class','zoom-brush');brush.setAttribute('id','zoomBrush');
+  brush.setAttribute('x',mode==='y'?p.x:v.px);brush.setAttribute('y',mode==='x'?p.y:v.py);
+  brush.setAttribute('width',mode==='y'?p.w:0);brush.setAttribute('height',mode==='x'?p.h:0);
+  svg.append(brush);try{svg.setPointerCapture(e.pointerId);}catch(_){}
+ };
+ svg.onpointermove=e=>{
+  if(!plotState)return;
+  if(withinPlot(e)){if(!locked&&!drag)show(getX(e));}else tip.style.display='none';
+  if(!drag)return;
+  const v=local(e),p=plotState.p,brush=svg.querySelector('#zoomBrush');
+  if(brush){
+   brush.setAttribute('x',drag.mode==='y'?p.x:Math.min(drag.px,v.px));
+   brush.setAttribute('y',drag.mode==='x'?p.y:Math.min(drag.py,v.py));
+   brush.setAttribute('width',drag.mode==='y'?p.w:Math.abs(drag.px-v.px));
+   brush.setAttribute('height',drag.mode==='x'?p.h:Math.abs(drag.py-v.py));
+  }
+ };
+ svg.onpointerup=e=>{
+  if(!drag)return;
+  const v=local(e),a=drag,mode=a.mode,dx=Math.abs(v.px-a.px),dy=Math.abs(v.py-a.py);
+  drag=null;svg.querySelector('#zoomBrush')?.remove();
+  const x=mode!=='y'&&dx>=18,y=mode!=='x'&&dy>=18;
+  if((mode==='xy'&&(!x||!y))||(!x&&!y)){locked=!locked;show(v.x);return;}
+  zoomHistory.push(zoomSnapshot());if(zoomHistory.length>30)zoomHistory.shift();
+  if(x){$('xmin').value=String(Math.min(v.x,a.x));$('xmax').value=String(Math.max(v.x,a.x));}
+  if(y){$('ymin').value=String(Math.min(v.y,a.y));$('ymax').value=String(Math.max(v.y,a.y));}
+  if(mode==='x'){$('ymin').value='';$('ymax').value='';}
+  manualYLimits=y;derivativeAutoFit=activeOrder()>0&&!y;yInputsEdited=false;
+  render();updateZoomBack();
+ };
+ svg.onpointercancel=()=>{drag=null;svg.querySelector('#zoomBrush')?.remove();};
+ svg.onpointerleave=()=>{tip.style.display='none';};
+}
 function download(blob,name){let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);}
 function csvEscape(v){let str=String(v??'');return /[",\r\n]/.test(str)?'"'+str.replace(/"/g,'""')+'"':str;}
+function exportMethodParameters(){
+ const v=id=>$(id).value;
+ const payload={format:'uvvis-spectral-studio-method-parameters',schemaVersion:1,
+  applicationVersion:APP_VERSION,createdUTC:new Date().toISOString(),
+  note:'Settings only, not a method-validation certificate; no spectral observations included.',
+  derivative:{order:activeOrder(),windowPoints:Number(v('window')),polynomialDegree:Number(v('degree')),
+   edgeMask:$('edgeMode').checked,processingRangeNm:{
+    from:Number.isFinite(processingRange.lo)?processingRange.lo:null,
+    to:Number.isFinite(processingRange.hi)?processingRange.hi:null}},
+  spectra:spectra.map(c=>({name:c.name,points:c.x.length,firstWavelengthNm:c.x[0],
+   lastWavelengthNm:c.x.at(-1),scaleType:c.scaleType||'absorbance',
+   visible:c.visible,color:c.color,lineWidthPx:c.lineWidth??Number(v('curveWidth')),
+   provenance:c.provenance||null})),
+  display:{bounds:plotState?.B??null,zoomMode:v('zoomMode'),publicationMode:$('publicationMode').checked,
+   xTickMode:v('xTickMode'),yTickMode:v('yTickMode'),defaultCurveWidthPx:Number(v('curveWidth'))},
+  image:{width:Number(v('imageWidth')),widthUnit:v('widthUnit'),dpi:Number(v('dpi'))}};
+ download(new Blob([JSON.stringify(payload,null,2)+'\n'],{type:'application/json;charset=utf-8'}),'uvvis_method_parameters.json');
+}
 function exportSvg(){if(!plotState){status('noPlot','warn');return;}let {order}=plotState,svg=exportPlotMarkup(plotState);download(new Blob([svg],{type:'image/svg+xml;charset=utf-8'}),'uvvis_overlay_D'+order+'.svg');}
 const PNG_SIG=[137,80,78,71,13,10,26,10];let crcTable=null;
 function crc32(bytes){if(!crcTable){crcTable=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xedb88320^(c>>>1):c>>>1;crcTable[n]=c>>>0;}}let c=0xffffffff;for(let b of bytes)c=crcTable[(c^b)&255]^(c>>>8);return(c^0xffffffff)>>>0;}
@@ -1243,7 +1324,7 @@ $('publicationMode').onchange=()=>{
  render();
 };
 $('view').onchange=()=>{let order=$('view').value==='all'?4:Number($('view').value);if(order>Number($('degree').value))$('degree').value=String(order);if($('view').value==='all')derivativeGalleryOpen=true;derivativeAutoFit=order>0&&!manualYLimits;if(!manualYLimits){if(order>0){$('ymin').value='';$('ymax').value='';}else{$('ymin').value='0';$('ymax').value='';}}if(order>0)setPublicationAxes();render();};for(let id of ['ymin','ymax'])$(id).oninput=()=>{yInputsEdited=true;};for(let id of ['window','degree','edgeMode'])$(id).onchange=render;for(let id of ['chartTitle','xLabel','yLabel','showCurveLegend'])$(id).onchange=render;for(const id of ['xTickMode','xTickCount','xTickStep','yTickMode','yTickCount','yTickStep','curveWidth','axisWidth','tickWidth'])$(id).addEventListener('change',()=>{if(id==='curveWidth')$('samples').querySelectorAll('[data-curve-width]').forEach(el=>el.placeholder=$(id).value);render();});
-$('axisApply').onclick=()=>{const roi=displayXRange();if(!manualYLimits&&!yInputsEdited&&activeOrder()===0&&(roi.lo!==200||roi.hi!==800)){$('ymin').value='';$('ymax').value='';}manualYLimits=Boolean(yInputsEdited&&($('ymin').value.trim()||$('ymax').value.trim())||manualYLimits);yInputsEdited=false;derivativeAutoFit=activeOrder()>0&&!manualYLimits;render();};$('axisReset').onclick=()=>{manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;$('xmin').value='200';$('xmax').value='800';if(activeOrder()===0){$('ymin').value='0';$('ymax').value='';}else{$('ymin').value='';$('ymax').value='';}render();};$('fitData').onclick=()=>{const v=visible();if(!v.length){status('noPlot','warn');return;}const lo=Math.min(...v.map(s=>s.x[0])),hi=Math.max(...v.map(s=>s.x.at(-1)));$('xmin').value=String(lo);$('xmax').value=String(hi);$('ymin').value='';$('ymax').value='';manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;render();};$('applyProcess').onclick=()=>{const l=$('processMin').value.trim(),h=$('processMax').value.trim(),lo=l===''?-Infinity:Number(l),hi=h===''?Infinity:Number(h);if(Number.isNaN(lo)||Number.isNaN(hi)||lo>=hi){statusRaw(lang==='ar'?'مجال الاشتقاق غير صالح':'Invalid derivative processing range','warn');return;}processingRange={lo,hi};render();};$('exportSvg').onclick=exportSvg;$('exportPng').onclick=exportPng;
+$('axisApply').onclick=()=>{const roi=displayXRange();if(!manualYLimits&&!yInputsEdited&&activeOrder()===0&&(roi.lo!==200||roi.hi!==800)){$('ymin').value='';$('ymax').value='';}manualYLimits=Boolean(yInputsEdited&&($('ymin').value.trim()||$('ymax').value.trim())||manualYLimits);yInputsEdited=false;derivativeAutoFit=activeOrder()>0&&!manualYLimits;render();};$('axisReset').onclick=()=>{manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;$('xmin').value='200';$('xmax').value='800';if(activeOrder()===0){$('ymin').value='0';$('ymax').value='';}else{$('ymin').value='';$('ymax').value='';}render();};$('fitData').onclick=()=>{const v=visible();if(!v.length){status('noPlot','warn');return;}const lo=Math.min(...v.map(s=>s.x[0])),hi=Math.max(...v.map(s=>s.x.at(-1)));$('xmin').value=String(lo);$('xmax').value=String(hi);$('ymin').value='';$('ymax').value='';manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;render();};$('applyProcess').onclick=()=>{const l=$('processMin').value.trim(),h=$('processMax').value.trim(),lo=l===''?-Infinity:Number(l),hi=h===''?Infinity:Number(h);if(Number.isNaN(lo)||Number.isNaN(hi)||lo>=hi){statusRaw(lang==='ar'?'مجال الاشتقاق غير صالح':'Invalid derivative processing range','warn');return;}processingRange={lo,hi};render();};$('exportSvg').onclick=exportSvg;$('exportParameters').onclick=exportMethodParameters;$('exportPng').onclick=exportPng;
 $('prepApply').onclick=()=>{
  try{
   const source=spectra.find(s=>s.id===Number($('prepSource').value));
