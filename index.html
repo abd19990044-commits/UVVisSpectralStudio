@@ -896,10 +896,11 @@ function axisMultiplier(exponent){
 }
 function publicationAxisTitle(label,order,exponent){
  if(!exponent)return label;
- const scale=axisMultiplier(exponent),unit='nm⁻'+order,ascii='nm^-'+order;
- if(label.endsWith(' ('+unit+')'))return label.slice(0,-(' ('+unit+')').length)+' ('+scale+' '+unit+')';
- if(label.endsWith(' ('+ascii+')'))return label.slice(0,-(' ('+ascii+')').length)+' ('+scale+' '+ascii+')';
- return label+' ('+scale+')';
+ // Displayed ordinate = (d^n A/dλ^n) × 10^(-exponent); keep the physical unit unchanged.
+ const expression=axisMultiplier(-exponent),unit='nm⁻'+order,ascii='nm^-'+order;
+ if(label.endsWith(' ('+unit+')'))return expression+' '+label.slice(0,-(' ('+unit+')').length)+' ('+unit+')';
+ if(label.endsWith(' ('+ascii+')'))return expression+' '+label.slice(0,-(' ('+ascii+')').length)+' ('+ascii+')';
+ return expression+' '+label;
 }
 function plotWidth(id,lo,hi){const v=Number($(id).value);if(!Number.isFinite(v)||v<lo||v>hi)throw Error(id+': line width must be '+lo+'–'+hi+' px');return v;}
 function buildSvg(data,order,B,preview=false,interactive=true){
@@ -907,7 +908,12 @@ function buildSvg(data,order,B,preview=false,interactive=true){
  const pub=order>0&&$('publicationMode').checked;
  const axisColor='#4b5563', textColor='#111827', zeroColor='#8a95a3',tickFont=pub?16:14,labelFont=pub?20:18;
  let out=`<svg xmlns="${NS}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#fff"/><defs><clipPath id="plotClip"><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}"/></clipPath></defs>`;
- const xSpec=axisTicks(B.xmin,B.xmax,'x'),ySpec=axisTicks(B.ymin,B.ymax,'y'),yRange=B.ymax-B.ymin;
+ const xSpec=pub&&$('xTickMode').value==='auto'
+  ?(()=>{const span=B.xmax-B.xmin,step=span<=400?50:niceTickStep(span,6,true),values=[];
+    for(let k=Math.ceil(B.xmin/step-1e-10);k*step<=B.xmax+span*1e-10&&values.length<30;k++)values.push(k*step);
+    return{values,step};})()
+  :axisTicks(B.xmin,B.xmax,'x');
+ const ySpec=axisTicks(B.ymin,B.ymax,'y'),yRange=B.ymax-B.ymin;
  const derivativeScale=order>0?derivativeAxisScale(ySpec.values,ySpec.step):null;
  if(pub&&derivativeScale)ylab=publicationAxisTitle(ylab,order,derivativeScale.exponent);
  const curveStroke=plotWidth('curveWidth',0.3,8),axisStroke=plotWidth('axisWidth',0.3,5),tickStroke=plotWidth('tickWidth',0.3,5);
@@ -1130,7 +1136,10 @@ function setPublicationAxes(){
  const curves=visible().map(s=>useData(s,activeOrder()));
  const finite=curves.flatMap(d=>d.x.filter((x,i)=>Number.isFinite(d.y[i])));
  if(!finite.length){statusRaw(lang==='ar'?'لا تتوفر نقاط مشتقة صالحة لتهيئة المحاور':'No valid derivative data for axis fitting','warn');return;}
- $('xmin').value=String(Math.min(...finite));$('xmax').value=String(Math.max(...finite));
+ const lower=Math.min(...finite),upper=Math.max(...finite),span=upper-lower;
+ const step=span<=400?50:niceTickStep(span,6,true);
+ $('xmin').value=String(Math.floor(lower/step+1e-10)*step);
+ $('xmax').value=String(Math.ceil(upper/step-1e-10)*step);
  $('ymin').value='';$('ymax').value='';
  manualYLimits=false;yInputsEdited=false;derivativeAutoFit=false;
 }
