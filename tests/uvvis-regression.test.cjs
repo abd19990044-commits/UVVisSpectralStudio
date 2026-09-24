@@ -16,7 +16,9 @@ const extract=(start,end)=>{
 const controls={
  xmin:{value:'270'},xmax:{value:'400'},window:{value:'15'},
  degree:{value:'4'},edgeMode:{checked:true},
- chartTitle:{value:''},showCurveLegend:{checked:false}
+ chartTitle:{value:''},showCurveLegend:{checked:false},publicationMode:{checked:false},
+ xTickMode:{value:'auto'},yTickMode:{value:'auto'},xTickCount:{value:'4'},yTickCount:{value:'5'},
+ xTickStep:{value:'50'},yTickStep:{value:'0.2'},curveWidth:{value:'1.7'},axisWidth:{value:'1.3'},tickWidth:{value:'1.2'}
 };
 for(const id of ['overlayTableToggle','overlayTableRefresh','overlayTablePrev','overlayTableNext','overlayTableCsv',
  'overlayTableOrder','overlayTableVisible','overlayTableFrom','overlayTableTo',
@@ -111,7 +113,7 @@ test('Derivative never crosses gaps or masked boundaries',()=>{
  vm.runInContext('processingRange={lo:270,hi:400}',ctx);
 });
 test('Gap-aware extrema, signed area and zero-crossing candidates',()=>{
- vm.runInContext(extract('function analyticalMetrics(','function interp('),ctx);
+ vm.runInContext(extract('function analyticalMetrics(','const OVERLAY_TABLE_PAGE_SIZE='),ctx);
  const s={x:[0,1,2,3,4],y:[-1,1,2,-2,1],breaks:[4]};
  const m=ctx.analyticalMetrics(s,0,4);
  assert.equal(m.highest.y,2);assert.equal(m.lowest.y,-2);
@@ -178,7 +180,7 @@ test('Sensitivity changes fit spans, not original data or wavelength grid',()=>{
  assert.ok(rows.every(r=>r.n>0&&Number.isFinite(r.ordinate)));
  assert.deepEqual(source.y,y,'Sensitivity analysis must not modify raw absorbance');
 });
-test('Source plotting logic formats D0 in 0.10 multiples and D4 scientifically',()=>{
+test('Source plotting logic formats D0 at fixed decimals and D4 with a scientific scale',()=>{
  vm.runInContext(extract('function pathOf(','function geometry('),ctx);
  vm.runInContext(extract('function geometry(','function boundsMini('),ctx);
  const d={x:[200,300,400],y:[0,.8,.3],breaks:[],s:{name:'Sample',color:'#145c9a',style:'solid'}};
@@ -187,11 +189,12 @@ test('Source plotting logic formats D0 in 0.10 multiples and D4 scientifically',
   assert.ok(svg.includes('>'+y+'</text>'),y+' missing');
  assert.ok(svg.includes('>200.0</text>'));
  const small=ctx.buildSvg([d],4,{xmin:270,xmax:400,ymin:-2e-5,ymax:3e-5}).svg;
- assert.match(small,/e-5/);
+ assert.match(small,/×10⁻⁵/);
  assert.ok(!small.includes('>0.00</text>'));
 });
 test('SVG and PNG share source plotting function',()=>{
- assert.ok(script.includes('function exportPlotMarkup(plot){return buildSvg(plot.data,plot.order,plot.B).svg;}'));
+ assert.ok(script.includes('function exportPlotMarkup(plot){return buildSvg(plot.data,plot.order,plot.B,false,false).svg;}'));
+ assert.ok(script.includes('if(!preview&&interactive)'));
  assert.ok(script.includes('svgImage(exportPlotMarkup(plot))'));
  assert.ok(script.includes('svg=exportPlotMarkup(plotState)'));
 });
