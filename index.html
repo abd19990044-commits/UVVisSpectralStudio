@@ -154,6 +154,7 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 <div class="field"><label for="yTickCount" data-i18n="yTickCountLabel">Y intervals (2–20)</label><input id="yTickCount" type="number" min="2" max="20" step="1" value="5"></div>
 <div class="field"><label for="yTickStep" data-i18n="yTickStepLabel">Y step</label><input id="yTickStep" type="number" min="0" step="any" value="0.2"></div>
 
+<div class="field"><label for="derivativeAxisFormat" data-i18n="derivativeAxisFormat">Derivative Y number style</label><select id="derivativeAxisFormat"><option value="scaled" data-i18n="axisScaled">Scaled axis (10ⁿ × derivative)</option><option value="raw" data-i18n="axisRaw">Unscaled scientific notation</option></select></div>
 <div class="field"><label for="axisWidth" data-i18n="axisWidthLabel">Axis width (px)</label><input id="axisWidth" type="number" min="0.3" max="5" step="0.1" value="1.3"></div>
 <div class="field"><label for="tickWidth" data-i18n="tickWidthLabel">Tick width (px)</label><input id="tickWidth" type="number" min="0.3" max="5" step="0.1" value="1.2"></div></div></details>
 <div class="toolbar"><button id="axisApply" class="btn primary" data-i18n="apply">Apply axes</button><button id="axisReset" class="btn" data-i18n="reset">Reset axes</button><button id="fitData" class="btn" data-i18n="fitData">Fit to data</button></div><div class="field"><label data-i18n="processingTitle" for="processMin">Derivative processing range (nm) — independent of zoom</label><div class="two"><input id="processMin" type="number" step="any" placeholder="Full: minimum" aria-label="Processing minimum wavelength"><input id="processMax" type="number" step="any" placeholder="Full: maximum" aria-label="Processing maximum wavelength"></div><button type="button" id="applyProcess" class="btn small" data-i18n="applyProcess">Apply processing range</button><p class="note" data-i18n="processHint">Blank means full measured spectrum. Dragging and display axis changes never recompute the processing range.</p></div><div class="field"><label for="zoomMode" data-i18n="zoomMode">Drag zoom mode</label><select id="zoomMode"><option value="x" data-i18n="zoomX">X only</option><option value="y" data-i18n="zoomY">Y only</option><option value="xy" data-i18n="zoomXY">Box zoom (X and Y)</option></select></div><div class="toolbar"><button class="btn small" id="zoomBack" disabled data-i18n="zoomBack">Zoom back</button><button class="btn small" id="zoomReset" data-i18n="zoomReset">Reset zoom</button></div><div class="field"><label for="cursorMode" data-i18n="cursorMode">Cursor readings</label><select id="cursorMode"><option value="interpolate" data-i18n="cursorInterpolated">Linear interpolation (indicated)</option><option value="nearest" data-i18n="cursorNearest">Nearest actual measured wavelength, per spectrum</option></select></div><p class="note" data-i18n="cursorHint">Drag horizontally over the plot to zoom; click to lock or unlock the wavelength cursor.</p><div class="field"><label for="chartTitle" data-i18n="titleLabel">Plot title</label><input id="chartTitle" value="UV–Vis Spectral Overlay"></div><div class="two"><div class="field"><label for="xLabel" data-i18n="xLabel">X-axis title</label><input id="xLabel" value="Wavelength (nm)" dir="ltr" lang="en"></div><div class="field"><label for="yLabel" data-i18n="yLabel">Custom Y-axis title (optional)</label><input id="yLabel" placeholder="Auto: physically consistent" data-placeholder="yAuto" dir="ltr" lang="en"></div></div><label class="small-note" style="display:block;margin-top:12px"><input type="checkbox" id="publicationMode" checked> <span data-i18n="publicationMode">Publication layout for derivatives D1–D4</span></label><p class="note" data-i18n="publicationModeNote">For D1–D4 only: fit X to available data, include scientific scale in the Y title and use rounded Y bounds. Turn off to restore prior axes.</p><label class="small-note" style="display:block;margin-top:12px"><input type="checkbox" id="showCurveLegend" checked> <span data-i18n="showCurveLegend">Show curve legend inside the plot and exports</span></label></section>
@@ -265,6 +266,7 @@ const STR={
  };
 /* Reviewed analytical-chemistry terminology and publication-ready Arabic UI. */
 Object.assign(STR.en,{
+  derivativeAxisFormat:'Derivative Y number style',axisScaled:'Scaled axis (10ⁿ × derivative)',axisRaw:'Unscaled scientific notation',
   zoomMode:'Drag zoom mode',zoomX:'X only',zoomY:'Y only',zoomXY:'Box zoom (X and Y)',printVectorPdf:'Print / Save PDF (vector)',zoomBack:'Zoom back',zoomReset:'Reset zoom',exportParameters:'Save method JSON',higherDerivativeCaution:'D3/D4 can amplify spectral noise: review window sensitivity, sampling and experimental controls. No universal S/N threshold establishes validity.',
   publicationMode:'Publication layout for derivatives D1–D4',publicationModeNote:'For D1–D4 only: fit X to available data, include scientific scale in the Y title and use rounded Y bounds. Turn off to restore prior axes.',
   showCurveLegend:'Show curve legend inside the plot and exports',editCurveName:'Edit displayed curve name',
@@ -280,6 +282,7 @@ Object.assign(STR.en,{
  themeDark:'Dark mode',themeLight:'Light mode',themeDarkAria:'Switch to dark mode',themeLightAria:'Switch to light mode',cursorWavelength:'Wavelength',measuredData:'Measured readings',column:'Column'
 });
 Object.assign(STR.ar,{
+  derivativeAxisFormat:'نمط أرقام المحور Y للمشتقات',axisScaled:'محور مُحجّم (10ⁿ × المشتقة)',axisRaw:'صيغة علمية بلا تحجيم',
   zoomMode:'نمط التكبير بالسحب',zoomX:'المحور X فقط',zoomY:'المحور Y فقط',zoomXY:'تكبير مستطيل للمحورين',printVectorPdf:'طباعة / حفظ PDF متجهي',zoomBack:'التكبير السابق',zoomReset:'إعادة ضبط التكبير',exportParameters:'حفظ إعدادات الطريقة JSON',higherDerivativeCaution:'قد تضخّم المشتقات D3/D4 الضوضاء: افحص حساسية النافذة وكثافة العينات والضوابط التجريبية؛ لا توجد عتبة S/N عامة تثبت صلاحيتها.',
   publicationMode:'تنسيق النشر للمشتقات D1–D4',publicationModeNote:'للمشتقات D1–D4 فقط: ضبط X على مدى البيانات المتاحة، ودمج الأس في عنوان Y، واختيار حدود مناسبة. إيقاف الوضع يعيد حدود المحاور السابقة.',
   showCurveLegend:'إظهار مفتاح المنحنيات داخل الرسم وفي الصور المصدّرة',editCurveName:'تعديل اسم المنحنى المعروض',
@@ -989,11 +992,18 @@ function publicationAxisTitle(label,order,exponent){
  if(label.endsWith(' ('+ascii+')'))return expression+' '+label.slice(0,-(' ('+ascii+')').length)+' ('+ascii+')';
  return expression+' '+label;
 }
+function rawScientificDerivativeLabel(value,step){
+ if(Math.abs(value)<Math.abs(step)*1e-8)return '0.0';
+ const significant=Math.max(1,Math.min(9,
+  Math.floor(Math.log10(Math.abs(value)))-Math.floor(Math.log10(Math.abs(step)))+1));
+ return value.toExponential(significant);
+}
 function plotWidth(id,lo,hi){const v=Number($(id).value);if(!Number.isFinite(v)||v<lo||v>hi)throw Error(id+': line width must be '+lo+'–'+hi+' px');return v;}
 function buildSvg(data,order,B,preview=false,interactive=true){
  const insideLegend=publicationLegendInside(data,B,order,preview);
  let {W,H,p}=geometry(preview,data.length,insideLegend),xlab=xAxisLabel(),ylab=axisLabel(order),title=$('chartTitle').value.trim()||'UV–Vis Spectral Overlay';
  const pub=order>0&&$('publicationMode').checked;
+ const rawScientific=pub&&$('derivativeAxisFormat').value==='raw';
  const axisColor='#4b5563', textColor='#111827', zeroColor='#8a95a3',tickFont=pub?16:14,labelFont=pub?20:18;
  let out=`<svg xmlns="${NS}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#fff"/><defs><clipPath id="plotClip"><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}"/></clipPath></defs>`;
  const xSpec=pub&&$('xTickMode').value==='auto'
@@ -1003,7 +1013,7 @@ function buildSvg(data,order,B,preview=false,interactive=true){
   :axisTicks(B.xmin,B.xmax,'x');
  const ySpec=axisTicks(B.ymin,B.ymax,'y'),yRange=B.ymax-B.ymin;
  const derivativeScale=order>0?derivativeAxisScale(ySpec.values,ySpec.step):null;
- if(pub&&derivativeScale)ylab=publicationAxisTitle(ylab,order,derivativeScale.exponent);
+ if(pub&&derivativeScale&&!rawScientific)ylab=publicationAxisTitle(ylab,order,derivativeScale.exponent);
  const curveStroke=plotWidth('curveWidth',0.3,8),axisStroke=plotWidth('axisWidth',0.3,5),tickStroke=plotWidth('tickWidth',0.3,5);
  for(const xx of xSpec.values){
   const x=p.x+p.w*(xx-B.xmin)/(B.xmax-B.xmin);
@@ -1015,7 +1025,7 @@ function buildSvg(data,order,B,preview=false,interactive=true){
   const y=p.y+(B.ymax-yy)/yRange*p.h;
   out+=`<line x1="${p.x}" y1="${y}" x2="${p.x+9}" y2="${y}" stroke="${axisColor}" stroke-width="${tickStroke}"/>`;
   out+=`<line x1="${p.x+p.w}" y1="${y}" x2="${p.x+p.w-9}" y2="${y}" stroke="${axisColor}" stroke-width="${tickStroke}"/>`;
-  out+=`<text x="${p.x-14}" y="${y+5}" fill="${textColor}" text-anchor="end" font-family="Arial,sans-serif" font-size="${tickFont}">${E(order===0?(Math.abs(yy)<0.005?0:yy).toFixed(2):derivativeAxisLabel(yy,derivativeScale,ySpec.step))}</text>`;
+  out+=`<text x="${p.x-14}" y="${y+5}" fill="${textColor}" text-anchor="end" font-family="Arial,sans-serif" font-size="${tickFont}">${E(order===0?(Math.abs(yy)<0.005?0:yy).toFixed(2):rawScientific?rawScientificDerivativeLabel(yy,ySpec.step):derivativeAxisLabel(yy,derivativeScale,ySpec.step))}</text>`;
  }
  if(derivativeScale&&derivativeScale.exponent&&!pub){
   out+=`<text x="${p.x-13}" y="${p.y-15}" fill="${textColor}" text-anchor="end" font-family="Arial,sans-serif" font-size="14">${E(axisMultiplier(derivativeScale.exponent))}</text>`;
@@ -1023,7 +1033,7 @@ function buildSvg(data,order,B,preview=false,interactive=true){
  if(order>0&&B.ymin<0&&B.ymax>0){let z=p.y+B.ymax/(B.ymax-B.ymin)*p.h;out+=`<path d="M${p.x} ${z}H${p.x+p.w}" stroke="${zeroColor}" stroke-width="1.1" stroke-dasharray="4 3" fill="none"/>`;}
  out+=`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" stroke="${axisColor}" stroke-width="${axisStroke}" fill="none"/>`;
  out+=`<text x="${p.x+p.w/2}" y="${H-42}" text-anchor="middle" direction="ltr" fill="${textColor}" font-family="Arial,sans-serif" font-size="${labelFont}">${E(xlab)}</text>`;
- if(pub&&derivativeScale)out+=publicationYLabelSvg(31,p.y+p.h/2,order,derivativeScale.exponent,textColor,labelFont,axisLabel(order));
+ if(pub&&derivativeScale&&!rawScientific)out+=publicationYLabelSvg(31,p.y+p.h/2,order,derivativeScale.exponent,textColor,labelFont,axisLabel(order));
  else out+=`<text x="31" y="${p.y+p.h/2}" text-anchor="middle" transform="rotate(-90 31 ${p.y+p.h/2})" direction="ltr" fill="${textColor}" font-family="Arial,sans-serif" font-size="${labelFont}">${E(ylab)}</text>`;
  if(!preview&&$('showCurveLegend').checked&&!insideLegend){
   for(let j=0;j<Math.min(12,data.length);j++){
@@ -1263,7 +1273,7 @@ function exportMethodParameters(){
    visible:c.visible,color:c.color,lineWidthPx:c.lineWidth??Number(v('curveWidth')),
    provenance:c.provenance||null})),
   display:{bounds:plotState?.B??null,zoomMode:v('zoomMode'),publicationMode:$('publicationMode').checked,
-   xTickMode:v('xTickMode'),yTickMode:v('yTickMode'),defaultCurveWidthPx:Number(v('curveWidth'))},
+   xTickMode:v('xTickMode'),yTickMode:v('yTickMode'),defaultCurveWidthPx:Number(v('curveWidth')),derivativeAxisFormat:v('derivativeAxisFormat')},
   image:{width:Number(v('imageWidth')),widthUnit:v('widthUnit'),dpi:Number(v('dpi'))}};
  download(new Blob([JSON.stringify(payload,null,2)+'\n'],{type:'application/json;charset=utf-8'}),'uvvis_method_parameters.json');
 }
@@ -1344,7 +1354,7 @@ $('publicationMode').onchange=()=>{
  }
  render();
 };
-$('view').onchange=()=>{let order=$('view').value==='all'?4:Number($('view').value);if(order>Number($('degree').value))$('degree').value=String(order);if($('view').value==='all')derivativeGalleryOpen=true;derivativeAutoFit=order>0&&!manualYLimits;if(!manualYLimits){if(order>0){$('ymin').value='';$('ymax').value='';}else{$('ymin').value='0';$('ymax').value='';}}if(order>0)setPublicationAxes();render();};for(let id of ['ymin','ymax'])$(id).oninput=()=>{yInputsEdited=true;};for(let id of ['window','degree','edgeMode'])$(id).onchange=render;for(let id of ['chartTitle','xLabel','yLabel','showCurveLegend'])$(id).onchange=render;for(const id of ['xTickMode','xTickCount','xTickStep','yTickMode','yTickCount','yTickStep','curveWidth','axisWidth','tickWidth'])$(id).addEventListener('change',()=>{if(id==='curveWidth')$('samples').querySelectorAll('[data-curve-width]').forEach(el=>el.placeholder=$(id).value);render();});
+$('view').onchange=()=>{let order=$('view').value==='all'?4:Number($('view').value);if(order>Number($('degree').value))$('degree').value=String(order);if($('view').value==='all')derivativeGalleryOpen=true;derivativeAutoFit=order>0&&!manualYLimits;if(!manualYLimits){if(order>0){$('ymin').value='';$('ymax').value='';}else{$('ymin').value='0';$('ymax').value='';}}if(order>0)setPublicationAxes();render();};for(let id of ['ymin','ymax'])$(id).oninput=()=>{yInputsEdited=true;};for(let id of ['window','degree','edgeMode'])$(id).onchange=render;for(let id of ['chartTitle','xLabel','yLabel','showCurveLegend'])$(id).onchange=render;for(const id of ['xTickMode','xTickCount','xTickStep','yTickMode','yTickCount','yTickStep','derivativeAxisFormat','curveWidth','axisWidth','tickWidth'])$(id).addEventListener('change',()=>{if(id==='curveWidth')$('samples').querySelectorAll('[data-curve-width]').forEach(el=>el.placeholder=$(id).value);render();});
 $('axisApply').onclick=()=>{const roi=displayXRange();if(!manualYLimits&&!yInputsEdited&&activeOrder()===0&&(roi.lo!==200||roi.hi!==800)){$('ymin').value='';$('ymax').value='';}manualYLimits=Boolean(yInputsEdited&&($('ymin').value.trim()||$('ymax').value.trim())||manualYLimits);yInputsEdited=false;derivativeAutoFit=activeOrder()>0&&!manualYLimits;render();};$('axisReset').onclick=()=>{manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;$('xmin').value='200';$('xmax').value='800';if(activeOrder()===0){$('ymin').value='0';$('ymax').value='';}else{$('ymin').value='';$('ymax').value='';}render();};$('fitData').onclick=()=>{const v=visible();if(!v.length){status('noPlot','warn');return;}const lo=Math.min(...v.map(s=>s.x[0])),hi=Math.max(...v.map(s=>s.x.at(-1)));$('xmin').value=String(lo);$('xmax').value=String(hi);$('ymin').value='';$('ymax').value='';manualYLimits=false;yInputsEdited=false;derivativeAutoFit=activeOrder()>0;render();};$('applyProcess').onclick=()=>{const l=$('processMin').value.trim(),h=$('processMax').value.trim(),lo=l===''?-Infinity:Number(l),hi=h===''?Infinity:Number(h);if(Number.isNaN(lo)||Number.isNaN(hi)||lo>=hi){statusRaw(lang==='ar'?'مجال الاشتقاق غير صالح':'Invalid derivative processing range','warn');return;}processingRange={lo,hi};render();};$('exportSvg').onclick=exportSvg;$('exportParameters').onclick=exportMethodParameters;$('printVectorPdf').onclick=printVectorPdf;$('exportPng').onclick=exportPng;
 $('prepApply').onclick=()=>{
  try{
