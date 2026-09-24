@@ -853,19 +853,58 @@ function geometry(preview=false,count=0,insideLegend=false){
  const rows=preview||insideLegend?0:(showLegend?Math.ceil(Math.min(count,12)/3):0),extra=rows*18,H=preview?460:610+extra;
  return{W,H,p:{x:104,y:preview?35:(showLegend&&!insideLegend?54+extra:28),w:W-158,h:H-(preview?120:(showLegend&&!insideLegend?164:138))}};
 }
+function legendTextWidth(text){
+ // Canvas and SVG use the same font; a safe fallback supports restricted browser contexts.
+ try{
+  const ctx=document.createElement('canvas').getContext('2d');
+  if(ctx){ctx.font='13px Arial';return ctx.measureText(text).width;}
+ }catch(_){}
+ return [...text].length*7.5;
+}
+function legendLayout(data,p){
+ const pad=14,row=25,maxWidth=Math.min(420,p.w-32),available=maxWidth-2*pad-35;
+ const names=data.map(d=>String(d.s.name||'').trim()||'Spectrum');
+ const widest=Math.max(0,...names.map(legendTextWidth));
+ const width=Math.min(maxWidth,Math.max(178,Math.ceil(widest+2*pad+35+6)));
+ const textMax=width-2*pad-35;
+ const fitLine=text=>{
+  if(legendTextWidth(text)<=textMax)return text;
+  let lo=0,hi=text.length;
+  while(lo<hi){const mid=Math.ceil((lo+hi)/2);if(legendTextWidth(text.slice(0,mid)+'…')<=textMax)lo=mid;else hi=mid-1;}
+  return text.slice(0,lo)+'…';
+ };
+ const lines=names.map(name=>{
+  if(legendTextWidth(name)<=textMax)return[name];
+  let split=-1;
+  for(let k=1;k<name.length;k++)if(/[\s\-–]/.test(name[k])&&legendTextWidth(name.slice(0,k).trim())<=textMax)split=k;
+  if(split>0)return[name.slice(0,split).trim(),fitLine(name.slice(split).trim())];
+  return[fitLine(name)];
+ });
+ const heights=lines.map(parts=>Math.max(row,parts.length*17+8));
+ const height=pad*2+heights.reduce((x,y)=>x+y,0);
+ return{width,height,pad,row,lines,heights,x:p.x+p.w-width-13,y:p.y+12};
+}
 function publicationLegendInside(data,B,order,preview=false){
- if(preview||order===0||!$('publicationMode').checked||!$('showCurveLegend').checked||!data.length||data.length>6)return false;
- // A compact boxed legend is permitted only where all visible traces leave it unobstructed.
- // Check actual plotted values, including linear segment crossings of the legend region.
- const right=B.xmax-(B.xmax-B.xmin)*.36;
- const top=B.ymax-(B.ymax-B.ymin)*(.07+data.length*.055);
+ if(preview||!$('showCurveLegend').checked||!data.length||data.length>8||
+    !(order===0||(order>0&&$('publicationMode').checked)))return false;
+ const p=geometry(false,data.length,true).p,box=legendLayout(data,p);
+ if(box.width>p.w-30||box.height>p.h*.58)return false;
+ const xleft=B.xmin+(box.x-p.x-5)/p.w*(B.xmax-B.xmin);
+ const xright=B.xmin+(box.x+box.width+5-p.x)/p.w*(B.xmax-B.xmin);
+ const ymin=B.ymax-(box.y+box.height+5-p.y)/p.h*(B.ymax-B.ymin);
+ const ymax=B.ymax-(box.y-5-p.y)/p.h*(B.ymax-B.ymin);
+ // Reject any inset that would obscure data, including a line segment crossing its bounds.
  return data.every(d=>{
   for(let i=0;i<d.x.length;i++){
-   const x=d.x[i],y=d.y[i];if(x>=right&&x<=B.xmax&&Number.isFinite(y)&&y>=top)return false;
-   if(i&&x>=right&&d.x[i-1]<right&&!d.breaks.includes(i)){
-    const y0=d.y[i-1],z=interp(d,right);
-    if(Number.isFinite(y0)&&Number.isFinite(z)&&z>=top)return false;
-   }
+   const x=d.x[i],y=d.y[i];
+   if(Number.isFinite(y)&&x>=xleft&&x<=xright&&y>=ymin&&y<=ymax)return false;
+   if(!i||d.breaks.includes(i))continue;
+   const x0=d.x[i-1],y0=d.y[i-1];
+   if(!Number.isFinite(y)||!Number.isFinite(y0)||x<xleft||x0>xright)continue;
+   const left=Math.max(xleft,x0),right=Math.min(xright,x);
+   if(right<left||x===x0)continue;
+   const ya=y0+(y-y0)*(left-x0)/(x-x0),yb=y0+(y-y0)*(right-x0)/(x-x0);
+   if(Math.max(ya,yb)>=ymin&&Math.min(ya,yb)<=ymax)return false;
   }
   return true;
  });
@@ -883,11 +922,15 @@ function publicationYLabelSvg(x,y,order,exponent,color,size,plainLabel){
  return `<text x="${x}" y="${y}" transform="rotate(-90 ${x} ${y})" text-anchor="middle" direction="ltr" fill="${color}" font-family="Arial,sans-serif" font-size="${size}">${parts}</text>`;
 }
 function publicationLegendSvg(data,p,curveStroke){
- const width=290,pad=13,row=25,x=p.x+p.w-width-13,y=p.y+12,h=pad*2+row*data.length;
- let out=`<g class="publication-legend"><rect x="${x}" y="${y}" width="${width}" height="${h}" rx="6" fill="#fff" fill-opacity=".94" stroke="#dfe5eb" stroke-width=".65"/>`;
+ const m=legendLayout(data,p);
+ let out=`<g class="publication-legend"><rect x="${m.x}" y="${m.y}" width="${m.width}" height="${m.height}" rx="7" fill="#fff" fill-opacity=".94" stroke="#dfe5eb" stroke-width=".7"/>`;
+ let offset=m.pad;
  for(let j=0;j<data.length;j++){
-  const d=data[j],cy=y+pad+row*j+9,name=d.s.name.length>35?d.s.name.slice(0,32)+'…':d.s.name;
-  out+=`<path d="M${x+pad} ${cy}h25" fill="none" stroke="${d.s.color}" stroke-width="${Math.max(2,Math.min(5,d.s.lineWidth??curveStroke))}" stroke-dasharray="${d.s.style==='dash'?'8 5':d.s.style==='dot'?'2 4':'none'}"/><text x="${x+pad+34}" y="${cy+4}" fill="#273548" font-family="Arial,sans-serif" font-size="12.5">${E(name)}</text>`;
+  const d=data[j],lines=m.lines[j],cy=m.y+offset+(m.heights[j]-17*(lines.length-1))/2;
+  out+=`<path d="M${m.x+m.pad} ${cy}h25" fill="none" stroke="${d.s.color}" stroke-width="${Math.max(2,Math.min(5,d.s.lineWidth??curveStroke))}" stroke-dasharray="${d.s.style==='dash'?'8 5':d.s.style==='dot'?'2 4':'none'}"/>`;
+  for(let n=0;n<lines.length;n++)
+   out+=`<text x="${m.x+m.pad+35}" y="${cy+4+n*17}" fill="#273548" font-family="Arial,sans-serif" font-size="13">${E(lines[n])}</text>`;
+  offset+=m.heights[j];
  }
  return out+'</g>';
 }
@@ -1043,7 +1086,7 @@ function render(){
   attachCursor();
   if(!$('readingTableArea').hidden)refreshReadingTable();
   if(!$('overlayTableArea').hidden)refreshOverlayTable();
-  $('legend').innerHTML=order>0&&$('publicationMode').checked?'':data.map(d=>`<span><i class="swatch" style="background:${d.s.color}"></i>${E(d.s.name)}</span>`).join('');
+  $('legend').innerHTML=chart.svg.includes('class="publication-legend"')?'':data.map(d=>`<span><i class="swatch" style="background:${d.s.color}"></i>${E(d.s.name)}</span>`).join('');
   if(derivativeGalleryOpen){
    for(let n=1;n<=4;n++){
     const div=document.createElement('div');
