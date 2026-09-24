@@ -1316,22 +1316,27 @@ $('langToggle').onclick=switchLanguage;
 $('upload').onchange=e=>{importFiles([...e.target.files]);e.target.value='';};let drop=$('drop');drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag');};drop.ondragleave=()=>drop.classList.remove('drag');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');importFiles([...e.dataTransfer.files]);};
 $('demo').onclick=()=>{let x=Array.from({length:301},(_,i)=>200+i),defs=[{name:'Sample A · synthetic',f:w=>.04+.75*Math.exp(-.5*((w-274)/17)**2)+.12*Math.exp(-.5*((w-355)/36)**2)},{name:'Sample B · synthetic',f:w=>.05+.65*Math.exp(-.5*((w-286)/21)**2)+.10*Math.exp(-.5*((w-348)/28)**2)},{name:'Sample C · synthetic',f:w=>.04+.52*Math.exp(-.5*((w-265)/24)**2)+.14*Math.exp(-.5*((w-375)/24)**2)}];for(let d of defs){const raw=x.map(d.f),baseline=Math.min(...raw);spectra.push({id:++seq,name:d.name,x:[...x],y:raw.map(y=>Math.max(0,y-baseline)),breaks:[],color:PALETTE[(seq-1)%PALETTE.length],style:'solid',visible:true,cache:{}});}updateSamples();render();status('demoStatus');};
 $('clear').onclick=()=>{spectra=[];sourceTables=[];updateMapping();updateSamples();render();status('cleared');};let axesBeforePublication=null;
-function setPublicationAxes(){
+function setPublicationAxes(force=false){
  if(!$('publicationMode').checked||activeOrder()===0)return;
  const curves=visible().map(s=>useData(s,activeOrder()));
  const finite=curves.flatMap(d=>d.x.filter((x,i)=>Number.isFinite(d.y[i])));
  if(!finite.length){statusRaw(lang==='ar'?'لا تتوفر نقاط مشتقة صالحة لتهيئة المحاور':'No valid derivative data for axis fitting','warn');return;}
  const lower=Math.min(...finite),upper=Math.max(...finite),span=upper-lower;
  const step=span<=400?50:niceTickStep(span,6,true);
- $('xmin').value=String(Math.floor(lower/step+1e-10)*step);
- $('xmax').value=String(Math.ceil(upper/step-1e-10)*step);
- $('ymin').value='';$('ymax').value='';
- manualYLimits=false;yInputsEdited=false;derivativeAutoFit=false;
+ // Keep an explicitly chosen ROI; automatic publication framing applies only to default/auto X limits.
+ const autoX=force||($('xmin').value==='200'&&$('xmax').value==='800')||
+  !$('xmin').value.trim()||!$('xmax').value.trim();
+ if(autoX){
+  $('xmin').value=String(Math.floor(lower/step+1e-10)*step);
+  $('xmax').value=String(Math.ceil(upper/step-1e-10)*step);
+ }
+ if(!manualYLimits){$('ymin').value='';$('ymax').value='';}
+ yInputsEdited=false;derivativeAutoFit=false;
 }
 $('publicationMode').onchange=()=>{
  if($('publicationMode').checked){
   axesBeforePublication={xmin:$('xmin').value,xmax:$('xmax').value,ymin:$('ymin').value,ymax:$('ymax').value,manualYLimits,derivativeAutoFit};
-  setPublicationAxes();
+  setPublicationAxes(true);
  }else if(axesBeforePublication){
   for(const id of ['xmin','xmax','ymin','ymax'])$(id).value=axesBeforePublication[id];
   manualYLimits=axesBeforePublication.manualYLimits;derivativeAutoFit=axesBeforePublication.derivativeAutoFit;
