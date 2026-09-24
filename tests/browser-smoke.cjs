@@ -53,7 +53,9 @@ async function run(){
   await page.locator('#overview .mini').first().click();
   assert.equal(await page.locator('#overview .mini').count(),4);
   assert.equal(await page.locator('#view').inputValue(),'1');
-  assert.ok((await page.locator('#chart').innerHTML()).includes('270.0'));
+  assert.equal(await page.locator('#xmin').inputValue(),'270');
+  assert.ok((await page.locator('#chart').innerHTML()).includes('300.0'),
+    'Nice 50-nm derivative tick grid must remain inside the selected 270–400 nm ROI');
   assert.ok((await page.locator('#chart').innerHTML()).includes('400.0'));
 
   const baselineDownload=page.waitForEvent('download');
