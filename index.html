@@ -854,10 +854,42 @@ function geometry(preview=false,count=0,insideLegend=false){
  return{W,H,p:{x:104,y:preview?35:(showLegend&&!insideLegend?54+extra:28),w:W-158,h:H-(preview?120:(showLegend&&!insideLegend?164:138))}};
 }
 function publicationLegendInside(data,B,order,preview=false){
- if(preview||order===0||!$('publicationMode').checked||!$('showCurveLegend').checked||!data.length||data.length>4)return false;
- const cutoff=B.xmax-(B.xmax-B.xmin)*.34,cap=B.ymax-(B.ymax-B.ymin)*.27;
- // No trace is allowed through the top-right legend area; fall back to the external legend.
- return data.every(d=>d.x.every((x,i)=>x<cutoff||x>B.xmax||!Number.isFinite(d.y[i])||d.y[i]<cap));
+ if(preview||order===0||!$('publicationMode').checked||!$('showCurveLegend').checked||!data.length||data.length>6)return false;
+ // A compact boxed legend is permitted only where all visible traces leave it unobstructed.
+ // Check actual plotted values, including linear segment crossings of the legend region.
+ const right=B.xmax-(B.xmax-B.xmin)*.36;
+ const top=B.ymax-(B.ymax-B.ymin)*(.07+data.length*.055);
+ return data.every(d=>{
+  for(let i=0;i<d.x.length;i++){
+   const x=d.x[i],y=d.y[i];if(x>=right&&x<=B.xmax&&Number.isFinite(y)&&y>=top)return false;
+   if(i&&x>=right&&d.x[i-1]<right&&!d.breaks.includes(i)){
+    const y0=d.y[i-1],z=interp(d,right);
+    if(Number.isFinite(y0)&&Number.isFinite(z)&&z>=top)return false;
+   }
+  }
+  return true;
+ });
+}
+function publicationYLabelSvg(x,y,order,exponent,color,size,plainLabel){
+ // SVG tspans create explicit superscripts rather than relying on font-specific glyph substitution.
+ // For custom/mixed-signal labels retain their exact text; never silently relabel as absorbance.
+ if(!/^d(?:[¹²³⁴]|\^[1-4])?A\/dλ/.test(plainLabel)&&!/^dA\/dλ/.test(plainLabel))
+  return `<text x="${x}" y="${y}" transform="rotate(-90 ${x} ${y})" text-anchor="middle" direction="ltr" fill="${color}" font-family="Arial,sans-serif" font-size="${size}">${E(publicationAxisTitle(plainLabel,order,exponent))}</text>`;
+ const exp=-exponent,small=Math.round(size*.68);
+ let parts=exp?`<tspan>10</tspan><tspan baseline-shift="super" font-size="${small}">${E(String(exp))}</tspan><tspan baseline-shift="baseline" font-size="${size}"> × </tspan>`:'';
+ if(order===1)parts+='<tspan>dA/dλ (nm</tspan>';
+ else parts+=`<tspan>d</tspan><tspan baseline-shift="super" font-size="${small}">${order}</tspan><tspan baseline-shift="baseline" font-size="${size}">A/dλ</tspan><tspan baseline-shift="super" font-size="${small}">${order}</tspan><tspan baseline-shift="baseline" font-size="${size}"> (nm</tspan>`;
+ parts+=`<tspan baseline-shift="super" font-size="${small}">−${order}</tspan><tspan baseline-shift="baseline" font-size="${size}">)</tspan>`;
+ return `<text x="${x}" y="${y}" transform="rotate(-90 ${x} ${y})" text-anchor="middle" direction="ltr" fill="${color}" font-family="Arial,sans-serif" font-size="${size}">${parts}</text>`;
+}
+function publicationLegendSvg(data,p,curveStroke){
+ const width=290,pad=13,row=25,x=p.x+p.w-width-13,y=p.y+12,h=pad*2+row*data.length;
+ let out=`<g class="publication-legend"><rect x="${x}" y="${y}" width="${width}" height="${h}" rx="6" fill="#fff" fill-opacity=".94" stroke="#dfe5eb" stroke-width=".65"/>`;
+ for(let j=0;j<data.length;j++){
+  const d=data[j],cy=y+pad+row*j+9,name=d.s.name.length>35?d.s.name.slice(0,32)+'…':d.s.name;
+  out+=`<path d="M${x+pad} ${cy}h25" fill="none" stroke="${d.s.color}" stroke-width="${Math.max(2,Math.min(5,d.s.lineWidth??curveStroke))}" stroke-dasharray="${d.s.style==='dash'?'8 5':d.s.style==='dot'?'2 4':'none'}"/><text x="${x+pad+34}" y="${cy+4}" fill="#273548" font-family="Arial,sans-serif" font-size="12.5">${E(name)}</text>`;
+ }
+ return out+'</g>';
 }
 function niceTickStep(span,target,integer=false){
  const raw=span/target,pow=10**Math.floor(Math.log10(raw));
@@ -946,18 +978,19 @@ function buildSvg(data,order,B,preview=false,interactive=true){
  if(order>0&&B.ymin<0&&B.ymax>0){let z=p.y+B.ymax/(B.ymax-B.ymin)*p.h;out+=`<path d="M${p.x} ${z}H${p.x+p.w}" stroke="${zeroColor}" stroke-width="1.1" stroke-dasharray="4 3" fill="none"/>`;}
  out+=`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" stroke="${axisColor}" stroke-width="${axisStroke}" fill="none"/>`;
  out+=`<text x="${p.x+p.w/2}" y="${H-42}" text-anchor="middle" direction="ltr" fill="${textColor}" font-family="Arial,sans-serif" font-size="${labelFont}">${E(xlab)}</text>`;
- out+=`<text x="31" y="${p.y+p.h/2}" text-anchor="middle" transform="rotate(-90 31 ${p.y+p.h/2})" direction="ltr" fill="${textColor}" font-family="Arial,sans-serif" font-size="${labelFont}">${E(ylab)}</text>`;
- if(!preview&&$('showCurveLegend').checked){
-   if(insideLegend)out+=`<rect x="${p.x+p.w-320}" y="${p.y+13}" width="310" height="${data.length*23+14}" fill="#fff" fill-opacity=".88"/>`;
-   for(let j=0;j<Math.min(12,data.length);j++){
-     let d=data[j],x=insideLegend?p.x+p.w-310:p.x+(j%3)*320,y=insideLegend?p.y+37+j*23:48+Math.floor(j/3)*18,name=d.s.name.length>33?d.s.name.slice(0,30)+'…':d.s.name;
-     out+=`<path d="M${x} ${y-4}h20" stroke="${d.s.color}" stroke-width="${Math.max(pub?2:1.2,Math.min(5,d.s.lineWidth??curveStroke))}" stroke-dasharray="${d.s.style==='dash'?'8 5':d.s.style==='dot'?'2 4':'none'}"/><text x="${x+26}" y="${y}" fill="#334155" font-family="Arial,sans-serif" font-size="12">${E(name)}</text>`;
-   }
-   if(data.length>12)out+=`<text x="${p.x+p.w}" y="29" text-anchor="end" fill="#475569" font-family="Arial,sans-serif" font-size="11">+${data.length-12} more curves · see on-screen legend</text>`;
+ if(pub&&derivativeScale)out+=publicationYLabelSvg(31,p.y+p.h/2,order,derivativeScale.exponent,textColor,labelFont,axisLabel(order));
+ else out+=`<text x="31" y="${p.y+p.h/2}" text-anchor="middle" transform="rotate(-90 31 ${p.y+p.h/2})" direction="ltr" fill="${textColor}" font-family="Arial,sans-serif" font-size="${labelFont}">${E(ylab)}</text>`;
+ if(!preview&&$('showCurveLegend').checked&&!insideLegend){
+  for(let j=0;j<Math.min(12,data.length);j++){
+    let d=data[j],x=p.x+(j%3)*320,y=48+Math.floor(j/3)*18,name=d.s.name.length>33?d.s.name.slice(0,30)+'…':d.s.name;
+    out+=`<path d="M${x} ${y-4}h20" stroke="${d.s.color}" stroke-width="${Math.max(pub?2:1.2,Math.min(5,d.s.lineWidth??curveStroke))}" stroke-dasharray="${d.s.style==='dash'?'8 5':d.s.style==='dot'?'2 4':'none'}"/><text x="${x+26}" y="${y}" fill="#334155" font-family="Arial,sans-serif" font-size="12">${E(name)}</text>`;
+  }
+  if(data.length>12)out+=`<text x="${p.x+p.w}" y="29" text-anchor="end" fill="#475569" font-family="Arial,sans-serif" font-size="11">+${data.length-12} more curves · see on-screen legend</text>`;
  }
  out+='<g clip-path="url(#plotClip)">';
  for(let d of data){let path=pathOf(d,B,p);if(path)out+=`<path d="${path}" fill="none" stroke="${d.s.color}" stroke-dasharray="${d.s.style==='dash'?'8 5':d.s.style==='dot'?'2 4':'none'}" stroke-width="${preview?Math.max(.6,(d.s.lineWidth??curveStroke)*.85):Math.max(pub?2:.3,d.s.lineWidth??curveStroke)}" stroke-linejoin="round" stroke-linecap="round"/>`;}
  out+='</g>';
+ if(insideLegend)out+=publicationLegendSvg(data,p,curveStroke);
  if(!preview&&interactive){
   const endZones=[
    ['xmin',p.x-12,p.y+p.h-14,30,30],
@@ -1010,7 +1043,7 @@ function render(){
   attachCursor();
   if(!$('readingTableArea').hidden)refreshReadingTable();
   if(!$('overlayTableArea').hidden)refreshOverlayTable();
-  $('legend').innerHTML=data.map(d=>`<span><i class="swatch" style="background:${d.s.color}"></i>${E(d.s.name)}</span>`).join('');
+  $('legend').innerHTML=order>0&&$('publicationMode').checked?'':data.map(d=>`<span><i class="swatch" style="background:${d.s.color}"></i>${E(d.s.name)}</span>`).join('');
   if(derivativeGalleryOpen){
    for(let n=1;n<=4;n++){
     const div=document.createElement('div');
