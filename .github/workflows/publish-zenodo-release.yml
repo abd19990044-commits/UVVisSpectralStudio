@@ -22,6 +22,10 @@ jobs:
             echo 'CITATION.cff version does not match package.json.'
             exit 1
           fi
+          if ! grep -Fqx 'doi: 10.5281/zenodo.22923131' CITATION.cff; then
+            echo 'CITATION.cff must carry the stable project DOI.'
+            exit 1
+          fi
           echo "TAG=v$version" >> "$GITHUB_ENV"
       - name: Ensure release does not already exist
         env:

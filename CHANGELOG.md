@@ -3,9 +3,10 @@
 ## 1.3.1 — 2026-09-27
 
 - Display the current version in the header and footer and provide the matching APA 7 citation in English and Arabic.
-- Keep the archived v1.2.0 DOI in documentation only; the current version has no minted Zenodo DOI.
+- Use the stable Zenodo concept DOI 10.5281/zenodo.22923131 in the interface, CITATION.cff and README; retain the v1.2.0-specific DOI in version history.
 - Format integer wavelength-axis ticks without a redundant decimal suffix while retaining fractional ticks when needed.
 - Refresh citation and release metadata, with browser checks for the citation and axis labels.
+- Prepare a curated v1.3.1 GitHub release after the main-branch numerical, browser and Pages checks succeed.
 
 ## 1.3.0 — 2026-09-24
 

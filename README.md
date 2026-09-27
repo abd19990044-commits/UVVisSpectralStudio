@@ -6,6 +6,8 @@
 
 **Current version: 1.3.1.** English and Arabic interface; scientific axes use English labels and wavelength in nm. The application has no runtime dependencies, CDN scripts, account requirement or analysis server. Spectral observations are processed locally in the browser. Download `index.html` to work offline; npm and Python are required only by contributors running verification tests.
 
+[![Zenodo DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22923131.svg)](https://doi.org/10.5281/zenodo.22923131)
+
 ## What it does
 
 | Area | Capabilities |
@@ -117,11 +119,11 @@ Review the [Actions results](https://github.com/abd19990044-commits/UVVisSpectra
 
 The current application and exports identify **v1.3.1**. Cite this version as:
 
-> Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.3.1) [Computer software]. GitHub. https://github.com/abd19990044-commits/UVVisSpectralStudio
+> Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.3.1) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923131
 
-Record the Git commit and processing parameters used in your research. [CITATION.cff](CITATION.cff) describes the current software. No Zenodo DOI has been assigned to v1.3.1.
+The DOI above is the **concept DOI** for the software across versions. It resolves to the latest version archived by Zenodo; the exact v1.3.1 snapshot must appear there before treating the DOI landing page as an archive of v1.3.1. Record the Git commit and processing parameters used in your research. [CITATION.cff](CITATION.cff) contains the same stable DOI.
 
-The archival DOI [10.5281/zenodo.22923132](https://doi.org/10.5281/zenodo.22923132) identifies the earlier **v1.2.0** snapshot only.
+The version-specific DOI [10.5281/zenodo.22923132](https://doi.org/10.5281/zenodo.22923132) identifies **v1.2.0** only. A later Zenodo archive of v1.3.1 will receive its own version-specific DOI while the concept DOI remains 10.5281/zenodo.22923131.
 
 ## License
 
