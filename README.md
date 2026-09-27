@@ -121,9 +121,9 @@ The current application and exports identify **v1.3.1**. Cite this version as:
 
 > Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.3.1) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923131
 
-The DOI above is the **concept DOI** for the software across versions. It resolves to the latest version archived by Zenodo; the exact v1.3.1 snapshot must appear there before treating the DOI landing page as an archive of v1.3.1. Record the Git commit and processing parameters used in your research. [CITATION.cff](CITATION.cff) contains the same stable DOI.
+The DOI above is the stable **concept DOI** for the software across versions. For reproducibility, record the exact version, Git commit and processing parameters. [CITATION.cff](CITATION.cff) contains the same DOI.
 
-The version-specific DOI [10.5281/zenodo.22923132](https://doi.org/10.5281/zenodo.22923132) identifies **v1.2.0** only. A later Zenodo archive of v1.3.1 will receive its own version-specific DOI while the concept DOI remains 10.5281/zenodo.22923131.
+The version-specific DOI [10.5281/zenodo.22923132](https://doi.org/10.5281/zenodo.22923132) identifies the earlier **v1.2.0** release.
 
 ## License
 
