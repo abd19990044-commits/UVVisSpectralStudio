@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.1 — 2026-09-27
+
+- Display the current version in the header and footer and provide the matching APA 7 citation in English and Arabic.
+- Keep the archived v1.2.0 DOI in documentation only; the current version has no minted Zenodo DOI.
+- Format integer wavelength-axis ticks without a redundant decimal suffix while retaining fractional ticks when needed.
+- Refresh citation and release metadata, with browser checks for the citation and axis labels.
+
 ## 1.3.0 — 2026-09-24
 
 - Correct signed AUC for boundaries between measured wavelengths, including intervals smaller than one sampling step. Report integrated and missing coverage; label interpolated extrema.

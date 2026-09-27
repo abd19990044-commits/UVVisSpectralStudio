@@ -4,7 +4,7 @@
 
 [Open the application](https://abd19990044-commits.github.io/UVVisSpectralStudio/) · [Download index.html](https://github.com/abd19990044-commits/UVVisSpectralStudio/raw/refs/heads/main/index.html) · [Apache-2.0 license](LICENSE) · [Changes](CHANGELOG.md)
 
-**Current version: 1.3.0.** English and Arabic interface; scientific axes use English labels and wavelength in nm. The application has no runtime dependencies, CDN scripts, account requirement or analysis server. Spectral observations are processed locally in the browser. Download `index.html` to work offline; npm and Python are required only by contributors running verification tests.
+**Current version: 1.3.1.** English and Arabic interface; scientific axes use English labels and wavelength in nm. The application has no runtime dependencies, CDN scripts, account requirement or analysis server. Spectral observations are processed locally in the browser. Download `index.html` to work offline; npm and Python are required only by contributors running verification tests.
 
 ## What it does
 
@@ -115,13 +115,13 @@ Review the [Actions results](https://github.com/abd19990044-commits/UVVisSpectra
 
 ## Citation and versions
 
-The current application and exports identify **v1.3.0**. Record the Git commit and processing parameters used in your research. [CITATION.cff](CITATION.cff) describes this version.
+The current application and exports identify **v1.3.1**. Cite this version as:
 
-The following citation belongs specifically to the previously archived **v1.2.0**, and its DOI must not be used to imply that v1.3.0 is that same archived artifact:
+> Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.3.1) [Computer software]. GitHub. https://github.com/abd19990044-commits/UVVisSpectralStudio
 
-> Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923132
+Record the Git commit and processing parameters used in your research. [CITATION.cff](CITATION.cff) describes the current software. No Zenodo DOI has been assigned to v1.3.1.
 
-For current v1.3.0, cite the software version and repository commit; a new version DOI has not been assigned by this update.
+The archival DOI [10.5281/zenodo.22923132](https://doi.org/10.5281/zenodo.22923132) identifies the earlier **v1.2.0** snapshot only.
 
 ## License
 

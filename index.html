@@ -7,7 +7,7 @@ Licensed under the Apache License, Version 2.0.
 Repository: https://github.com/abd19990044-commits/UVVisSpectralStudio
 
 SPDX-License-Identifier: Apache-2.0
-Current release: 1.3.0; changed 2026-09-24 (scientific and import hardening).
+Current version: 1.3.1; changed 2026-09-27 (citation and wavelength-axis presentation).
 The complete license is embedded so this HTML can be distributed alone.
 
                                  Apache License
@@ -270,6 +270,7 @@ The complete license is embedded so this HTML can be distributed alone.
 }
 body{background:var(--bg);color:var(--txt);transition:background-color .18s ease,color .18s ease}
 header{border-color:var(--line)}header small,.muted,.muted-sm,.small-note{color:var(--muted)}
+.app-version{display:inline-block;vertical-align:middle;padding:3px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;font-weight:650;white-space:nowrap;font-variant-numeric:tabular-nums}
 .panel{background:var(--panel);border-color:var(--line);box-shadow:var(--shadow)}
 .panel h2,.chart-head h2{color:var(--heading)}.panel:hover{border-color:var(--button-border)}
 .chart-panel{border-color:var(--line)}
@@ -337,7 +338,6 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 /* Read-only citation is full-width, legible and responsive in both themes. */
 #citationPanel #citationText{display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;min-height:112px;resize:vertical;overflow-wrap:anywhere;white-space:pre-wrap;direction:ltr;text-align:left;padding:14px 16px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--txt);font:15px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}
 #citationPanel #citationText:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-#citationPanel .citation-doi{overflow-wrap:anywhere}
 .axis-bound-dialog{border:1px solid var(--line);border-radius:14px;padding:22px;width:min(390px,calc(100vw - 32px));background:var(--panel);color:var(--txt);box-shadow:0 20px 65px #0004}.axis-bound-dialog::backdrop{background:rgba(10,24,43,.52)}.axis-bound-dialog h2{margin:0 0 8px;font-size:19px}.axis-bound-dialog .toolbar{justify-content:flex-end}.axis-bound-dialog [role=alert]{color:var(--bad);min-height:1.6em}.axis-endpoint{cursor:pointer;fill:transparent;pointer-events:all}.axis-endpoint:focus{fill:#1873b118;stroke:#1673b1;stroke-width:1.3;outline:none}.axis-endpoint:hover{fill:#1873b118;stroke:#1673b1;stroke-width:1.3}
 .chart-panel>.tooltip{position:static;inset:auto;width:100%;max-width:100%;margin:10px 0 0;box-shadow:none;pointer-events:none;overflow-wrap:anywhere}
 .overlay-table-scroll{width:100%;max-height:480px;overflow:auto;border:1px solid var(--line);border-radius:9px;direction:ltr}
@@ -352,7 +352,7 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="logo">λ</div><div><h1>UV–Vis Spectral Studio</h1><small data-i18n="brand">Interactive UV–Vis spectrum analysis · Derivatives · Research-ready plots</small></div></div><div class="toolbar"><button type="button" id="langToggle" class="theme-toggle language-toggle" aria-label="Switch interface language to Arabic" title="Switch interface language" dir="auto">العربية</button><button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false"><span id="themeIcon" aria-hidden="true">☾</span><span id="themeLabel">Dark mode</span></button><div class="pills"><span class="pill"><b>●</b> <span data-i18n="headerAnalysis">UV–Vis Analysis</span></span><span class="pill" data-i18n="headerOverlay">Spectral Overlay · D1–D4</span><span class="pill">nm · Abs.</span></div></div></header>
+<header><div class="brand"><div class="logo">λ</div><div><h1>UV–Vis Spectral Studio <small id="appVersion" class="app-version">v1.3.1</small></h1><small data-i18n="brand">Interactive UV–Vis spectrum analysis · Derivatives · Research-ready plots</small></div></div><div class="toolbar"><button type="button" id="langToggle" class="theme-toggle language-toggle" aria-label="Switch interface language to Arabic" title="Switch interface language" dir="auto">العربية</button><button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false"><span id="themeIcon" aria-hidden="true">☾</span><span id="themeLabel">Dark mode</span></button><div class="pills"><span class="pill"><b>●</b> <span data-i18n="headerAnalysis">UV–Vis Analysis</span></span><span class="pill" data-i18n="headerOverlay">Spectral Overlay · D1–D4</span><span class="pill">nm · Abs.</span></div></div></header>
 <main><aside class="sidebar">
 <section class="panel"><h2><span data-i18n="importHeader">01 / Import spectra</span><span class="muted-sm">TXT · CSV · XLSX</span></h2><div id="drop" class="drop"><input id="upload" type="file" accept=".txt,.csv,.tsv,.xlsx,.xls" multiple aria-label="Import spectral data" data-aria-i18n="importAria"><div style="font-size:28px">⇧</div><strong data-i18n="drop">Drop files or click to choose</strong><span data-i18n="dropHint">Separate spectra or multi-column / multi-sheet Excel</span></div><p class="note" data-i18n="localNote">Data stay in your browser. A wavelength column is required; missing wavelengths are never fabricated.</p><div class="toolbar"><button class="btn small" id="demo" data-i18n="demo">Load synthetic example</button><button class="btn small danger" id="clear" data-i18n="clear">Remove all spectra</button></div><div class="toolbar" style="margin-top:10px"><button id="saveProject" class="btn small" data-i18n="saveProject">Save project</button><label class="btn small" for="loadProject" data-i18n="loadProject">Open project</label><input id="loadProject" type="file" accept=".json" hidden></div><p class="note" data-i18n="projectHint">Save spectra and settings before closing. Opening a project replaces the current session.</p><details><summary data-i18n="exampleFormat">Accepted TXT format</summary><div class="note" dir="ltr">Wavelength, Sample A, Sample B<br>200, 0.032, 0.050<br>201, 0.035, 0.051</div><div class="note" data-i18n="separator">Comma, tab, space or semicolon separated; wavelength is detected from data and headers.</div></details></section>
 <section class="panel"><h2 data-i18n="mappingHeader">Manual column mapping</h2><p class="note" data-i18n="mappingInfo">After importing, choose a file/sheet and correct the wavelength and absorbance columns if auto-detection was ambiguous.</p><div class="field"><label for="mapSource" data-i18n="mapSource">Imported table</label><select id="mapSource"><option value="">No imported tables</option></select></div><div class="field"><label for="mapWave" data-i18n="mapWave">Wavelength column (nm)</label><select id="mapWave"></select></div><div class="field"><label data-i18n="mapAbs">Absorbance columns</label><div class="mapping-picks" id="mapAbs"></div></div><button id="mapApply" class="btn primary" data-i18n="mapApply">Import using selected columns</button><p class="small-note" data-i18n="mapNote">Manual mapping imports additional curves; it never silently replaces previous data.</p></section>
@@ -439,16 +439,13 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 <div class="toolbar"><button id="prepApply" class="btn small primary" data-i18n="prepApply">Create processed curve</button></div>
 <p class="note" id="prepStatus" aria-live="polite"></p></section>
 <section class="panel" id="citationPanel"><h2 data-i18n="citationHeader">Cite this software</h2>
-<p class="note" data-i18n="citationNote">Cite this version using its Zenodo DOI and report the processing settings used in your Methods section.</p>
-<div class="field"><label for="citationText" data-i18n="citationLabel">Suggested citation for version 1.2.0</label>
-<textarea id="citationText" dir="ltr" rows="3" readonly spellcheck="false" aria-label="Software citation">Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923132</textarea></div>
-<p class="note citation-doi"><strong>DOI:</strong> <a href="https://doi.org/10.5281/zenodo.22923132" target="_blank" rel="noopener noreferrer">10.5281/zenodo.22923132</a></p>
+<div class="field"><label for="citationText" data-i18n="citationLabel">APA 7 citation for this version</label>
+<textarea id="citationText" dir="ltr" rows="3" readonly spellcheck="false" aria-label="Software citation">Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.3.1) [Computer software]. GitHub. https://github.com/abd19990044-commits/UVVisSpectralStudio</textarea></div>
 <div class="toolbar"><button class="btn small primary" type="button" id="copyCitation" data-i18n="copyCitation">Copy citation</button>
-<a class="btn small" href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/CITATION.cff" target="_blank" rel="noopener noreferrer" data-i18n="citationFile">CITATION.cff</a>
-<a class="btn small" href="https://github.com/abd19990044-commits/UVVisSpectralStudio/releases/tag/v1.2.0" target="_blank" rel="noopener noreferrer" data-i18n="citationReleases">GitHub release v1.2.0</a></div>
+<a class="btn small" href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/CITATION.cff" target="_blank" rel="noopener noreferrer" data-i18n="citationFile">CITATION.cff</a></div>
 <p class="note" id="citationStatus" aria-live="polite"></p></section>
 <section class="panel"><h2 data-i18n="scientificHeader">Scientific basis and interpretation</h2><div class="note" data-i18n="scientificNote">Absorbance, A = −log₁₀(T), is dimensionless; this relation applies to absorbance data, not to every normalized or ratio signal. For a dimensionless ordinate differentiated n times with respect to wavelength in nm, the derivative has units nm⁻ⁿ; other signal units are retained and multiplied by nm⁻ⁿ. Derivatives are estimated by local polynomial fitting at the recorded wavelengths, rather than by differentiation of an exact continuous spectrum. Their amplitudes and zero crossings depend on noise, sampling, polynomial degree, fitting-window width and boundary treatment, particularly at higher orders. Extrema, zero-crossing candidates, integrated areas and spectral overlays are numerical or graphical descriptors whose interpretation requires suitable controls and experimental context. Original measurements are preserved; missing-data gaps are not bridged in the plotted curves, and any interpolation in an aligned CSV is explicitly identified. Analytical selectivity, analyte identity and method validation require independent experimental evidence. PNG dimensions and DPI describe export settings; SVG preserves vector geometry independently of raster resolution.</div></section>
-</div></main><footer><span data-i18n="footer">UV–Vis Spectral Studio · Spectral analysis and scientific visualization</span> · <span data-i18n="developedBy">Developed by</span> <strong dir="ltr">ABDULSALAM S. HASAN</strong> · v1.3.0 · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio" target="_blank" rel="noopener noreferrer">Source</a> · <a href="#citationPanel" data-i18n="citationHeader">Cite this software</a> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></footer>
+</div></main><footer><span data-i18n="footer">UV–Vis Spectral Studio · Spectral analysis and scientific visualization</span> · <span data-i18n="developedBy">Developed by</span> <strong dir="ltr">ABDULSALAM S. HASAN</strong> · <span id="footerVersion">v1.3.1</span> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio" target="_blank" rel="noopener noreferrer">Source</a> · <a href="#citationPanel" data-i18n="citationHeader">Cite this software</a> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></footer>
 <script>
  'use strict';
 (() => {
@@ -456,7 +453,10 @@ const $=id=>document.getElementById(id);
 const NS='http://www.w3.org/2000/svg';
 const PALETTE=['#145c9a','#bb4f21','#6540b5','#00765e','#ba2772','#8b6200','#276b89','#8c3b73','#3c721f','#99441b'];
 let lang='en', spectra=[], seq=0, plotState=null, locked=false, drag=null, lastStatus=null, sourceTables=[], manualYLimits=false, derivativeGalleryOpen=false, derivativeAutoFit=false, yInputsEdited=false, processingRange={lo:-Infinity,hi:Infinity};
-const APP_VERSION='1.3.0';
+const APP_VERSION='1.3.1';
+const APP_CITATION=`Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v${APP_VERSION}) [Computer software]. GitHub. https://github.com/abd19990044-commits/UVVisSpectralStudio`;
+$('appVersion').textContent=$('footerVersion').textContent='v'+APP_VERSION;
+$('citationText').value=APP_CITATION;
 const THEME_STORAGE_KEY='uvvis-spectral-studio-theme';
 function applyTheme(theme,save=false){
  const dark=theme==='dark';
@@ -490,7 +490,7 @@ Object.assign(STR.en,{
   metricsHeader:'06 / Analytical measurements',metricsNote:'Choose the interval. Reported extrema and zero crossings are numerical candidates, not chemical identifications.',metricsCurve:'Spectrum to measure',metricsStart:'Measurement from (nm)',metricsEnd:'Measurement to (nm)',noiseStart:'Optional noise-region start (nm)',noiseEnd:'Optional noise-region end (nm)',metricsRun:'Measure selected curve',metricsExport:'Export measurements CSV',
   prepHeader:'07 / Non-destructive spectral processing',prepNote:'Adds a new curve; raw data are never overwritten. Uses the explicit processing interval and measured wavelengths.',prepSource:'Source curve',prepReference:'Reference for subtraction / ratio',prepMode:'Transformation',prepBaseline:'Straight-line baseline between chosen endpoints',prepSmooth:'Local-polynomial smoothing (D0)',prepNormalize:'Normalize by maximum absolute signal',prepSubtract:'Subtract reference (marked interpolation)',prepRatio:'Ratio to reference (marked interpolation)',prepLeft:'Baseline anchor from (nm, optional)',prepRight:'Baseline anchor to (nm, optional)',prepApply:'Create processed curve',
   sensitivityRun:'Compare fitting windows',sensitivityExport:'Save window sensitivity CSV',
-  citationHeader:'Cite this software',citationNote:'The DOI below identifies archived v1.2.0. For v1.3.0, also record the software version and Git commit with your processing settings.',citationLabel:'Suggested citation for version 1.2.0',copyCitation:'Copy citation',citationFile:'CITATION.cff',citationReleases:'GitHub release v1.2.0',
+  citationHeader:'Cite this software',citationLabel:'APA 7 citation for this version',copyCitation:'Copy citation',citationFile:'CITATION.cff',
   developedBy:'Developed by',headerOverlay:'Spectral overlay · D1–D4',headerAnalysis:'UV–Vis analysis',
  importAria:'Import spectral data',widthAria:'Physical figure width',dpiAria:'PNG resolution',plotAria:'Interactive UV–Vis spectrum plot',
  themeDark:'Dark mode',themeLight:'Light mode',themeDarkAria:'Switch to dark mode',themeLightAria:'Switch to light mode',cursorWavelength:'Wavelength',measuredData:'Measured readings',column:'Column'
@@ -506,7 +506,7 @@ Object.assign(STR.ar,{
   metricsHeader:'06 / القياسات التحليلية',metricsNote:'حدّد المجال. القمم ومواضع عبور الصفر مرشحات عددية وليست إثباتاً لهوية المركب.',metricsCurve:'المنحنى المراد قياسه',metricsStart:'بداية مجال القياس (nm)',metricsEnd:'نهاية مجال القياس (nm)',noiseStart:'بداية مجال الضجيج الاختياري (nm)',noiseEnd:'نهاية مجال الضجيج الاختياري (nm)',metricsRun:'قياس المنحنى المختار',metricsExport:'تصدير القياسات CSV',
   prepHeader:'07 / المعالجة الطيفية غير المتلفة',prepNote:'إضافة منحنى جديد دون استبدال القياسات؛ يُستخدم مجال المعالجة المحدد والأطوال الموجية المقيسة.',prepSource:'المنحنى الأصلي',prepReference:'المنحنى المرجعي للطرح أو النسبة',prepMode:'العملية',prepBaseline:'تصحيح خط أساس مستقيم بين نقطتين',prepSmooth:'تنعيم ملاءمة متعددة الحدود D0',prepNormalize:'تطبيع إلى أقصى قيمة مطلقة',prepSubtract:'طرح المرجع (مع استيفاء معلن)',prepRatio:'القسمة على المرجع (مع استيفاء معلن)',prepLeft:'بداية مرجع خط الأساس (nm)',prepRight:'نهاية مرجع خط الأساس (nm)',prepApply:'إنشاء منحنى معالج',
   sensitivityRun:'مقارنة نوافذ الاشتقاق',sensitivityExport:'حفظ مقارنة النوافذ CSV',
-  citationHeader:'الاستشهاد بالبرنامج',citationNote:'يشير DOI أدناه إلى الأرشيف v1.2.0. عند استخدام v1.3.0 سجّل أيضاً إصدار البرنامج ومعرّف Git وإعدادات المعالجة.',citationLabel:'صيغة الاستشهاد المقترحة للإصدار 1.2.0',copyCitation:'نسخ الاستشهاد',citationFile:'ملف CITATION.cff',citationReleases:'إصدار GitHub v1.2.0',
+  citationHeader:'الاستشهاد بالبرنامج',citationLabel:'الاستشهاد بهذا الإصدار وفق APA 7',copyCitation:'نسخ الاستشهاد',citationFile:'ملف CITATION.cff',
   developedBy:'طُوّر بواسطة',headerOverlay:'تراكب الأطياف · المشتقات D1–D4',headerAnalysis:'التحليل الطيفي بالأشعة فوق البنفسجية والمرئية',
  importAria:'استيراد البيانات الطيفية',widthAria:'العرض الفيزيائي للشكل',dpiAria:'دقة تصدير PNG',plotAria:'رسم تفاعلي لأطياف الامتصاص بالأشعة فوق البنفسجية والمرئية',
  brand:'تحليل أطياف الامتصاص بالأشعة فوق البنفسجية والمرئية · الاشتقاق الطيفي · رسوم للبحث العلمي',
@@ -1282,9 +1282,12 @@ function axisTicks(min,max,axis){
 }
 function tickText(value,step,integer=false){
  if(Math.abs(value)<step*1e-9)value=0;
- if(integer&&Math.abs(value-Math.round(value))<1e-8)return String(Math.round(value));
+ if(integer&&Math.abs(value-Math.round(value))<Math.min(1e-8,Math.abs(step)*1e-4))return String(Math.round(value));
  if(Math.abs(value)>=1e6||(Math.abs(value)>0&&Math.abs(value)<1e-4))return value.toExponential(2);
- const digits=Math.min(10,Math.max(0,-Math.floor(Math.log10(step))+1));
+ // Preserve fractional wavelength steps such as 12.5 or 0.25 nm.
+ let digits=0;
+ for(;digits<10;digits++)if(Math.abs(step*10**digits-Math.round(step*10**digits))<1e-7)break;
+ if(digits===10)digits=Math.min(10,Math.max(2,3-Math.floor(Math.log10(Math.abs(step)))));
  const label=value.toFixed(digits);
  return label.includes('.')?label.replace(/0+$/,'').replace(/\.$/,''):label;
 }
@@ -1344,7 +1347,7 @@ function buildSvg(data,order,B,preview=false,interactive=true){
   const x=p.x+p.w*(xx-B.xmin)/(B.xmax-B.xmin);
   out+=`<line x1="${x}" y1="${p.y+p.h}" x2="${x}" y2="${p.y+p.h-9}" stroke="${axisColor}" stroke-width="${tickStroke}"/>`;
   out+=`<line x1="${x}" y1="${p.y}" x2="${x}" y2="${p.y+9}" stroke="${axisColor}" stroke-width="${tickStroke}"/>`;
-  out+=`<text x="${x}" y="${p.y+p.h+28}" fill="${textColor}" text-anchor="middle" font-family="Arial,sans-serif" font-size="${tickFont}">${E((Math.abs(xx)<0.05?0:xx).toFixed(1))}</text>`;
+  out+=`<text x="${x}" y="${p.y+p.h+28}" fill="${textColor}" text-anchor="middle" font-family="Arial,sans-serif" font-size="${tickFont}">${E(tickText(xx,xSpec.step,true))}</text>`;
  }
  for(const yy of ySpec.values){
   const y=p.y+(B.ymax-yy)/yRange*p.h;
