@@ -1,4 +1,4 @@
-name: Publish v1.2.0 for Zenodo
+name: Publish current version for Zenodo
 on:
   workflow_dispatch:
     inputs:
@@ -15,20 +15,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Resolve current version and verify citation metadata
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if ! grep -Fqx "version: \"$version\"" CITATION.cff; then
+            echo 'CITATION.cff version does not match package.json.'
+            exit 1
+          fi
+          echo "TAG=v$version" >> "$GITHUB_ENV"
       - name: Ensure release does not already exist
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view v1.2.0 >/dev/null 2>&1; then
-            echo 'The v1.2.0 release already exists. No duplicate release was created.'
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "The $TAG release already exists. No duplicate release was created."
             exit 1
           fi
       - name: Publish one immutable source snapshot for Zenodo
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create v1.2.0 \
+          gh release create "$TAG" \
             --target "$GITHUB_SHA" \
-            --title 'UV–Vis Spectral Studio v1.2.0' \
-            --notes-file RELEASE_NOTES_v1.2.0.md \
+            --title "UV–Vis Spectral Studio $TAG" \
+            --generate-notes \
             --latest

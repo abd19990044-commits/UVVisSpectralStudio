@@ -21,12 +21,12 @@ async function run(){
   assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'light');
 
   const citation=page.locator('#citationText');
+  assert.equal(await page.locator('#appVersion').textContent(),'v1.3.1');
+  assert.equal(await page.locator('#footerVersion').textContent(),'v1.3.1');
   assert.match(await citation.inputValue(),/Hasan, A\. S\. \(2026\)/);
-  assert.match(await citation.inputValue(),/Version v1\.2\.0/);
-  assert.match(await citation.inputValue(),/\[Computer software\]\. Zenodo\. https:\/\/doi\.org\/10\.5281\/zenodo\.22923132/);
-  assert.match(await citation.inputValue(),/https:\/\/doi\.org\/10\.5281\/zenodo\.22923132/);
-  assert.equal(await page.locator('#citationPanel .citation-doi a').getAttribute('href'),
-    'https://doi.org/10.5281/zenodo.22923132');
+  assert.match(await citation.inputValue(),/Version v1\.3\.1/);
+  assert.match(await citation.inputValue(),/\[Computer software\]\. GitHub\. https:\/\/github\.com\/abd19990044-commits\/UVVisSpectralStudio/);
+  assert.equal(await page.locator('#citationPanel').getByText(/zenodo\.22923132/i).count(),0);
   const citationLayout=await citation.evaluate(el=>({
     panelWidth:el.closest('.field').getBoundingClientRect().width,
     width:el.getBoundingClientRect().width,
@@ -56,9 +56,10 @@ async function run(){
   assert.equal(await page.locator('#overview .mini').count(),4);
   assert.equal(await page.locator('#view').inputValue(),'1');
   assert.equal(await page.locator('#xmin').inputValue(),'270');
-  assert.ok((await page.locator('#chart').innerHTML()).includes('300.0'),
-    'Nice 50-nm derivative tick grid must remain inside the selected 270–400 nm ROI');
-  assert.ok((await page.locator('#chart').innerHTML()).includes('400.0'));
+  const chartText=()=>page.locator('#chart text').allTextContents();
+  assert.ok((await chartText()).includes('300'),
+    'Integer 50-nm derivative ticks must be displayed without unnecessary decimals');
+  assert.ok((await chartText()).includes('400'));
 
   const baselineDownload=page.waitForEvent('download');
   await page.locator('#exportData').click();
@@ -69,7 +70,7 @@ async function run(){
   await page.locator('#xmin').fill('300');
   await page.locator('#xmax').fill('350');
   await page.locator('#axisApply').click();
-  assert.ok((await page.locator('#chart').innerHTML()).includes('300.0'));
+  assert.ok((await chartText()).includes('300'));
   const zoomDownload=page.waitForEvent('download');
   await page.locator('#exportData').click();
   const zoomCsv=fs.readFileSync(await (await zoomDownload).path(),'utf8');
@@ -213,7 +214,7 @@ async function run(){
   await page.locator('#saveProject').click();
   const projectBytes=fs.readFileSync(await (await projectPromise).path());
   const project=JSON.parse(projectBytes);
-  assert.equal(project.applicationVersion,'1.3.0');
+  assert.equal(project.applicationVersion,'1.3.1');
   assert.equal(project.spectra.length,9);
   assert.ok(project.sourceTables.length>=4);
   assert.ok(project.spectra.every(c=>!Object.hasOwn(c,'cache')));

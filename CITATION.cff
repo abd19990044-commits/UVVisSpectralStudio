@@ -1,22 +1,13 @@
 cff-version: 1.2.0
-message: "Please cite the software version and exact Git commit used. The Zenodo DOI for archived v1.2.0 does not identify v1.3.0."
+message: "Please cite this software version and record the Git commit and analysis settings used."
 type: software
 title: "UV-Vis Spectral Studio"
 authors:
   - family-names: Hasan
     given-names: "Abdulsalam S."
-version: "1.3.0"
-date-released: "2026-09-24"
+version: "1.3.1"
+date-released: "2026-09-27"
 license: Apache-2.0
 url: "https://abd19990044-commits.github.io/UVVisSpectralStudio/"
 repository-code: "https://github.com/abd19990044-commits/UVVisSpectralStudio"
 abstract: "Single-file UV-Vis spectral analysis with local-polynomial derivatives, gap-aware measurements, traceable transformations and restorable research projects."
-references:
-  - type: software
-    title: "UV-Vis Spectral Studio"
-    authors:
-      - family-names: Hasan
-        given-names: "Abdulsalam S."
-    version: "v1.2.0"
-    doi: 10.5281/zenodo.22923132
-    date-released: "2026-09-23"

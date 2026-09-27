@@ -41,6 +41,24 @@ vm.runInContext(extract('function factorial(','function interp('),ctx);
 test('Complete inline application JavaScript parses',()=>{
  assert.doesNotThrow(()=>new vm.Script(script,{filename:'index.html:inline'}));
 });
+test('Current software version and citation stay consistent across distributable metadata',()=>{
+ const manifest=require('../package.json');
+ const lock=require('../package-lock.json');
+ const cff=fs.readFileSync(require('node:path').join(__dirname,'..','CITATION.cff'),'utf8');
+ const version=manifest.version;
+ assert.equal(lock.version,version);
+ assert.match(cff,new RegExp('^version: "'+version.replace(/\./g,'\\.')+'"$','m'));
+ assert.ok(html.includes('id="appVersion" class="app-version">v'+version+'</small>'));
+ assert.ok(html.includes('id="footerVersion">v'+version+'</span>'));
+ assert.ok(html.includes('Version v'+version+') [Computer software]. GitHub.'));
+ assert.ok(!html.includes('zenodo.22923132'),'Old release DOI must not be presented by the current application');
+});
+test('Wavelength tick labels retain meaningful fractional steps',()=>{
+ vm.runInContext(extract('function tickText(','function derivativeAxisScale('),ctx);
+ assert.equal(ctx.tickText(400,50,true),'400');
+ assert.equal(ctx.tickText(287.5,12.5,true),'287.5');
+ assert.equal(ctx.tickText(0.25,0.25,true),'0.25');
+});
 test('ROI excludes noisy UV region and retains raw data unchanged',()=>{
  const x=Array.from({length:301},(_,i)=>200+i);
  const y=x.map(w=>w<270?100*Math.sin(w):.5+.002*(w-330)+.00001*(w-330)**2+1e-8*(w-330)**4);
@@ -187,7 +205,7 @@ test('Source plotting logic formats D0 at fixed decimals and D4 with a scientifi
  const svg=ctx.buildSvg([d],0,{xmin:200,xmax:400,ymin:0,ymax:1.2}).svg;
  for(const y of ['0.00','0.20','0.40','0.60','0.80','1.00','1.20'])
   assert.ok(svg.includes('>'+y+'</text>'),y+' missing');
- assert.ok(svg.includes('>200.0</text>'));
+ assert.ok(svg.includes('>200</text>'));
  const small=ctx.buildSvg([d],4,{xmin:270,xmax:400,ymin:-2e-5,ymax:3e-5}).svg;
  assert.match(small,/×10⁻⁵/);
  // Zero is a legitimate tick. Nonzero derivatives must remain distinguishable
