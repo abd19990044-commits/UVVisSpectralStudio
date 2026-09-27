@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "Please cite this software version and record the Git commit and analysis settings used."
+message: "Cite the stable Zenodo concept DOI and record the software version, Git commit and analysis settings used."
 type: software
 title: "UV-Vis Spectral Studio"
 authors:
@@ -7,6 +7,7 @@ authors:
     given-names: "Abdulsalam S."
 version: "1.3.1"
 date-released: "2026-09-27"
+doi: 10.5281/zenodo.22923131
 license: Apache-2.0
 url: "https://abd19990044-commits.github.io/UVVisSpectralStudio/"
 repository-code: "https://github.com/abd19990044-commits/UVVisSpectralStudio"

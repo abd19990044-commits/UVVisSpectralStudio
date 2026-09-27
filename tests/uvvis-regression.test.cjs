@@ -50,7 +50,8 @@ test('Current software version and citation stay consistent across distributable
  assert.match(cff,new RegExp('^version: "'+version.replace(/\./g,'\\.')+'"$','m'));
  assert.ok(html.includes('id="appVersion" class="app-version">v'+version+'</small>'));
  assert.ok(html.includes('id="footerVersion">v'+version+'</span>'));
- assert.ok(html.includes('Version v'+version+') [Computer software]. GitHub.'));
+ assert.ok(html.includes('Version v'+version+') [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923131'));
+ assert.match(cff,/^doi: 10\.5281\/zenodo\.22923131$/m);
  assert.ok(!html.includes('zenodo.22923132'),'Old release DOI must not be presented by the current application');
 });
 test('Wavelength tick labels retain meaningful fractional steps',()=>{

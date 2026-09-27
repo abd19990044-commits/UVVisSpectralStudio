@@ -25,8 +25,10 @@ async function run(){
   assert.equal(await page.locator('#footerVersion').textContent(),'v1.3.1');
   assert.match(await citation.inputValue(),/Hasan, A\. S\. \(2026\)/);
   assert.match(await citation.inputValue(),/Version v1\.3\.1/);
-  assert.match(await citation.inputValue(),/\[Computer software\]\. GitHub\. https:\/\/github\.com\/abd19990044-commits\/UVVisSpectralStudio/);
+  assert.match(await citation.inputValue(),/\[Computer software\]\. Zenodo\. https:\/\/doi\.org\/10\.5281\/zenodo\.22923131/);
   assert.equal(await page.locator('#citationPanel').getByText(/zenodo\.22923132/i).count(),0);
+  assert.equal(await page.locator('#citationPanel .citation-doi a').getAttribute('href'),
+    'https://doi.org/10.5281/zenodo.22923131');
   const citationLayout=await citation.evaluate(el=>({
     panelWidth:el.closest('.field').getBoundingClientRect().width,
     width:el.getBoundingClientRect().width,
