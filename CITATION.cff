@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "Cite the stable Zenodo concept DOI and record the software version, Git commit and analysis settings used."
+message: "Cite this software using the citation below. Record the release tag, exact Git commit and analysis settings for reproducibility."
 type: software
 title: "UV-Vis Spectral Studio"
 authors:
@@ -11,4 +11,5 @@ doi: 10.5281/zenodo.22923131
 license: Apache-2.0
 url: "https://abd19990044-commits.github.io/UVVisSpectralStudio/"
 repository-code: "https://github.com/abd19990044-commits/UVVisSpectralStudio"
+repository-artifact: "https://github.com/abd19990044-commits/UVVisSpectralStudio/releases/tag/v1.3.2"
 abstract: "Single-file UV-Vis spectral analysis with local-polynomial derivatives, gap-aware measurements, traceable transformations and restorable research projects."

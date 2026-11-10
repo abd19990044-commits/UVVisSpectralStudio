@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.2 — 2026-11-10
+## [1.3.2](https://github.com/abd19990044-commits/UVVisSpectralStudio/releases/tag/v1.3.2) — 2026-11-10
 
 - Reject explicitly incompatible wavelength units and signal types during automatic and manual import.
 - Identify processed, computed, interpolated, and synthetic readings in the numerical outputs; invalidate stale lookup and measurement results.

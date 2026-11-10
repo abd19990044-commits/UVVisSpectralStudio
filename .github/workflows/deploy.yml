@@ -36,7 +36,7 @@ jobs:
       - name: Deploy verified app
         id: deployment
         uses: actions/deploy-pages@v5
-  release-v1-3-1:
+  release-v1-3-2:
     needs: deploy
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -44,23 +44,25 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Publish verified v1.3.1 snapshot once
+      - name: Publish verified v1.3.2 snapshot once
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           version=$(node -p "require('./package.json').version")
-          if [ "$version" != '1.3.1' ]; then
-            echo 'The one-time v1.3.1 release job is inactive for this version.'
+          if [ "$version" != '1.3.2' ]; then
+            echo 'The one-time v1.3.2 release job is inactive for this version.'
             exit 0
           fi
-          grep -Fqx 'version: "1.3.1"' CITATION.cff
+          grep -Fqx 'version: "1.3.2"' CITATION.cff
           grep -Fqx 'doi: 10.5281/zenodo.22923131' CITATION.cff
-          if gh release view 'v1.3.1' >/dev/null 2>&1; then
-            echo 'v1.3.1 is already released.'
+          if gh release view 'v1.3.2' >/dev/null 2>&1; then
+            echo 'v1.3.2 is already released.'
             exit 0
           fi
-          gh release create 'v1.3.1' \
+          asset="$RUNNER_TEMP/UVVisSpectralStudio-v1.3.2.html"
+          cp index.html "$asset"
+          gh release create 'v1.3.2' "$asset#Standalone HTML (offline)" \
             --target "$GITHUB_SHA" \
-            --title 'UV–Vis Spectral Studio v1.3.1' \
-            --notes-file RELEASE_NOTES_v1.3.1.md \
+            --title 'UV–Vis Spectral Studio v1.3.2' \
+            --notes-file RELEASE_NOTES_v1.3.2.md \
             --latest

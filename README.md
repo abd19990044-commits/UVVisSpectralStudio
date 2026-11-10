@@ -2,7 +2,7 @@
 
 **Standalone UV–visible spectral analysis and derivative spectrophotometry in one HTML file.**
 
-[Open the application](https://abd19990044-commits.github.io/UVVisSpectralStudio/) · [Download index.html](https://github.com/abd19990044-commits/UVVisSpectralStudio/raw/refs/heads/main/index.html) · [Apache-2.0 license](LICENSE) · [Changes](CHANGELOG.md)
+[Open the application](https://abd19990044-commits.github.io/UVVisSpectralStudio/) · [Release v1.3.2](https://github.com/abd19990044-commits/UVVisSpectralStudio/releases/tag/v1.3.2) · [Download v1.3.2 for offline use](https://github.com/abd19990044-commits/UVVisSpectralStudio/releases/download/v1.3.2/UVVisSpectralStudio-v1.3.2.html) · [Apache-2.0 license](LICENSE) · [Changes](CHANGELOG.md)
 
 **Current version: 1.3.2.** English and Arabic interface; scientific axes use English labels and wavelength in nm. The application has no runtime dependencies, CDN scripts, account requirement or analysis server. Spectral observations are processed locally in the browser. Download `index.html` to work offline; npm and Python are required only by contributors running verification tests.
 
@@ -121,7 +121,7 @@ The current application and exports identify **v1.3.2**. Cite this version as:
 
 > Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.3.2) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923131
 
-The DOI above is the stable **concept DOI** for the software across versions. For reproducibility, record the exact version, Git commit and processing parameters. [CITATION.cff](CITATION.cff) contains the same DOI.
+The DOI above is the stable **concept DOI** for the software across versions. For reproducibility, cite the software and record the [v1.3.2 release tag](https://github.com/abd19990044-commits/UVVisSpectralStudio/releases/tag/v1.3.2), exact Git commit and processing parameters. [CITATION.cff](CITATION.cff) records the DOI and links to the release archive.
 
 The version-specific DOI [10.5281/zenodo.22923132](https://doi.org/10.5281/zenodo.22923132) identifies the earlier **v1.2.0** release.
 
