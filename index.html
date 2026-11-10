@@ -1984,7 +1984,7 @@ $('sensitivityRun').onclick=()=>{
   const windows=[...new Set([11,15,21,31,current])].sort((x,y)=>x-y);
   const rows=windowSensitivity(d.s,order,degree,windows,lo,hi);
   lastSensitivity={d,rows,order,degree,lo,hi,current};
-  const baseline=rows.find(r=>r.win===current);
+  const baseline=rows.find(r=>r.win===current),ar=lang==='ar';
   const body=rows.map(r=>{
    const change=baseline&&Math.abs(baseline.ordinate)>1e-15?
     (ar?' · تغير |القمة| عن النافذة الحالية ':' · |peak| change vs current ')+fmt(100*(Math.abs(r.ordinate)/Math.abs(baseline.ordinate)-1),6)+'%':'';
