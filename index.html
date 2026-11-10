@@ -7,7 +7,7 @@ Licensed under the Apache License, Version 2.0.
 Repository: https://github.com/abd19990044-commits/UVVisSpectralStudio
 
 SPDX-License-Identifier: Apache-2.0
-Current version: 1.3.1; changed 2026-09-27 (citation and wavelength-axis presentation).
+Current version: 1.3.2; changed 2026-11-10 (import validation, provenance and background derivatives).
 The complete license is embedded so this HTML can be distributed alone.
 
                                  Apache License
@@ -353,9 +353,9 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="logo">λ</div><div><h1>UV–Vis Spectral Studio <small id="appVersion" class="app-version">v1.3.1</small></h1><small data-i18n="brand">Interactive UV–Vis spectrum analysis · Derivatives · Research-ready plots</small></div></div><div class="toolbar"><button type="button" id="langToggle" class="theme-toggle language-toggle" aria-label="Switch interface language to Arabic" title="Switch interface language" dir="auto">العربية</button><button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false"><span id="themeIcon" aria-hidden="true">☾</span><span id="themeLabel">Dark mode</span></button><div class="pills"><span class="pill"><b>●</b> <span data-i18n="headerAnalysis">UV–Vis Analysis</span></span><span class="pill" data-i18n="headerOverlay">Spectral Overlay · D1–D4</span><span class="pill">nm · Abs.</span></div></div></header>
+<header><div class="brand"><div class="logo">λ</div><div><h1>UV–Vis Spectral Studio <small id="appVersion" class="app-version">v1.3.2</small></h1><small data-i18n="brand">Interactive UV–Vis spectrum analysis · Derivatives · Research-ready plots</small></div></div><div class="toolbar"><button type="button" id="langToggle" class="theme-toggle language-toggle" aria-label="Switch interface language to Arabic" title="Switch interface language" dir="auto">العربية</button><button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false"><span id="themeIcon" aria-hidden="true">☾</span><span id="themeLabel">Dark mode</span></button><div class="pills"><span class="pill"><b>●</b> <span data-i18n="headerAnalysis">UV–Vis Analysis</span></span><span class="pill" data-i18n="headerOverlay">Spectral Overlay · D1–D4</span><span class="pill">nm · Abs.</span></div></div></header>
 <main><aside class="sidebar">
-<section class="panel"><h2><span data-i18n="importHeader">01 / Import spectra</span><span class="muted-sm">TXT · CSV · XLSX</span></h2><div id="drop" class="drop"><input id="upload" type="file" accept=".txt,.csv,.tsv,.xlsx,.xls" multiple aria-label="Import spectral data" data-aria-i18n="importAria"><div style="font-size:28px">⇧</div><strong data-i18n="drop">Drop files or click to choose</strong><span data-i18n="dropHint">Separate spectra or multi-column / multi-sheet Excel</span></div><p class="note" data-i18n="localNote">Data stay in your browser. A wavelength column is required; missing wavelengths are never fabricated.</p><div class="toolbar"><button class="btn small" id="demo" data-i18n="demo">Load synthetic example</button><button class="btn small danger" id="clear" data-i18n="clear">Remove all spectra</button></div><div class="toolbar" style="margin-top:10px"><button id="saveProject" class="btn small" data-i18n="saveProject">Save project</button><label class="btn small" for="loadProject" data-i18n="loadProject">Open project</label><input id="loadProject" type="file" accept=".json" hidden></div><p class="note" data-i18n="projectHint">Save spectra and settings before closing. Opening a project replaces the current session.</p><details><summary data-i18n="exampleFormat">Accepted TXT format</summary><div class="note" dir="ltr">Wavelength, Sample A, Sample B<br>200, 0.032, 0.050<br>201, 0.035, 0.051</div><div class="note" data-i18n="separator">Comma, tab, space or semicolon separated; wavelength is detected from data and headers.</div></details></section>
+<section class="panel"><h2><span data-i18n="importHeader">01 / Import spectra</span><span class="muted-sm">TXT · CSV · XLSX</span></h2><div id="drop" class="drop"><input id="upload" type="file" accept=".txt,.csv,.tsv,.xlsx,.xls" multiple aria-label="Import spectral data" data-aria-i18n="importAria"><div style="font-size:28px">⇧</div><strong data-i18n="drop">Drop files or click to choose</strong><span data-i18n="dropHint">Separate spectra or multi-column / multi-sheet Excel</span></div><p class="note" data-i18n="localNote">Data stay in your browser. Import wavelength in nm and absorbance A; missing wavelengths are never fabricated.</p><div class="toolbar"><button class="btn small" id="demo" data-i18n="demo">Load synthetic example</button><button class="btn small danger" id="clear" data-i18n="clear">Remove all spectra</button></div><div class="toolbar" style="margin-top:10px"><button id="saveProject" class="btn small" data-i18n="saveProject">Save project</button><label class="btn small" for="loadProject" data-i18n="loadProject">Open project</label><input id="loadProject" type="file" accept=".json" hidden></div><p class="note" data-i18n="projectHint">Save spectra and settings before closing. Opening a project replaces the current session.</p><details><summary data-i18n="exampleFormat">Accepted TXT format</summary><div class="note" dir="ltr">Wavelength, Sample A, Sample B<br>200, 0.032, 0.050<br>201, 0.035, 0.051</div><div class="note" data-i18n="separator">Comma, tab, space or semicolon separated; wavelength is detected from data and headers.</div></details></section>
 <section class="panel"><h2 data-i18n="mappingHeader">Manual column mapping</h2><p class="note" data-i18n="mappingInfo">After importing, choose a file/sheet and correct the wavelength and absorbance columns if auto-detection was ambiguous.</p><div class="field"><label for="mapSource" data-i18n="mapSource">Imported table</label><select id="mapSource"><option value="">No imported tables</option></select></div><div class="field"><label for="mapWave" data-i18n="mapWave">Wavelength column (nm)</label><select id="mapWave"></select></div><div class="field"><label data-i18n="mapAbs">Absorbance columns</label><div class="mapping-picks" id="mapAbs"></div></div><button id="mapApply" class="btn primary" data-i18n="mapApply">Import using selected columns</button><p class="small-note" data-i18n="mapNote">Manual mapping imports additional curves; it never silently replaces previous data.</p></section>
 <section class="panel"><h2><span data-i18n="samplesHeader">02 / Spectra & overlays</span><span class="muted-sm" id="count">0 loaded</span></h2>
 <div class="field"><label for="curveWidth" data-i18n="curveWidthLabel">Default spectral curve width (px)</label><input id="curveWidth" type="number" min="0.3" max="8" step="0.1" value="1.7"></div>
@@ -373,7 +373,8 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 <div class="field"><label for="axisWidth" data-i18n="axisWidthLabel">Axis width (px)</label><input id="axisWidth" type="number" min="0.3" max="5" step="0.1" value="1.3"></div>
 <div class="field"><label for="tickWidth" data-i18n="tickWidthLabel">Tick width (px)</label><input id="tickWidth" type="number" min="0.3" max="5" step="0.1" value="1.2"></div></div></details>
 <div class="toolbar"><button id="axisApply" class="btn primary" data-i18n="apply">Apply axes</button><button id="axisReset" class="btn" data-i18n="reset">Reset axes</button><button id="fitData" class="btn" data-i18n="fitData">Fit to data</button></div><div class="field"><label data-i18n="processingTitle" for="processMin">Derivative processing range (nm) — independent of zoom</label><div class="two"><input id="processMin" type="number" step="any" placeholder="Full: minimum" aria-label="Processing minimum wavelength"><input id="processMax" type="number" step="any" placeholder="Full: maximum" aria-label="Processing maximum wavelength"></div><button type="button" id="applyProcess" class="btn small" data-i18n="applyProcess">Apply processing range</button><p class="note" data-i18n="processHint">Blank means full measured spectrum. Dragging and display axis changes never recompute the processing range.</p></div><div class="field"><label for="zoomMode" data-i18n="zoomMode">Drag zoom mode</label><select id="zoomMode"><option value="x" data-i18n="zoomX">X only</option><option value="y" data-i18n="zoomY">Y only</option><option value="xy" data-i18n="zoomXY">Box zoom (X and Y)</option></select></div><div class="toolbar"><button class="btn small" id="zoomBack" disabled data-i18n="zoomBack">Zoom back</button><button class="btn small" id="zoomReset" data-i18n="zoomReset">Reset zoom</button></div><div class="field"><label for="cursorMode" data-i18n="cursorMode">Cursor readings</label><select id="cursorMode"><option value="interpolate" data-i18n="cursorInterpolated">Linear interpolation (indicated)</option><option value="nearest" data-i18n="cursorNearest">Nearest actual measured wavelength, per spectrum</option></select></div><p class="note" data-i18n="cursorHint">Drag horizontally over the plot to zoom; click to lock or unlock the wavelength cursor.</p><div class="field"><label for="chartTitle" data-i18n="titleLabel">Plot title</label><input id="chartTitle" value="UV–Vis Spectral Overlay"></div><div class="two"><div class="field"><label for="xLabel" data-i18n="xLabel">X-axis title</label><input id="xLabel" value="Wavelength (nm)" dir="ltr" lang="en"></div><div class="field"><label for="yLabel" data-i18n="yLabel">Custom Y-axis title (optional)</label><input id="yLabel" placeholder="Auto: physically consistent" data-placeholder="yAuto" dir="ltr" lang="en"></div></div><label class="small-note" style="display:block;margin-top:12px"><input type="checkbox" id="publicationMode" checked> <span data-i18n="publicationMode">Publication layout for derivatives D1–D4</span></label><p class="note" data-i18n="publicationModeNote">For D1–D4 only: fit X to available data, include scientific scale in the Y title and use rounded Y bounds. Turn off to restore prior axes.</p><label class="small-note" style="display:block;margin-top:12px"><input type="checkbox" id="showCurveLegend" checked> <span data-i18n="showCurveLegend">Show curve legend inside the plot and exports</span></label></section>
-</aside><div class="workspace"><div id="status" class="status"></div>
+</aside><div class="workspace"><div id="status" class="status" role="status"></div>
+<div id="derivativeProgress" class="status toolbar" hidden><span id="derivativeProgressText" role="status"></span><button type="button" class="btn small" id="cancelDerivative" data-i18n="cancelDerivative">Cancel calculation</button></div>
 <section class="panel chart-panel"><div class="chart-head"><div><h2 id="plotHeading">UV–Vis Spectral Overlay</h2><div id="plotSubtitle" class="muted-sm"></div></div><div class="toolbar"><button class="btn small" id="exportSvg" data-i18n="saveSvg">Save SVG</button><button class="btn small" id="exportParameters" data-i18n="exportParameters">Save method JSON</button><button class="btn small" id="printVectorPdf" data-i18n="printVectorPdf">Print / Save PDF (vector)</button><label class="export-label" for="imageWidth" data-i18n="widthLabel">Figure width</label><input class="export-custom" id="imageWidth" aria-label="Export physical width" data-aria-i18n="widthAria" type="number" min="1" max="30" step="0.1" value="7"><select class="btn small" id="widthUnit" aria-label="Physical width unit"><option value="in">in</option><option value="cm">cm</option></select><select class="btn small" id="dpi" aria-label="PNG resolution" data-aria-i18n="dpiAria"><option value="600">600 DPI</option><option value="900" selected>900 DPI</option><option value="1200">1200 DPI</option></select><button class="btn small primary" id="exportPng" data-i18n="savePng">Save PNG</button></div></div><div class="chart-wrap" id="chartWrap"><svg id="chart" class="chart-svg" viewBox="0 0 1100 590" role="img" aria-label="Interactive spectrum plot" data-aria-i18n="plotAria"></svg></div><div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
 <dialog id="axisBoundDialog" class="axis-bound-dialog" aria-labelledby="axisBoundTitle">
 <form method="dialog" id="axisBoundForm"><h2 id="axisBoundTitle"></h2>
@@ -441,13 +442,13 @@ summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 <p class="note" id="prepStatus" aria-live="polite"></p></section>
 <section class="panel" id="citationPanel"><h2 data-i18n="citationHeader">Cite this software</h2>
 <div class="field"><label for="citationText" data-i18n="citationLabel">APA 7 citation for this version</label>
-<textarea id="citationText" dir="ltr" rows="3" readonly spellcheck="false" aria-label="Software citation">Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.3.1) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923131</textarea></div>
+<textarea id="citationText" dir="ltr" rows="3" readonly spellcheck="false" aria-label="Software citation">Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.3.2) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923131</textarea></div>
 <p class="note citation-doi"><strong>DOI:</strong> <a href="https://doi.org/10.5281/zenodo.22923131" target="_blank" rel="noopener noreferrer">10.5281/zenodo.22923131</a></p>
 <div class="toolbar"><button class="btn small primary" type="button" id="copyCitation" data-i18n="copyCitation">Copy citation</button>
 <a class="btn small" href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/CITATION.cff" target="_blank" rel="noopener noreferrer" data-i18n="citationFile">CITATION.cff</a></div>
 <p class="note" id="citationStatus" aria-live="polite"></p></section>
 <section class="panel"><h2 data-i18n="scientificHeader">Scientific basis and interpretation</h2><div class="note" data-i18n="scientificNote">Absorbance, A = −log₁₀(T), is dimensionless; this relation applies to absorbance data, not to every normalized or ratio signal. For a dimensionless ordinate differentiated n times with respect to wavelength in nm, the derivative has units nm⁻ⁿ; other signal units are retained and multiplied by nm⁻ⁿ. Derivatives are estimated by local polynomial fitting at the recorded wavelengths, rather than by differentiation of an exact continuous spectrum. Their amplitudes and zero crossings depend on noise, sampling, polynomial degree, fitting-window width and boundary treatment, particularly at higher orders. Extrema, zero-crossing candidates, integrated areas and spectral overlays are numerical or graphical descriptors whose interpretation requires suitable controls and experimental context. Original measurements are preserved; missing-data gaps are not bridged in the plotted curves, and any interpolation in an aligned CSV is explicitly identified. Analytical selectivity, analyte identity and method validation require independent experimental evidence. PNG dimensions and DPI describe export settings; SVG preserves vector geometry independently of raster resolution.</div></section>
-</div></main><footer><span data-i18n="footer">UV–Vis Spectral Studio · Spectral analysis and scientific visualization</span> · <span data-i18n="developedBy">Developed by</span> <strong dir="ltr">ABDULSALAM S. HASAN</strong> · <span id="footerVersion">v1.3.1</span> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio" target="_blank" rel="noopener noreferrer">Source</a> · <a href="#citationPanel" data-i18n="citationHeader">Cite this software</a> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></footer>
+</div></main><footer><span data-i18n="footer">UV–Vis Spectral Studio · Spectral analysis and scientific visualization</span> · <span data-i18n="developedBy">Developed by</span> <strong dir="ltr">ABDULSALAM S. HASAN</strong> · <span id="footerVersion">v1.3.2</span> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio" target="_blank" rel="noopener noreferrer">Source</a> · <a href="#citationPanel" data-i18n="citationHeader">Cite this software</a> · <a href="https://github.com/abd19990044-commits/UVVisSpectralStudio/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></footer>
 <script>
  'use strict';
 (() => {
@@ -455,7 +456,7 @@ const $=id=>document.getElementById(id);
 const NS='http://www.w3.org/2000/svg';
 const PALETTE=['#145c9a','#bb4f21','#6540b5','#00765e','#ba2772','#8b6200','#276b89','#8c3b73','#3c721f','#99441b'];
 let lang='en', spectra=[], seq=0, plotState=null, locked=false, drag=null, lastStatus=null, sourceTables=[], manualYLimits=false, derivativeGalleryOpen=false, derivativeAutoFit=false, yInputsEdited=false, processingRange={lo:-Infinity,hi:Infinity};
-const APP_VERSION='1.3.1';
+const APP_VERSION='1.3.2';
 const APP_CITATION=`Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v${APP_VERSION}) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923131`;
 $('appVersion').textContent=$('footerVersion').textContent='v'+APP_VERSION;
 $('citationText').value=APP_CITATION;
@@ -477,7 +478,7 @@ applyTheme('light');
 $('themeToggle').addEventListener('click',()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
 
 const STR={
- en:{axisAdvanced:"Advanced ticks & line styling",xTickModeLabel:"X-axis ticks",tickAuto:"Automatic",tickCount:"Number of intervals",tickStep:"Fixed step",xTickCountLabel:"X intervals (2–20)",xTickStepLabel:"X step (nm)",yTickModeLabel:"Y-axis ticks",yTickCountLabel:"Y intervals (2–20)",yTickStepLabel:"Y step",curveWidthLabel:"Default spectral curve width (px)",axisBoundHint:"Change a displayed axis boundary without modifying measured wavelengths or derivative processing.",axisBoundValue:"New axis limit",axisBoundCancel:"Cancel",axisBoundApply:"Apply limit",axisBoundXmin:"X-axis minimum (nm)",axisBoundXmax:"X-axis maximum (nm)",axisBoundYmin:"Y-axis minimum",axisBoundYmax:"Y-axis maximum",curveIndividualWidth:"Curve line width (px); blank uses default",axisWidthLabel:"Axis width (px)",tickWidthLabel:"Tick width (px)",mappingHeader:'Manual column mapping',mappingInfo:'After importing, choose the file/sheet and correct the wavelength and absorbance columns if auto-detection was ambiguous.',mapSource:'Imported table',mapWave:'Wavelength column (nm)',mapAbs:'Absorbance columns',mapApply:'Import using selected columns',mapNote:'Manual mapping adds curves and does not replace earlier imports.',edgeMode:'Mask asymmetric boundary points in D1–D4 (recommended)',cursorMode:'Cursor readings',cursorInterpolated:'Linear interpolation (identified)',cursorNearest:'Nearest measured point, independently for each spectrum',brand:'Interactive UV–Vis spectrum analysis · Derivatives · Research-ready plots',importHeader:'01 / Import spectra',drop:'Drop files or click to choose',dropHint:'Separate spectra or multi-column / multi-sheet Excel',localNote:'Data stay in your browser. A wavelength column is required; missing wavelengths are never fabricated.',demo:'Load synthetic example',clear:'Remove all spectra',exampleFormat:'Accepted TXT format',separator:'Comma, tab, space or semicolon separated; wavelength is detected from data and headers.',samplesHeader:'02 / Spectra & overlays',derivHeader:'03 / Spectral derivatives',viewLabel:'Spectrum / derivative order',view0:'Original spectrum A(λ) · Overlay',view1:'1st derivative dA/dλ · Overlay',view2:'2nd derivative d²A/dλ² · Overlay',view3:'3rd derivative d³A/dλ³ · Overlay',view4:'4th derivative d⁴A/dλ⁴ · Overlay',viewAll:'Original + all four derivatives (separate panels)',window:'Local fit window (points)',degree:'Polynomial degree',derivInfo:'Local polynomial least squares on actual wavelengths. Derivatives are with respect to nm, not array index. High derivatives amplify noise; choose parameters carefully.',axisHeader:'04 / Axes & displayed region',xMin:'X from (nm)',xMax:'X to (nm)',yMin:'Y minimum',yMax:'Y maximum',auto:'Auto',apply:'Apply axes',reset:'Reset axes',cursorHint:'Drag horizontally over the plot to zoom; click to lock or unlock the wavelength cursor.',titleLabel:'Plot title',xLabel:'X-axis title',yLabel:'Custom Y-axis title (optional)',yAuto:'Auto: physically consistent',saveSvg:'Save SVG',savePng:'Save PNG',widthLabel:'Figure width',qVisible:'Visible',qPts:'data points',qStep:'Median Δλ',qGaps:'gaps',qFit:'Local fit',qDirect:'Raw spectrum',qNone:'No data visible',qExact:'measured',qInterpolated:'interpolated',qUnavailable:'unavailable',cursorInitial:'Move the pointer over the plot to read wavelength and each displayed spectrum.',exportHeader:'05 / Export displayed numerical values',exportCsv:'Save displayed curves as CSV',exportNote:'CSV values retain the actual wavelength grid, include units in column headers, and leave points outside each spectrum or across data gaps empty. Values between measured points are linearly interpolated for tabulation only.',scientificHeader:"Scientific basis and interpretation",scientificNote:"Absorbance, A = −log₁₀(T), is dimensionless; this relation applies to absorbance data, not to every normalized or ratio signal. For a dimensionless ordinate differentiated n times with respect to wavelength in nm, the derivative has units nm⁻ⁿ; other signal units are retained and multiplied by nm⁻ⁿ. Derivatives are estimated by local polynomial fitting at the recorded wavelengths, rather than by differentiation of an exact continuous spectrum. Their amplitudes and zero crossings depend on noise, sampling, polynomial degree, fitting-window width and boundary treatment, particularly at higher orders. Extrema, zero-crossing candidates, integrated areas and spectral overlays are numerical or graphical descriptors whose interpretation requires suitable controls and experimental context. Original measurements are preserved; missing-data gaps are not bridged in the plotted curves, and any interpolation in an aligned CSV is explicitly identified. Analytical selectivity, analyte identity and method validation require independent experimental evidence. PNG dimensions and DPI describe export settings; SVG preserves vector geometry independently of raster resolution.",footer:'UV–Vis Spectral Studio · Spectral analysis and scientific visualization',welcome:'Import TXT/CSV or XLSX spectra, or load the synthetic example. Overlay plots have no automatically marked intersections.',none:'No spectra loaded.',loaded:'loaded',points:'points',solid:'Solid',dash:'Dashed',dot:'Dotted',style:'Line style',remove:'Remove',show:'Show',subtitle0:'Original spectrum',subtitle1:'First derivative',subtitle2:'Second derivative',subtitle3:'Third derivative',subtitle4:'Fourth derivative',visible:'visible spectra',mini:'Click to view',valuesInterpolated:'Intermediate values use linear interpolation',demoStatus:'Synthetic demonstration data only, NOT real measurements.',cleared:'Spectra cleared from this page. No data were uploaded.',importResult:'spectra imported.',warning:'Warnings:',failed:'Failed files:',fileEmpty:'Empty file.',needColumns:'At least one wavelength column and one absorbance column are required.',waveMissing:'Cannot identify a trustworthy wavelength column. Use numeric wavelengths ≥200 nm; name the column Wavelength (nm) if ambiguous.',waveAmbig:'More than one column looks like wavelength; label the wavelength column explicitly.',duplicate:'Duplicate wavelengths: the affected sample was skipped (do not average automatically).',gap:'A missing reading or a gap greater than 3× the median wavelength step was found. The curve is split; derivatives never cross the gap.',sparse:'Few data points; review derivative-window feasibility.',noAbs:'No plausible absorbance columns were found. Review file format and the |A| < 10 heuristic.',nPoints:'Cannot compute this derivative: spectrum needs at least {w} points in a continuous segment.',fit:'Polynomial fit failed on a window; try reducing polynomial degree or checking wavelength spacing.',axesX:'Invalid wavelength axis: maximum must exceed minimum.',axesY:'Invalid Y axis: maximum must exceed minimum.',emptyPlot:'Import spectra to begin.',pngFail:'PNG export failed',pngDone:'PNG saved: {width} × {height} pixels, {dpi} DPI ({inches}-inch width; physical DPI metadata included).',pngTooBig:'Requested image exceeds the 50-million-pixel safety limit. Select a lower DPI.',pngCanvas:'Canvas unavailable or browser memory limit reached; use SVG or a lower DPI.',pngEncode:'Browser could not encode PNG. Try 600 DPI or save SVG.',pngHeader:'PNG signature/chunk validation failed.',noPlot:'No valid plot to export.',tooLarge:'File exceeds 25 MB.',ext:'Unsupported file extension.',allInvalid:'No valid spectra found.',zipEnd:'Invalid XLSX: ZIP end record missing',zipFiles:'Unusually many Excel internal files',zipDir:'Invalid XLSX ZIP directory',zipLarge:'XLSX decompression limit exceeded (150 MB)',zipHeader:'Invalid XLSX local file header',noDeflate:'This browser cannot decompress XLSX locally. Use a recent Chrome/Edge or export CSV.',decompress:'Cannot decompress XLSX locally',compression:'Unsupported XLSX compression method',zipSize:'Invalid XLSX uncompressed data length',missingExcel:'Excel file is missing',badXml:'Cannot parse XML',manyRows:'Excel sheet exceeds 150,000 rows',missingSheet:'Cannot locate Excel sheet',noExcel:'No valid spectra extracted from XLSX.',tooltipWave:'λ',saveError:'Export error',curve:'curve',unit0:'Absorbance',unit1:'dA/dλ (nm⁻¹)',unit2:'d²A/dλ² (nm⁻²)',unit3:'d³A/dλ³ (nm⁻³)',unit4:'d⁴A/dλ⁴ (nm⁻⁴)',wavelength:'Wavelength (nm)',defaultTitle:'UV–Vis Spectral Overlay'},
+ en:{axisAdvanced:"Advanced ticks & line styling",xTickModeLabel:"X-axis ticks",tickAuto:"Automatic",tickCount:"Number of intervals",tickStep:"Fixed step",xTickCountLabel:"X intervals (2–20)",xTickStepLabel:"X step (nm)",yTickModeLabel:"Y-axis ticks",yTickCountLabel:"Y intervals (2–20)",yTickStepLabel:"Y step",curveWidthLabel:"Default spectral curve width (px)",axisBoundHint:"Change a displayed axis boundary without modifying measured wavelengths or derivative processing.",axisBoundValue:"New axis limit",axisBoundCancel:"Cancel",axisBoundApply:"Apply limit",axisBoundXmin:"X-axis minimum (nm)",axisBoundXmax:"X-axis maximum (nm)",axisBoundYmin:"Y-axis minimum",axisBoundYmax:"Y-axis maximum",curveIndividualWidth:"Curve line width (px); blank uses default",axisWidthLabel:"Axis width (px)",tickWidthLabel:"Tick width (px)",mappingHeader:'Manual column mapping',mappingInfo:'After importing, choose the file/sheet and correct the wavelength and absorbance columns if auto-detection was ambiguous.',mapSource:'Imported table',mapWave:'Wavelength column (nm)',mapAbs:'Absorbance columns',mapApply:'Import using selected columns',mapNote:'Manual mapping adds curves and does not replace earlier imports.',edgeMode:'Mask asymmetric boundary points in D1–D4 (recommended)',cursorMode:'Cursor readings',cursorInterpolated:'Linear interpolation (identified)',cursorNearest:'Nearest measured point, independently for each spectrum',brand:'Interactive UV–Vis spectrum analysis · Derivatives · Research-ready plots',importHeader:'01 / Import spectra',drop:'Drop files or click to choose',dropHint:'Separate spectra or multi-column / multi-sheet Excel',localNote:'Data stay in your browser. Import wavelength in nm and absorbance A; missing wavelengths are never fabricated.',demo:'Load synthetic example',clear:'Remove all spectra',exampleFormat:'Accepted TXT format',separator:'Comma, tab, space or semicolon separated; wavelength is detected from data and headers.',samplesHeader:'02 / Spectra & overlays',derivHeader:'03 / Spectral derivatives',viewLabel:'Spectrum / derivative order',view0:'Original spectrum A(λ) · Overlay',view1:'1st derivative dA/dλ · Overlay',view2:'2nd derivative d²A/dλ² · Overlay',view3:'3rd derivative d³A/dλ³ · Overlay',view4:'4th derivative d⁴A/dλ⁴ · Overlay',viewAll:'Original + all four derivatives (separate panels)',window:'Local fit window (points)',degree:'Polynomial degree',derivInfo:'Local polynomial least squares on actual wavelengths. Derivatives are with respect to nm, not array index. High derivatives amplify noise; choose parameters carefully.',axisHeader:'04 / Axes & displayed region',xMin:'X from (nm)',xMax:'X to (nm)',yMin:'Y minimum',yMax:'Y maximum',auto:'Auto',apply:'Apply axes',reset:'Reset axes',cursorHint:'Drag horizontally over the plot to zoom; click to lock or unlock the wavelength cursor.',titleLabel:'Plot title',xLabel:'X-axis title',yLabel:'Custom Y-axis title (optional)',yAuto:'Auto: physically consistent',saveSvg:'Save SVG',savePng:'Save PNG',widthLabel:'Figure width',qVisible:'Visible',qPts:'data points',qStep:'Median Δλ',qGaps:'gaps',qFit:'Local fit',qDirect:'Raw spectrum',qNone:'No data visible',qExact:'measured',qInterpolated:'interpolated',qUnavailable:'unavailable',cursorInitial:'Move the pointer over the plot to read wavelength and each displayed spectrum.',exportHeader:'05 / Export displayed numerical values',exportCsv:'Save displayed curves as CSV',exportNote:'CSV values retain the actual wavelength grid, include units in column headers, and leave points outside each spectrum or across data gaps empty. Values between measured points are linearly interpolated for tabulation only.',scientificHeader:"Scientific basis and interpretation",scientificNote:"Absorbance, A = −log₁₀(T), is dimensionless; this relation applies to absorbance data, not to every normalized or ratio signal. For a dimensionless ordinate differentiated n times with respect to wavelength in nm, the derivative has units nm⁻ⁿ; other signal units are retained and multiplied by nm⁻ⁿ. Derivatives are estimated by local polynomial fitting at the recorded wavelengths, rather than by differentiation of an exact continuous spectrum. Their amplitudes and zero crossings depend on noise, sampling, polynomial degree, fitting-window width and boundary treatment, particularly at higher orders. Extrema, zero-crossing candidates, integrated areas and spectral overlays are numerical or graphical descriptors whose interpretation requires suitable controls and experimental context. Original measurements are preserved; missing-data gaps are not bridged in the plotted curves, and any interpolation in an aligned CSV is explicitly identified. Analytical selectivity, analyte identity and method validation require independent experimental evidence. PNG dimensions and DPI describe export settings; SVG preserves vector geometry independently of raster resolution.",footer:'UV–Vis Spectral Studio · Spectral analysis and scientific visualization',welcome:'Import TXT/CSV or XLSX spectra, or load the synthetic example. Overlay plots have no automatically marked intersections.',none:'No spectra loaded.',loaded:'loaded',points:'points',solid:'Solid',dash:'Dashed',dot:'Dotted',style:'Line style',remove:'Remove',show:'Show',subtitle0:'Original spectrum',subtitle1:'First derivative',subtitle2:'Second derivative',subtitle3:'Third derivative',subtitle4:'Fourth derivative',visible:'visible spectra',mini:'Click to view',valuesInterpolated:'Intermediate values use linear interpolation',demoStatus:'Synthetic demonstration data only, NOT real measurements.',cleared:'Spectra cleared from this page. No data were uploaded.',importResult:'spectra imported.',warning:'Warnings:',failed:'Failed files:',fileEmpty:'Empty file.',needColumns:'At least one wavelength column and one absorbance column are required.',waveMissing:'Cannot identify a trustworthy wavelength column. Use numeric wavelengths ≥200 nm; name the column Wavelength (nm) if ambiguous.',waveAmbig:'More than one column looks like wavelength; label the wavelength column explicitly.',duplicate:'Duplicate wavelengths: the affected sample was skipped (do not average automatically).',gap:'A missing reading or a gap greater than 3× the median wavelength step was found. The curve is split; derivatives never cross the gap.',sparse:'Few data points; review derivative-window feasibility.',noAbs:'No plausible absorbance columns were found. Review file format and the |A| < 10 heuristic.',nPoints:'Cannot compute this derivative: spectrum needs at least {w} points in a continuous segment.',fit:'Polynomial fit failed on a window; try reducing polynomial degree or checking wavelength spacing.',axesX:'Invalid wavelength axis: maximum must exceed minimum.',axesY:'Invalid Y axis: maximum must exceed minimum.',emptyPlot:'Import spectra to begin.',pngFail:'PNG export failed',pngDone:'PNG saved: {width} × {height} pixels, {dpi} DPI ({inches}-inch width; physical DPI metadata included).',pngTooBig:'Requested image exceeds the 50-million-pixel safety limit. Select a lower DPI.',pngCanvas:'Canvas unavailable or browser memory limit reached; use SVG or a lower DPI.',pngEncode:'Browser could not encode PNG. Try 600 DPI or save SVG.',pngHeader:'PNG signature/chunk validation failed.',noPlot:'No valid plot to export.',tooLarge:'File exceeds 25 MB.',ext:'Unsupported file extension.',allInvalid:'No valid spectra found.',zipEnd:'Invalid XLSX: ZIP end record missing',zipFiles:'Unusually many Excel internal files',zipDir:'Invalid XLSX ZIP directory',zipLarge:'XLSX decompression limit exceeded (150 MB)',zipHeader:'Invalid XLSX local file header',noDeflate:'This browser cannot decompress XLSX locally. Use a recent Chrome/Edge or export CSV.',decompress:'Cannot decompress XLSX locally',compression:'Unsupported XLSX compression method',zipSize:'Invalid XLSX uncompressed data length',missingExcel:'Excel file is missing',badXml:'Cannot parse XML',manyRows:'Excel sheet exceeds 150,000 rows',missingSheet:'Cannot locate Excel sheet',noExcel:'No valid spectra extracted from XLSX.',tooltipWave:'λ',saveError:'Export error',curve:'curve',unit0:'Absorbance',unit1:'dA/dλ (nm⁻¹)',unit2:'d²A/dλ² (nm⁻²)',unit3:'d³A/dλ³ (nm⁻³)',unit4:'d⁴A/dλ⁴ (nm⁻⁴)',wavelength:'Wavelength (nm)',defaultTitle:'UV–Vis Spectral Overlay'},
  ar:{axisAdvanced:"إعدادات تقسيمات المحاور وسمك الخطوط",xTickModeLabel:"تقسيمات المحور X",tickAuto:"تلقائي",tickCount:"عدد الفواصل",tickStep:"خطوة ثابتة",xTickCountLabel:"عدد فواصل X ‏(2–20)",xTickStepLabel:"خطوة X ‏(nm)",yTickModeLabel:"تقسيمات المحور Y",yTickCountLabel:"عدد فواصل Y ‏(2–20)",yTickStepLabel:"خطوة Y",curveWidthLabel:"سمك المنحنيات الافتراضي (px)",axisBoundHint:"تعديل حدود المحاور المعروضة دون تغيير الأطوال الموجية المقاسة أو مجال حساب المشتقات.",axisBoundValue:"حد المحور الجديد",axisBoundCancel:"إلغاء",axisBoundApply:"تطبيق الحد",axisBoundXmin:"الحد الأدنى للمحور X ‏(nm)",axisBoundXmax:"الحد الأعلى للمحور X ‏(nm)",axisBoundYmin:"الحد الأدنى للمحور Y",axisBoundYmax:"الحد الأعلى للمحور Y",curveIndividualWidth:"سمك خط المنحنى (px)؛ فارغ لاستخدام الافتراضي",axisWidthLabel:"سمك المحاور (px)",tickWidthLabel:"سمك علامات التقسيم (px)",mappingHeader:'تعيين الأعمدة يدوياً',mappingInfo:'بعد الاستيراد، اختر الملف أو ورقة Excel وصحّح عمود الطول الموجي وأعمدة الامتصاصية عند التباس التعرف الآلي.',mapSource:'الجدول المستورد',mapWave:'عمود الطول الموجي (nm)',mapAbs:'أعمدة الامتصاصية',mapApply:'استيراد الأعمدة المحددة',mapNote:'يضيف التعيين اليدوي منحنيات جديدة دون استبدال البيانات السابقة.',edgeMode:'حجب النقاط الطرفية ذات النوافذ غير المتناظرة في المشتقات D1–D4 (موصى به)',cursorMode:'طريقة قراءة المؤشر',cursorInterpolated:'استيفاء خطي (مع التصريح به)',cursorNearest:'أقرب نقطة مقاسة لكل طيف على حدة',brand:'تحليل الأطياف دون اتصال · دون خادم · ملف HTML واحد',importHeader:'01 / استيراد الأطياف',drop:'اسحب الملفات أو انقر للاختيار',dropHint:'أطياف منفصلة أو ملف Excel متعدد الأعمدة/الأوراق',localNote:'تبقى البيانات في متصفحك. يلزم عمود طول موجي حقيقي؛ لا تُفترض الأطوال الموجية الناقصة.',demo:'إدراج مثال اصطناعي',clear:'حذف جميع الأطياف',exampleFormat:'تنسيق TXT المقبول',separator:'فواصل أو علامات جدولة أو مسافات أو فاصلة منقوطة؛ يُكتشف عمود الطول الموجي من البيانات والعناوين.',samplesHeader:'02 / الأطياف والتراكب',derivHeader:'03 / المشتقات الطيفية',viewLabel:'الطيف / رتبة المشتقة',view0:'الطيف الأصلي A(λ) · تراكب',view1:'المشتقة الأولى dA/dλ · تراكب',view2:'المشتقة الثانية d²A/dλ² · تراكب',view3:'المشتقة الثالثة d³A/dλ³ · تراكب',view4:'المشتقة الرابعة d⁴A/dλ⁴ · تراكب',viewAll:'الطيف الأصلي وجميع المشتقات (لوحات منفصلة)',window:'نافذة الملاءمة (نقاط)',degree:'درجة كثيرة الحدود',derivInfo:'ملاءمة محلية بالمربعات الصغرى على قيم الطول الموجي الفعلية. الاشتقاق بالنسبة إلى nm لا إلى رقم الصف. المشتقات العليا تضخّم الضوضاء؛ اضبط المعلمات بعناية.',axisHeader:'04 / المحاور والمنطقة المعروضة',xMin:'X من (nm)',xMax:'X إلى (nm)',yMin:'القيمة الدنيا للمحور Y',yMax:'القيمة العليا للمحور Y',auto:'تلقائي',apply:'تطبيق المحاور',reset:'إعادة الضبط التلقائي',cursorHint:'اسحب أفقياً داخل الرسم لتكبير المنطقة؛ انقر لقفل مؤشر الطول الموجي أو تحريره.',titleLabel:'عنوان الرسم',xLabel:'عنوان المحور X',yLabel:'عنوان Y مخصّص (اختياري)',yAuto:'تلقائي وفق الأبعاد الفيزيائية',saveSvg:'حفظ SVG',savePng:'حفظ PNG',widthLabel:'عرض الصورة',qVisible:'الظاهرة',qPts:'نقطة طيفية',qStep:'وسيط Δλ',qGaps:'فجوة',qFit:'الملاءمة المحلية',qDirect:'الطيف الخام',qNone:'لا توجد بيانات ظاهرة',qExact:'مقاس',qInterpolated:'مستوفى',qUnavailable:'غير متاح',cursorInitial:'حرّك المؤشر فوق الرسم لقراءة الطول الموجي وجميع الأطياف المعروضة.',exportHeader:'05 / تصدير القيم العددية المعروضة',exportCsv:'حفظ المنحنيات المعروضة CSV',exportNote:'تحتفظ CSV بشبكة الأطوال الموجية الأصلية، وتُذكر الوحدات في العناوين وتُترك الخانات خارج نطاق الطيف أو عبر فجوة البيانات فارغة. تُستوفى القيم البينية خطياً للجدولة فقط.',scientificHeader:"الأساس العلمي وحدود التفسير",scientificNote:"الامتصاصية A = −log₁₀(T) كمية بلا أبعاد؛ وتنطبق هذه العلاقة على بيانات الامتصاصية، لا بالضرورة على كل إشارة مُطبَّعة أو نسبة إشارات. إذا كانت الإشارة بلا أبعاد واشتُقّت n مرة بالنسبة إلى الطول الموجي المقاس بالنانومتر، كانت وحدة المشتقة nm⁻ⁿ؛ أما الإشارات ذات الوحدات الأخرى فتحتفظ بوحداتها مضروبةً في nm⁻ⁿ. تُقدَّر المشتقات بملاءمة كثيرة حدود محلية عند الأطوال الموجية المسجّلة، وليست اشتقاقاً لطيف متصل معلوم بدقة مطلقة. وتتأثر سعاتها ومواضع عبورها الصفري بالضوضاء وكثافة أخذ العينات ودرجة كثيرة الحدود وعرض نافذة الملاءمة ومعالجة الأطراف، ولا سيما في الرتب العليا. تمثّل القيم القصوى ومرشحات العبور الصفري والمساحات المتكاملة وتراكب الأطياف أوصافاً عددية أو بيانية يتطلب تفسيرها ضوابط مناسبة وسياقاً تجريبياً. تُحفَظ القياسات الأصلية، ولا تُوصَل فجوات البيانات في المنحنيات المرسومة، ويُبيَّن صراحةً أي استيفاء في جداول CSV المحاذاة. ويتطلب إثبات الانتقائية وهوية المادة والتحقق من صلاحية الطريقة أدلة تجريبية مستقلة. تعبّر أبعاد PNG وقيمة DPI عن إعدادات التصدير، فيما تحتفظ SVG بالهندسة المتجهية بصرف النظر عن دقة الصور النقطية.",footer:'UV–Vis Spectral Studio · تطبيق محلي ضمن ملف واحد · لا رفع سحابي',welcome:'ارفع ملفات TXT/CSV أو XLSX، أو افتح المثال الاصطناعي. لا تُعلّم التقاطعات تلقائياً.',none:'لم تُحمّل أطياف.',loaded:'طيف محمّل',points:'نقطة',solid:'متصل',dash:'متقطع',dot:'منقط',style:'نمط الخط',remove:'حذف',show:'إظهار',subtitle0:'الطيف الأصلي',subtitle1:'المشتقة الأولى',subtitle2:'المشتقة الثانية',subtitle3:'المشتقة الثالثة',subtitle4:'المشتقة الرابعة',visible:'أطياف ظاهرة',mini:'انقر للعرض',valuesInterpolated:'القيم البينية مستوفاة خطياً',demoStatus:'بيانات اصطناعية توضيحية فقط، وليست قياسات حقيقية.',cleared:'حُذفت الأطياف من هذه الصفحة. لم تُرفع بيانات إلى خادم.',importResult:'طيف تم استيراده.',warning:'ملاحظات:',failed:'ملفات غير صالحة:',fileEmpty:'الملف فارغ.',needColumns:'يلزم عمود طول موجي وعمود امتصاصية واحد على الأقل.',waveMissing:'تعذّر اكتشاف عمود طول موجي موثوق. استخدم قيماً رقمية ≥200 nm، وسمِّ العمود Wavelength (nm) عند الالتباس.',waveAmbig:'يوجد أكثر من عمود يشبه الطول الموجي؛ سمِّ العمود المطلوب صراحة.',duplicate:'أطوال موجية مكرّرة: أُهملت العينة المعنية من دون أخذ متوسط تلقائي.',gap:'رُصدت قراءة مفقودة أو فجوة تتجاوز 3× خطوة الطول الموجي الوسيطة؛ يُفصل المنحنى ولا تُحسب المشتقات عبر الفجوة.',sparse:'عدد نقاط قليل؛ تحقّق من صلاحية نافذة الاشتقاق.',noAbs:'لم تُكتشف أعمدة امتصاصية محتملة؛ راجع التنسيق وشرط |A| < 10 التقريبي.',nPoints:'تعذّر حساب المشتقة؛ يحتاج مقطع الطيف إلى {w} نقطة على الأقل.',fit:'فشل ملاءمة كثيرة الحدود محلياً؛ قلّل درجتها أو راجع مسافات الطول الموجي.',axesX:'حدود الطول الموجي غير صالحة: يجب أن تكون النهاية أكبر من البداية.',axesY:'حدود المحور Y غير صالحة: يجب أن تكون النهاية أكبر من البداية.',emptyPlot:'ارفع الأطياف للبدء.',pngFail:'فشل تصدير PNG',pngDone:'حُفظت صورة PNG بأبعاد {width} × {height} بكسل، بدقة {dpi} DPI وعرض {inches} بوصة؛ بيانات الدقة مضمنة.',pngTooBig:'تتجاوز الصورة حد السلامة البالغ 50 مليون بكسل؛ اختر DPI أقل.',pngCanvas:'تعذر إنشاء Canvas أو بلوغ حد ذاكرة المتصفح؛ استخدم SVG أو DPI أقل.',pngEncode:'تعذر ترميز PNG؛ جرب 600 DPI أو حفظ SVG.',pngHeader:'فشل التحقق من ترويسة PNG/البنية.',noPlot:'لا يوجد رسم صالح للتصدير.',tooLarge:'يتجاوز الملف 25 MB.',ext:'امتداد الملف غير مدعوم.',allInvalid:'لم يُستخرج أي طيف صالح.',zipEnd:'XLSX غير صالح: نهاية ZIP مفقودة',zipFiles:'عدد ملفات Excel الداخلية غير معتاد',zipDir:'دليل ZIP غير صالح',zipLarge:'تجاوز حد تفريغ XLSX (150 MB)',zipHeader:'ترويسة ZIP محلية غير صالحة',noDeflate:'هذا المتصفح لا يدعم فك XLSX محلياً. استخدم Chrome/Edge حديثاً أو صدّر CSV.',decompress:'تعذر فك ضغط XLSX محلياً',compression:'طريقة ضغط XLSX غير مدعومة',zipSize:'حجم البيانات داخل XLSX غير صحيح',missingExcel:'يفتقد Excel إلى',badXml:'تعذرت قراءة XML',manyRows:'تتجاوز ورقة Excel 150 ألف صف',missingSheet:'تعذر الوصول إلى ورقة Excel',noExcel:'لم يُستخرج طيف صالح من XLSX.',tooltipWave:'λ',saveError:'خطأ في التصدير',curve:'منحنى',unit0:'الامتصاصية، A (بلا أبعاد)',unit1:'dA/dλ (nm⁻¹)',unit2:'d²A/dλ² (nm⁻²)',unit3:'d³A/dλ³ (nm⁻³)',unit4:'d⁴A/dλ⁴ (nm⁻⁴)',wavelength:'الطول الموجي (nm)',defaultTitle:'تراكب أطياف UV–Vis'}
  };
 /* Reviewed analytical-chemistry terminology and publication-ready Arabic UI. */
@@ -513,7 +514,7 @@ Object.assign(STR.ar,{
  importAria:'استيراد البيانات الطيفية',widthAria:'العرض الفيزيائي للشكل',dpiAria:'دقة تصدير PNG',plotAria:'رسم تفاعلي لأطياف الامتصاص بالأشعة فوق البنفسجية والمرئية',
  brand:'تحليل أطياف الامتصاص بالأشعة فوق البنفسجية والمرئية · الاشتقاق الطيفي · رسوم للبحث العلمي',
  importHeader:'01 / استيراد البيانات الطيفية',drop:'اسحب الملفات هنا أو انقر لاختيارها',dropHint:'أطياف منفصلة أو مصنف Excel متعدد الأعمدة والأوراق',
- localNote:'تُعالَج البيانات داخل المتصفح. يجب أن تتضمن البيانات عموداً للطول الموجي؛ ولا تُنشأ قيم بديلة للأطوال الموجية المفقودة.',
+ localNote:'تُعالَج البيانات داخل المتصفح. استورد الطول الموجي بوحدة nm والامتصاصية A؛ ولا تُنشأ قيم بديلة للأطوال الموجية المفقودة.',
  demo:'تحميل بيانات توضيحية مولّدة',clear:'إزالة جميع الأطياف',exampleFormat:'مثال على تنسيق ملف TXT',
  separator:'تُقبل الأعمدة المفصولة بفاصلة أو فاصلة منقوطة أو مسافة أو جدولة. يُستدل على عمود الطول الموجي من القيم والعناوين.',
  mappingHeader:'تعيين أعمدة البيانات يدوياً',mappingInfo:'بعد الاستيراد، حدّد الملف أو ورقة العمل، ثم صحّح تعيين عمود الطول الموجي وأعمدة الامتصاصية إذا كان الاكتشاف الآلي ملتبساً.',
@@ -555,6 +556,28 @@ Object.assign(STR.ar,{
  noAbs:'لم يُتعرف على أعمدة امتصاصية مناسبة تلقائياً. راجع تعيين الأعمدة ومعيار الفرز التقريبي |A| < 10.',
  unit0:'Absorbance',unit1:'dA/dλ (nm⁻¹)',unit2:'d²A/dλ² (nm⁻²)',unit3:'d³A/dλ³ (nm⁻³)',unit4:'d⁴A/dλ⁴ (nm⁻⁴)',
  wavelength:'Wavelength (nm)',defaultTitle:'تراكب أطياف الامتصاص UV–Vis',cursorWavelength:'الطول الموجي',measuredData:'القراءات المقاسة',column:'العمود'
+});
+Object.assign(STR.en,{
+ readingProcessed:'Processed signal at a recorded wavelength',readingProcessedDerivative:'Computed derivative of a processed signal at a recorded wavelength',
+ readingSynthetic:'Synthetic value; not an experimental measurement',readingSyntheticDerivative:'Computed derivative of synthetic data; not an experimental measurement',
+ readingStale:'Settings or data changed. Read the value again.',
+ derivativeProgress:'Calculating derivatives: {done} / {total} curves and orders complete…',
+ cancelDerivative:'Cancel calculation',derivativeCancelled:'Calculation cancelled. The previous figure is still visible; change a derivative setting to calculate again.',
+ derivativeReady:'Derivatives calculated using the current settings.',
+ derivativeWorkerError:'The background calculation failed. Try a smaller processing range or fewer curves.',
+ waveMissing:'Cannot identify a trustworthy wavelength column. Verify positive wavelengths in nm and label the column Wavelength (nm).',
+ noAbs:'No supported absorbance columns found. Verify signal units and the |A| < 10 automatic-detection heuristic.'
+});
+Object.assign(STR.ar,{
+ readingProcessed:'قيمة إشارة معالجة عند طول موجي مسجّل',readingProcessedDerivative:'مشتقة محسوبة لإشارة معالجة عند طول موجي مسجّل',
+ readingSynthetic:'قيمة اصطناعية وليست قياساً تجريبياً',readingSyntheticDerivative:'مشتقة محسوبة لبيانات اصطناعية وليست قياساً تجريبياً',
+ readingStale:'تغيّرت البيانات أو الإعدادات. أعد قراءة القيمة.',
+ derivativeProgress:'حساب المشتقات: اكتمل {done} من {total} مهام للمنحنيات والرتب…',
+ cancelDerivative:'إلغاء الحساب',derivativeCancelled:'أُلغي الحساب. بقي الشكل السابق معروضاً؛ غيّر إعداداً للمشتقة لإعادة الحساب.',
+ derivativeReady:'اكتمل حساب المشتقات وفق الإعدادات الحالية.',
+ derivativeWorkerError:'تعذّر حساب المشتقات في الخلفية. جرّب مجال معالجة أضيق أو عدداً أقل من المنحنيات.',
+ waveMissing:'تعذّر تحديد عمود طول موجي موثوق. تحقّق من أن القيم موجبة وبوحدة nm وسمّ العمود Wavelength (nm).',
+ noAbs:'لم يُعثر على عمود امتصاصية مدعوم. تحقّق من وحدات الإشارة ومن شرط الكشف التلقائي |A| < 10.'
 });
 function t(key,p={}){let s=STR[lang][key]??key;return s.replace(/\{(\w+)\}/g,(_,k)=>String(p[k]??''));}
 const fmt=(v,n=6)=>Number.isFinite(v)?((Math.abs(v)>0&&Math.abs(v)<.0001)||Math.abs(v)>=1e7?v.toExponential(3):Number(v).toLocaleString('en-US',{maximumFractionDigits:n})): '—';
@@ -655,15 +678,36 @@ function parseText(text,name){
  for(const c of lines.slice(0,20).join('\n')){if(c==='"')quoted=!quoted;else if(!quoted)probe+=c;}
  const commaDecimals=lines.slice(0,20).filter(l=>/^\s*[-+]?\d+(?:[.,]\d+)?\s+[-+]?\d+,\d+(?:\s|$)/.test(l)).length>=Math.min(3,lines.length);
  const d=probe.includes('\t')?'\t':probe.includes(';')?';':commaDecimals?'ws':probe.includes(',')?',':'ws';
- const rows=lines.map(l=>splitRow(l,d)),sourceTableId=sourceTables.length;
- sourceTables.push({name,rows});
+ const rows=lines.map(l=>splitRow(l,d)),sourceTableId=retainSourceTable(name,rows);
  return rowsToSpectra(rows,name,null,sourceTableId);
+}
+function importUnitError(header,axis=false){
+ const h=String(header||'').normalize('NFKC').toLowerCase().replace(/[μµ]/g,'u');
+ const invalid=axis
+  ?/wavenumber|wave\s*number|cm\s*\^?\s*-?1|cm−1|عدد\s*موجي|\bum\b|\bmicromet(?:er|re)s?\b|ميكرومتر|ميكرون|angstrom|ångstr|(?:^|[\s[(])å(?=$|[\s)\]])|\bev\b|\b[kgmt]?hz\b|\b(?:m|cm|mm|pm)\b|frequency|photon energy/.test(h)
+  :/transmittance|transmission|^\s*t\s*$|%\s*t\b|\bt\s*%|نفاذ|\bmabs\b|\bmau\b|milli.?abs|fluorescen|intensity|counts|reflectance|\brelative\b|\bnormalized\b|\bnormalised\b|\bratio\b|شدة|فلور|مطبع|مطبّع|نسبة/.test(h);
+ if(!invalid)return '';
+ return axis?(lang==='ar'?'وحدة محور غير مدعومة؛ حوّل الأطوال الموجية صراحةً إلى nm قبل الاستيراد.':'Unsupported axis unit; explicitly convert wavelengths to nm before import.')
+  :(lang==='ar'?'نوع إشارة غير مدعوم؛ يلزم استيراد الامتصاصية A. حوّل النفاذية T أو %T أو mAbs صراحةً قبل الاستيراد.':'Unsupported signal; import absorbance A. Explicitly convert T, %T or mAbs before import.');
+}
+function assertSessionCapacity(curves,tables){
+ let points=0,cells=0;
+ for(const c of curves)points+=c.x.length;
+ for(const tab of tables)for(const row of tab.rows)cells+=row.length;
+ if(curves.length>128||points>1000000||tables.length>1000||cells>2000000){
+  const e=Error(lang==='ar'?'بلغت الجلسة حد الحفظ: 128 منحنى، مليون نقطة، ألف جدول أو مليونا خلية. احفظ العمل وابدأ مشروعاً جديداً.':'Session save limit reached: 128 curves, 1 million points, 1000 tables or 2 million cells. Save this work and start another project.');
+  e.name='SessionLimitError';throw e;
+ }
+}
+function retainSourceTable(name,rows){
+ assertSessionCapacity([],[...sourceTables,{name,rows}]);
+ const id=sourceTables.length;sourceTables.push({name,rows});return id;
 }
 function rowsToSpectra(rows,name,manual=null,sourceTableId=null){let maxcols=Math.min(80,Math.max(0,...rows.slice(0,400).map(r=>r.length)));if(maxcols<2)throw Error(name+': '+t('needColumns'));
  let header=rows[0].some(v=>Number.isNaN(validNumber(v)))?rows[0]:[], data=header.length?rows.slice(1):rows;
  let candidates=[];for(let j=0;j<maxcols;j++){let h=String(header[j]||'');if(/^(?:id|index|row|number|time|conc(?:entration)?|serial|رقم|التركيز|زمن)/i.test(h))continue;let a=data.map(r=>validNumber(r[j])).filter(Number.isFinite);if(a.length<7)continue;let inRange=a.filter(v=>v>0&&Number.isFinite(v)).length/a.length, unique=new Set(a).size/a.length, dx=a.slice(1).map((v,i)=>v-a[i]), mono=Math.max(dx.filter(z=>z>0).length,dx.filter(z=>z<0).length)/Math.max(1,dx.length),span=a.reduce((v,x)=>[Math.min(v[0],x),Math.max(v[1],x)],[Infinity,-Infinity]),named=/wavelength|wave.?length|λ|nm|طول موجي/i.test(h);if(inRange>.96&&unique>.96&&mono>.96&&(span[1]-span[0])>=.1&&a.length/data.length>.8)candidates.push({j,named,score:(named?20:0)+mono*3+unique+Math.log10(1+Math.max(0,span[1]-span[0]))});}
- candidates.sort((a,b)=>b.score-a.score);if(!manual&&!candidates.length)throw Error(name+': '+t('waveMissing'));if(!manual&&candidates.length>1&&candidates[0].score-candidates[1].score<.15)throw Error(name+': '+t('waveAmbig'));let xi=manual?manual.xi:candidates[0].j, out=[],warnings=[];const axisHeader=String(header[xi]||'');if(/wavenumber|wave\s*number|cm\s*\^?\s*-?1|cm⁻¹|عدد\s*موجي/i.test(axisHeader))throw Error(name+': '+(lang==='ar'?'المحور محدد بعدد موجي cm⁻¹؛ حوّله صراحةً إلى nm قبل الاستيراد':'Axis appears to be wavenumber (cm^-1); explicitly convert to nm before import'));
- for(let j=0;j<maxcols;j++){if(j===xi||(manual&&!manual.ys.includes(j)))continue;let h=String(header[j]||'');if(!manual&&/^(?:id|index|row|number|time|conc(?:entration)?|serial|رقم|التركيز|زمن)/i.test(h))continue;let pairs=[],total=0,plaus=0,omitted=0;
+ candidates.sort((a,b)=>b.score-a.score);if(!manual&&!candidates.length)throw Error(name+': '+t('waveMissing'));if(!manual&&candidates.length>1&&candidates[0].score-candidates[1].score<.15)throw Error(name+': '+t('waveAmbig'));let xi=manual?manual.xi:candidates[0].j, out=[],warnings=[];const axisHeader=String(header[xi]||'');const axisError=importUnitError(axisHeader,true);if(axisError)throw Error(name+': '+axisError);
+ for(let j=0;j<maxcols;j++){if(j===xi||(manual&&!manual.ys.includes(j)))continue;let h=String(header[j]||'');if(!manual&&/^(?:id|index|row|number|time|conc(?:entration)?|serial|رقم|التركيز|زمن)/i.test(h))continue;const signalError=importUnitError(h);if(signalError){warnings.push(name+'/'+h+': '+signalError);continue;}let pairs=[],total=0,plaus=0,omitted=0;
  for(let ri=0;ri<data.length;ri++){let r=data[ri],x=validNumber(r[xi]),y=validNumber(r[j]);if(Number.isFinite(y)){total++;if(Math.abs(y)<10)plaus++;}if(Number.isFinite(x)&&Number.isFinite(y)&&x>0)pairs.push([x,y,ri]);else if(String(r[xi]??'').trim()||String(r[j]??'').trim())omitted++;}
  if(pairs.length<7||(!manual&&plaus/Math.max(total,1)<.92)||pairs.length/data.length<.65){if(omitted)warnings.push(`${name}/${h||j+1}: ${omitted} ${lang==='ar'?'صفاً غير صالح أو ناقصاً؛ لم يتم استيراد هذا العمود':'invalid or incomplete rows; column was not imported'}`);continue;}if(omitted)warnings.push(`${name}/${h||j+1}: ${omitted} ${lang==='ar'?'قراءة غير صالحة أو ناقصة مستبعدة، ولا توجد قراءة ملفّقة':'invalid or missing readings omitted; no values fabricated'}`);if(manual&&plaus/Math.max(total,1)<.92)warnings.push(`${name}/${h||j+1}: ${lang==='ar'?'الامتصاصية خارج المجال المعتاد ±10؛ تحقق من الوحدات':'absorbance outside usual ±10; verify units'}`);if(!/wavelength|wave.?length|λ|nm|طول موجي/i.test(axisHeader)&&pairs.some(p=>p[0]>1500))warnings.push(`${name}: ${lang==='ar'?'مدى محوري غير معتاد؛ تحقق من أن الوحدة nm وليست cm⁻¹':'Unusual UV–Vis axis range; verify that the unit is nm, not cm^-1'}`);pairs.sort((a,b)=>a[0]-b[0]);if(pairs.some((p,i)=>i&&p[0]===pairs[i-1][0])){warnings.push(`${name}/${h||j+1}: ${t('duplicate')}`);continue;}
  let gaps=pairs.slice(1).map((p,i)=>p[0]-pairs[i][0]),med=median(gaps),breaks=[];for(let i=0;i<gaps.length;i++)if(gaps[i]>3*med||Math.abs(pairs[i+1][2]-pairs[i][2])>1)breaks.push(i+1);if(breaks.length)warnings.push(`${name}/${h||j+1}: ${t('gap')}`);if(pairs.length<15)warnings.push(`${name}/${h||j+1}: ${t('sparse')}`);
@@ -672,7 +716,7 @@ function rowsToSpectra(rows,name,manual=null,sourceTableId=null){let maxcols=Mat
  const headerName=h.trim();
  const curveName=isWorkbook?(headerName||'A'+(j+1)):(baseName+(out.length?' · '+(headerName||'A'+(j+1)):''));
  out.push({name:curveName,x:pairs.map(p=>p[0]),y:pairs.map(p=>p[1]),breaks,sourceTableId,xColumn:xi,yColumn:j});}
- if(!out.length)throw Error(name+': '+t('noAbs'));return {out,warnings};}
+ if(!out.length)throw Error(name+': '+t('noAbs')+(warnings.length?' '+warnings.join(' | '):''));return {out,warnings};}
 function uniqueCurveName(proposed){
  const base=String(proposed||'Spectrum').trim()||'Spectrum';
  const used=new Set(spectra.map(s=>s.name.toLocaleLowerCase()));
@@ -686,6 +730,8 @@ function mappingAbs(){let item=sourceTables[Number($('mapSource').value)];if(!it
 $('mapSource').onchange=mappingColumns;$('mapWave').onchange=mappingAbs;
 $('mapApply').onclick=()=>{let item=sourceTables[Number($('mapSource').value)];if(!item){statusRaw(lang==='ar'?'لا يوجد جدول مستورد':'No imported table','warn');return;}let xi=Number($('mapWave').value),ys=[...$('mapAbs').querySelectorAll('input:checked')].map(n=>Number(n.value));if(!ys.length){statusRaw(lang==='ar'?'اختر عمود امتصاصية واحداً على الأقل':'Choose at least one absorbance column','warn');return;}try{const sourceTableId=Number($('mapSource').value);
 let r=rowsToSpectra(item.rows,item.name,{xi,ys},sourceTableId);
+const fresh=r.out.filter(q=>!spectra.some(s=>s.sourceTableId===q.sourceTableId&&s.xColumn===q.xColumn&&s.yColumn===q.yColumn));
+assertSessionCapacity([...spectra,...fresh],sourceTables);
 let added=0,skipped=0;
 for(let q of r.out){
  if(spectra.some(s=>s.sourceTableId===q.sourceTableId&&s.xColumn===q.xColumn&&s.yColumn===q.yColumn)){skipped++;continue;}
@@ -756,15 +802,22 @@ function byLocal(node,name){return Array.from(node.getElementsByTagName('*')).fi
 function textOfTag(parent,tag){let n=byLocal(parent,tag)[0];return n?n.textContent:'';}
 function xlsxRows(doc,strings){let rows=[],rowNodes=byLocal(doc,'row');if(rowNodes.length>150000)throw Error(t('manyRows'));for(let r of rowNodes){let vals=[],cells=Array.from(r.children).filter(c=>c.localName==='c');for(let c of cells){let ref=c.getAttribute('r')||'',letters=ref.match(/^[A-Z]+/i),idx=0;if(letters){for(let ch of letters[0].toUpperCase())idx=idx*26+ch.charCodeAt(0)-64;idx--;}else idx=vals.length;if(idx>80)continue;let typ=c.getAttribute('t'),v=textOfTag(c,'v');if(typ==='s')vals[idx]=strings[Number(v)]??'';else if(typ==='inlineStr')vals[idx]=textOfTag(c,'is');else if(typ==='b')vals[idx]=Number(v);else vals[idx]=v;}if(vals.some(x=>String(x??'').trim()))rows.push(vals);}return rows;}
 async function parseXlsx(buffer,name){let entries=await unzipXlsx(buffer),wb=xml(entries['xl/workbook.xml'],'workbook.xml'),rels=xml(entries['xl/_rels/workbook.xml.rels'],'workbook relationships');let maps={};for(let r of byLocal(rels,'Relationship'))maps[r.getAttribute('Id')]=r.getAttribute('Target');let strings=entries['xl/sharedStrings.xml']?byLocal(xml(entries['xl/sharedStrings.xml'],'sharedStrings'),'si').map(s=>s.textContent):[];let out=[],warnings=[];
- for(let sh of byLocal(wb,'sheet')){let rid=sh.getAttribute('r:id'),target=maps[rid];if(!target)continue;target=target.startsWith('/')?target.slice(1):'xl/'+target.replace(/^\.\//,'');target=target.replace(/\/\.\//g,'/').replace(/\/[^/]+\/\.\.\//g,'/');let source=entries[target];if(!source){warnings.push(t('missingSheet')+': '+sh.getAttribute('name'));continue;}let tab=sh.getAttribute('name')||'Sheet';try{let rows=xlsxRows(xml(source,tab),strings);const sourceTableId=sourceTables.length;sourceTables.push({name:name+' · '+tab,rows});let r=rowsToSpectra(rows,name+' · '+tab,null,sourceTableId);out.push(...r.out);warnings.push(...r.warnings);}catch(e){warnings.push(tab+': '+e.message);}}
+ for(let sh of byLocal(wb,'sheet')){let rid=sh.getAttribute('r:id'),target=maps[rid];if(!target)continue;target=target.startsWith('/')?target.slice(1):'xl/'+target.replace(/^\.\//,'');target=target.replace(/\/\.\//g,'/').replace(/\/[^/]+\/\.\.\//g,'/');let source=entries[target];if(!source){warnings.push(t('missingSheet')+': '+sh.getAttribute('name'));continue;}let tab=sh.getAttribute('name')||'Sheet';try{let rows=xlsxRows(xml(source,tab),strings);const sourceTableId=retainSourceTable(name+' · '+tab,rows);let r=rowsToSpectra(rows,name+' · '+tab,null,sourceTableId);out.push(...r.out);warnings.push(...r.warnings);}catch(e){if(e.name==='SessionLimitError')throw e;warnings.push(tab+': '+e.message);}}
  if(!out.length)throw Error(t('noExcel')+' '+warnings.join(' | '));return {out,warnings};}
 function factorial(n){let v=1;for(let j=2;j<=n;j++)v*=j;return v;}
 /* Modified Gram–Schmidt QR with a second orthogonalization pass: avoids Vandermonde normal-equation squaring of condition number. */
 function localDerivative(xs,ys,i,start,win,deg,order){let mid=xs[i],scale=Math.max((xs[start+win-1]-xs[start])/2,1e-15),m=deg+1,cols=[];for(let j=0;j<m;j++)cols.push(Array.from({length:win},(_,k)=>((xs[start+k]-mid)/scale)**j));
  let Q=[],R=Array.from({length:m},()=>new Float64Array(m));for(let j=0;j<m;j++){let v=cols[j].slice(),base=Math.hypot(...v);for(let pass=0;pass<2;pass++){for(let k=0;k<j;k++){let dot=0;for(let z=0;z<win;z++)dot+=Q[k][z]*v[z];R[k][j]+=dot;for(let z=0;z<win;z++)v[z]-=dot*Q[k][z];}}let norm=Math.hypot(...v);if(!(norm>1e-12*base))return NaN;R[j][j]=norm;Q.push(v.map(z=>z/norm));}
  let b=Q.map(q=>q.reduce((a,v,k)=>a+v*ys[start+k],0)),beta=new Float64Array(m);for(let j=m-1;j>=0;j--){let v=b[j];for(let k=j+1;k<m;k++)v-=R[j][k]*beta[k];beta[j]=v/R[j][j];}return factorial(order)*beta[order]/scale**order;}
-function derivative(s,order){if(!order)return s.y;let win=Number($('window').value),deg=Number($('degree').value),n=s.x.length;if(order>deg||win<=deg||win%2!==1)throw Error(t('fit'));let key=order+'-'+win+'-'+deg+'-'+($('edgeMode').checked?'mask':'full');if(s.cache[key])return s.cache[key];let result=new Array(n).fill(NaN),limits=[0,...s.breaks,n];let valid=0;
- for(let q=0;q<limits.length-1;q++){let l=limits[q],r=limits[q+1],length=r-l;if(length<win)continue;valid++;for(let i=l;i<r;i++){if($('edgeMode').checked&&(i-l<Math.floor(win/2)||r-1-i<Math.floor(win/2)))continue;let start=Math.max(l,Math.min(r-win,i-Math.floor(win/2)));result[i]=localDerivative(s.x,s.y,i,start,win,deg,order);}}if(!valid)throw Error(s.name+': '+t('nPoints',{w:win}));if(result.every(v=>!Number.isFinite(v)))throw Error(s.name+': '+t('fit'));s.cache[key]=result;return result;}
+function derivativeCacheKey(order){return order+'-'+Number($('window').value)+'-'+Number($('degree').value)+'-'+($('edgeMode').checked?'mask':'full');}
+function cacheDerivative(s,key,value){
+ // The cache belongs to a single processing range. Keep recent settings only.
+ delete s.cache[key];s.cache[key]=value;
+ const keys=Object.keys(s.cache);while(keys.length>8)delete s.cache[keys.shift()];
+ return value;
+}
+function derivative(s,order){if(!order)return s.y;let win=Number($('window').value),deg=Number($('degree').value),n=s.x.length;if(order>deg||win<=deg||win%2!==1)throw Error(t('fit'));let key=derivativeCacheKey(order);if(s.cache[key])return cacheDerivative(s,key,s.cache[key]);let result=new Array(n).fill(NaN),limits=[0,...s.breaks,n];let valid=0;
+ for(let q=0;q<limits.length-1;q++){let l=limits[q],r=limits[q+1],length=r-l;if(length<win)continue;valid++;for(let i=l;i<r;i++){if($('edgeMode').checked&&(i-l<Math.floor(win/2)||r-1-i<Math.floor(win/2)))continue;let start=Math.max(l,Math.min(r-win,i-Math.floor(win/2)));result[i]=localDerivative(s.x,s.y,i,start,win,deg,order);}}if(!valid)throw Error(s.name+': '+t('nPoints',{w:win}));if(result.every(v=>!Number.isFinite(v)))throw Error(s.name+': '+t('fit'));return cacheDerivative(s,key,result);}
 function selectedXRange(){return processingRange;}
 function displayXRange(){const left=$('xmin').value.trim(),right=$('xmax').value.trim(),lo=left===''?-Infinity:Number(left),hi=right===''?Infinity:Number(right);if(Number.isNaN(lo)||Number.isNaN(hi)||lo>=hi)throw Error(t('axesX'));return{lo,hi};}
 /* Only measured points inside the selected range enter derivative fit windows;
@@ -772,11 +825,11 @@ function displayXRange(){const left=$('xmin').value.trim(),right=$('xmax').value
 function restrictedSpectrum(s){
  const {lo,hi}=selectedXRange(),key='roi:'+lo+':'+hi;
  if(!s.cache[key]){
-  const x=[],y=[],breaks=[];
+  const x=[],y=[],breaks=[],sourceBreaks=new Set(s.breaks);
   for(let i=0;i<s.x.length;i++){
    const w=s.x[i];
    if(w<lo||w>hi)continue;
-   if(x.length&&(s.breaks.includes(i)||s.x[i-1]<lo))breaks.push(x.length);
+   if(x.length&&(sourceBreaks.has(i)||s.x[i-1]<lo))breaks.push(x.length);
    x.push(w);y.push(s.y[i]);
   }
   const keys=s.cache.__roiKeys||(s.cache.__roiKeys=[]);
@@ -844,15 +897,16 @@ function prepareProcessedCurve(source,reference,mode,from='',to=''){
   }
  }
  if(points.length<7)throw Error('Too few valid points after processing');
- const breaks=[];for(let k=1;k<points.length;k++)if(points[k].i!==points[k-1].i+1||d.breaks.includes(points[k].i))breaks.push(k);
+ const breaks=[],sourceBreaks=new Set(d.breaks);for(let k=1;k<points.length;k++)if(points[k].i!==points[k-1].i+1||sourceBreaks.has(points[k].i))breaks.push(k);
  const provenance='operation='+mode+'; source='+source.name+
   (reference&&(mode==='subtract'||mode==='ratio')?'; reference='+reference.name+'; interpolated reference points='+interpolated:'')+
   (line?'; baseline anchors nm='+line.xa+'..'+line.xb:'')+
   (divisor?'; normalization divisor='+divisor:'')+
   (mode==='smooth'?'; window='+win+'; degree='+deg+'; mask='+$('edgeMode').checked:'')+
-  '; processing nm='+processingRange.lo+'..'+processingRange.hi+'; original preserved';
+  '; processing nm='+processingRange.lo+'..'+processingRange.hi+'; original preserved'+
+  (source.provenance?'; parent provenance=['+source.provenance+']':'');
  return{name:source.name+' · '+mode,x:points.map(p=>p.x),y:points.map(p=>p.y),breaks,
-  scaleType:mode==='normalize'?'relative':mode==='ratio'?'ratio':kind,provenance};
+  scaleType:mode==='normalize'?'relative':mode==='ratio'?'ratio':kind,origin:'processed',provenance};
 }
 function windowSensitivity(source,order,degree,windows,measureLo,measureHi){
  if(!(measureHi>measureLo))throw Error('Invalid sensitivity interval');
@@ -903,7 +957,7 @@ function analyticalMetrics(d,lo,hi,noiseRange=null){
  for(const p of points){if(p.y>highest.y)highest=p;if(p.y<lowest.y)lowest=p;}
  for(let i=0;i<d.x.length;i++){
   const x=d.x[i],y=d.y[i];
-  if(x>=lo&&x<=hi&&y===0)zeros.push({x,kind:'measured zero'});
+  if(x>=lo&&x<=hi&&y===0)zeros.push({x,kind:'zero at recorded wavelength'});
   if(!i||breaks.has(i)||!Number.isFinite(y)||!Number.isFinite(d.y[i-1])||d.y[i-1]*y>=0)continue;
   const zx=d.x[i-1]+(x-d.x[i-1])*(-d.y[i-1])/(y-d.y[i-1]);
   if(zx>=lo&&zx<=hi)zeros.push({x:zx,kind:'linearly interpolated zero'});
@@ -984,6 +1038,7 @@ $('overlayTableCsv').onclick=()=>{
    '# Fit window='+$('window').value+'; polynomial degree='+$('degree').value+'; edge mask='+$('edgeMode').checked,
    '# Derivative processing range='+processingRange.lo+'..'+processingRange.hi+' nm',
    '# Each wavelength is recorded in at least one included spectrum; blank cells are missing or unavailable, never interpolated.',
+   ...snap.columns.map(c=>'# Curve provenance '+c.curve.name.replace(/[\r\n]/g,' ')+': '+curveProvenance(c.curve).replace(/[\r\n]/g,' ')),
    ...snap.errors.map(e=>'# Derivative unavailable: '+e.replace(/[\r\n]/g,' '))
   ];
   download(new Blob(['\uFEFF'+notes.join('\r\n')+'\r\n'+rows.map(row=>row.map(csvEscape).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),'uvvis_combined_D'+snap.order+'.csv');
@@ -1005,6 +1060,24 @@ function readingUnit(curve,order){
  const base=(curve.scaleType||'absorbance')==='absorbance'?'A':(curve.scaleType==='relative'?'relative signal':'signal ratio');
  return order?base+' nm⁻'+order:base;
 }
+function signalOrigin(curve){
+ if(curve.origin==='synthetic')return 'synthetic';
+ return curve.origin==='processed'||curve.provenance||(curve.scaleType&&curve.scaleType!=='absorbance')?'processed':'measured';
+}
+function readingProvenance(curve,order,interpolated=false,english=false){
+ const origin=signalOrigin(curve),key=interpolated?'readingInterpolated':origin==='processed'?(order?'readingProcessedDerivative':'readingProcessed'):origin==='synthetic'?(order?'readingSyntheticDerivative':'readingSynthetic'):order?'readingComputed':'readingRecorded';
+ return english?STR.en[key]:t(key);
+}
+function curveProvenance(curve){
+ return curve.provenance||(signalOrigin(curve)==='synthetic'?'synthetic demonstration; not experimental measurements':'original measured absorbance; input wavelength assumed nm');
+}
+function invalidateReadings(){
+ if($('readingResult').textContent)$('readingResult').textContent=t('readingStale');
+}
+function invalidateMeasurements(){
+ lastMeasurement=null;lastSensitivity=null;
+ $('analysisResults').textContent='';$('sensitivityResults').textContent='';
+}
 function exactReading(d,w){
  let lo=0,hi=d.x.length-1;
  while(lo<=hi){const i=(lo+hi)>>1;if(d.x[i]===w)return{index:i,value:d.y[i]};if(d.x[i]<w)lo=i+1;else hi=i-1;}
@@ -1023,7 +1096,7 @@ function refreshReadingTable(){
  try{
   const{curve,order,data}=selectedReading(),{from,to}=readingLimits(),rows=readingTableRows(data,from,to);
   info.textContent=t('readingRows')+': '+rows.length+' · '+readingUnit(curve,order)+(rows.length>500?' · '+t('readingTableLimit'):'');
-  body.innerHTML=rows.slice(0,500).map(r=>`<tr><td dir="ltr">${E(String(r.w))}</td><td dir="ltr">${Number.isFinite(r.value)?E(String(r.value)):'—'}</td><td>${t(!Number.isFinite(r.value)?'readingUnavailable':order?'readingComputed':'readingRecorded')}</td></tr>`).join('');
+  body.innerHTML=rows.slice(0,500).map(r=>`<tr><td dir="ltr">${E(String(r.w))}</td><td dir="ltr">${Number.isFinite(r.value)?E(String(r.value)):'—'}</td><td>${Number.isFinite(r.value)?E(readingProvenance(curve,order)):t('readingUnavailable')}</td></tr>`).join('');
   if(!rows.length)body.innerHTML='<tr><td colspan="3">'+E(t('readingNone'))+'</td></tr>';
  }catch(err){body.innerHTML='';info.textContent=err.message;}
 }
@@ -1035,12 +1108,12 @@ function readAtWavelength(){
   const w=Number(raw),mode=$('readingMode').value;
   if(!data.x.length||w<data.x[0]||w>data.x.at(-1))throw Error(t('readingOutRange'));
   const exact=exactReading(data,w);
-  let result=exact?{x:w,value:exact.value,key:order?'readingComputed':'readingRecorded'}:null;
-  if(!result&&mode==='nearest'){const near=nearestData(data,w);if(near)result={x:near.x,value:near.y,key:order?'readingComputed':'readingRecorded'};}
-  if(!result&&mode==='interpolate'){const value=interp(data,w);if(Number.isFinite(value))result={x:w,value,key:'readingInterpolated'};}
+  let result=exact?{x:w,value:exact.value}:null;
+  if(!result&&mode==='nearest'){const near=nearestData(data,w);if(near)result={x:near.x,value:near.y};}
+  if(!result&&mode==='interpolate'){const value=interp(data,w);if(Number.isFinite(value))result={x:w,value,interpolated:true};}
   if(!result)throw Error(mode==='exact'?t('readingNoExact'):t('readingNoValid'));
   if(!Number.isFinite(result.value))throw Error(t('readingNoValid'));
-  out.textContent=curve.name+' · D'+order+' · λ = '+result.x+' nm · '+readingUnit(curve,order)+' = '+result.value+' · '+t(result.key);
+  out.textContent=curve.name+' · D'+order+' · λ = '+result.x+' nm · '+readingUnit(curve,order)+' = '+result.value+' · '+readingProvenance(curve,order,!!result.interpolated);
  }catch(err){out.textContent=err.message;}
 }
 $('readingLookup').onclick=readAtWavelength;
@@ -1051,14 +1124,16 @@ $('readingTableToggle').onclick=()=>{
  if(!area.hidden)refreshReadingTable();
 };
 for(const id of ['readingCurve','readingOrder','readingStart','readingEnd'])$(id).addEventListener('change',()=>{if(!$('readingTableArea').hidden)refreshReadingTable();});
+for(const id of ['readingCurve','readingOrder','readingWave','readingMode'])$(id).addEventListener('input',invalidateReadings);
+for(const id of ['readingCurve','readingOrder','readingWave','readingMode'])$(id).addEventListener('change',invalidateReadings);
 $('readingTableRefresh').onclick=refreshReadingTable;
 $('readingTableExport').onclick=()=>{
  try{
   const{curve,order,data}=selectedReading(),{from,to}=readingLimits(),rows=readingTableRows(data,from,to);
   const header=['Wavelength (nm)','Value ('+readingUnit(curve,order)+')','Provenance'];
-  const csv=[header,...rows.map(r=>[r.w,Number.isFinite(r.value)?r.value:'',!Number.isFinite(r.value)?'unavailable':order?'computed derivative at recorded wavelength':'original measured reading'])];
+  const csv=[header,...rows.map(r=>[r.w,Number.isFinite(r.value)?r.value:'',!Number.isFinite(r.value)?'unavailable':readingProvenance(curve,order,false,true)])];
   const metadata='# UV-Vis Spectral Studio v'+APP_VERSION+'; curve='+curve.name.replace(/[\r\n]/g,' ')+'; D'+order+'; window='+$('window').value+'; degree='+$('degree').value+'; edge mask='+$('edgeMode').checked+'; processing='+processingRange.lo+'..'+processingRange.hi;
-  download(new Blob(['\uFEFF'+metadata+'\r\n'+csv.map(row=>row.map(csvEscape).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),'uvvis_readings_D'+order+'.csv');
+  download(new Blob(['\uFEFF'+metadata+'\r\n# Curve provenance: '+curveProvenance(curve).replace(/[\r\n]/g,' ')+'\r\n'+csv.map(row=>row.map(csvEscape).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),'uvvis_readings_D'+order+'.csv');
  }catch(err){$('readingTableInfo').textContent=err.message;}
 };
 function updateMeasureCurveOptions(data){
@@ -1074,7 +1149,7 @@ function qualityPanel(v,order){
  const node=$('quality');
  if(!v.length){node.textContent=t('qNone');return;}
  const win=Number($('window').value),n=v.reduce((a,s)=>a+s.x.length,0),g=v.reduce((a,s)=>a+s.breaks.length,0);
- const dx=v.flatMap(s=>s.x.slice(1).map((x,i)=>s.breaks.includes(i+1)?NaN:x-s.x[i])).filter(z=>Number.isFinite(z)&&z>0);
+ const dx=v.flatMap(s=>{const gaps=new Set(s.breaks);return s.x.slice(1).map((x,i)=>gaps.has(i+1)?NaN:x-s.x[i]);}).filter(z=>Number.isFinite(z)&&z>0);
  const step=median(dx);
  const sorted=dx.slice().sort((a,b)=>a-b);
  const smallest=sorted[0],largest=sorted.at(-1);
@@ -1337,7 +1412,7 @@ function buildSvg(data,order,B,preview=false,interactive=true){
  const axisColor='#4b5563', textColor='#111827', zeroColor='#8a95a3',tickFont=pub?16:14,labelFont=pub?20:18;
  let out=`<svg xmlns="${NS}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#fff"/><defs><clipPath id="plotClip"><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}"/></clipPath></defs>`;
  const xSpec=pub&&$('xTickMode').value==='auto'
-  ?(()=>{const span=B.xmax-B.xmin,step=span<=400?50:niceTickStep(span,6,true),values=[];
+  ?(()=>{const span=B.xmax-B.xmin,step=span>=100&&span<=400?50:niceTickStep(span,6,false),values=[];
     for(let k=Math.ceil(B.xmin/step-1e-10);k*step<=B.xmax+span*1e-10&&values.length<30;k++)values.push(k*step);
     return{values,step};})()
   :axisTicks(B.xmin,B.xmax,'x');
@@ -1401,7 +1476,101 @@ function buildSvg(data,order,B,preview=false,interactive=true){
  const ypad=(b-a)*.08;
  return{xmin:range&&Number.isFinite(range.lo)?range.lo:lo-xpad,xmax:range&&Number.isFinite(range.hi)?range.hi:hi+xpad,ymin:a-ypad,ymax:b+ypad};
 }
+let pendingDerivative=null,pendingPublicationAxes=null;
+const DERIVATIVE_BACKGROUND_THRESHOLD=20000;
+function derivativeRenderJobs(){
+ const requests=new Map(),order=activeOrder(),win=Number($('window').value),degree=Number($('degree').value);
+ const request=(curve,n)=>{
+  if(!n||n>degree||!curve)return;
+  const part=restrictedSpectrum(curve),limits=[0,...part.breaks,part.x.length];
+  const key=derivativeCacheKey(n);
+  if(part.cache[key]){cacheDerivative(part,key,part.cache[key]);return;}
+  if(!limits.some((l,i)=>limits[i+1]-l>=win))return;
+  if(!requests.has(part))requests.set(part,new Set());
+  requests.get(part).add(n);
+ };
+ for(const curve of visible()){
+  request(curve,order);
+  if(derivativeGalleryOpen)for(let n=1;n<=4;n++)request(curve,n);
+ }
+ if(!$('readingTableArea').hidden)request(spectra.find(s=>s.id===Number($('readingCurve').value)),Number($('readingOrder').value));
+ if(!$('overlayTableArea').hidden){
+  const n=$('overlayTableOrder').value==='current'?order:Number($('overlayTableOrder').value);
+  for(const curve of $('overlayTableVisible').checked?visible():spectra)request(curve,n);
+ }
+ return [...requests].map(([part,orders])=>({part,orders:[...orders]}));
+}
+function endDerivativeCalculation(){
+ if(!pendingDerivative)return;
+ const {worker,url,buttons}=pendingDerivative;pendingDerivative=null;
+ worker.terminate();URL.revokeObjectURL(url);
+ for(const [button,disabled] of buttons)button.disabled=disabled;
+ $('derivativeProgress').hidden=true;
+}
+$('cancelDerivative').onclick=()=>{
+ endDerivativeCalculation();pendingPublicationAxes=null;
+ status('derivativeCancelled','warn');
+};
+function startDerivativeCalculation(jobs){
+ const code=[factorial,localDerivative,derivativeCacheKey,cacheDerivative,derivative].map(fn=>fn.toString()).join('\n')+`
+ let controls,messages;
+ const $=id=>controls[id],t=key=>messages[key]||key;
+ self.onmessage=event=>{
+  ({controls,messages}=event.data);
+  try{
+   event.data.jobs.forEach((job,index)=>{
+    const s={...job,cache:{}};
+    for(const order of job.orders){
+     const values=Float64Array.from(derivative(s,order));
+     self.postMessage({index,order,values},[values.buffer]);
+    }
+   });
+   self.postMessage({done:true});
+  }catch(error){self.postMessage({error:error.message});}
+ };`;
+ const url=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
+ let worker;
+ try{worker=new Worker(url);}catch(_){URL.revokeObjectURL(url);return false;}
+ const buttons='exportSvg exportPng printVectorPdf exportData analyzeSpectrum exportMetrics sensitivityRun sensitivityExport readingLookup readingTableExport overlayTableCsv'.split(' ').map(id=>[$(id),$(id).disabled]);
+ const request={worker,url,buttons};pendingDerivative=request;
+ plotState=null;locked=false;drag=null;$('tooltip').style.display='none';
+ for(const [button] of buttons)button.disabled=true;
+ const total=jobs.reduce((n,job)=>n+job.orders.length,0);let done=0;
+ const progress=()=>{$('derivativeProgressText').textContent=t('derivativeProgress',{done,total});};
+ progress();$('derivativeProgress').hidden=false;
+ const fail=message=>{
+  if(pendingDerivative!==request)return;
+  endDerivativeCalculation();statusRaw(message||t('derivativeWorkerError'),'warn');
+ };
+ worker.onmessage=event=>{
+  if(pendingDerivative!==request)return;
+  const result=event.data;
+  if(result.error){fail(result.error);return;}
+  if(result.done){endDerivativeCalculation();renderPlot();if(plotState)status('derivativeReady');return;}
+  cacheDerivative(jobs[result.index].part,derivativeCacheKey(result.order),result.values);
+  done++;progress();
+ };
+ worker.onerror=event=>{event.preventDefault();fail();};
+ try{
+  worker.postMessage({controls:{window:{value:$('window').value},degree:{value:$('degree').value},edgeMode:{checked:$('edgeMode').checked}},
+   messages:{fit:t('fit'),nPoints:t('nPoints',{w:$('window').value})},
+   jobs:jobs.map(({part,orders})=>({x:part.x,y:part.y,breaks:part.breaks,name:part.name,orders}))});
+ }catch(_){endDerivativeCalculation();return false;}
+ return true;
+}
 function render(){
+ endDerivativeCalculation();invalidateReadings();invalidateMeasurements();
+ if(typeof Worker==='function'){
+  const jobs=derivativeRenderJobs();
+  if(jobs.reduce((n,j)=>n+j.part.x.length*j.orders.length,0)>=DERIVATIVE_BACKGROUND_THRESHOLD&&startDerivativeCalculation(jobs))return;
+ }
+ renderPlot();
+}
+function renderPlot(){
+ if(pendingPublicationAxes!==null){
+  const force=pendingPublicationAxes;pendingPublicationAxes=null;
+  try{applyPublicationAxes(force);}catch(e){statusRaw(e.message,'warn');}
+ }
  locked=false;$('tooltip').style.display='none';
  lastMeasurement=null;lastSensitivity=null;
  const v=visible(),order=activeOrder(),gallery=$('overview');
@@ -1600,8 +1769,8 @@ function exportMethodParameters(){
     to:Number.isFinite(processingRange.hi)?processingRange.hi:null}},
   spectra:spectra.map(c=>({name:c.name,points:c.x.length,firstWavelengthNm:c.x[0],
    lastWavelengthNm:c.x.at(-1),scaleType:c.scaleType||'absorbance',
-   visible:c.visible,color:c.color,lineWidthPx:c.lineWidth??Number(v('curveWidth')),
-   provenance:c.provenance||null})),
+   origin:signalOrigin(c),visible:c.visible,color:c.color,lineWidthPx:c.lineWidth??Number(v('curveWidth')),
+   provenance:curveProvenance(c)})),
   display:{bounds:plotState?.B??null,zoomMode:v('zoomMode'),publicationMode:$('publicationMode').checked,
    xTickMode:v('xTickMode'),yTickMode:v('yTickMode'),defaultCurveWidthPx:Number(v('curveWidth')),derivativeAxisFormat:v('derivativeAxisFormat')},
   image:{width:Number(v('imageWidth')),widthUnit:v('widthUnit'),dpi:Number(v('dpi'))}};
@@ -1663,9 +1832,13 @@ function validateProject(value){
   if(c.lineWidth!=null&&(!Number.isFinite(c.lineWidth)||c.lineWidth<.3||c.lineWidth>8))fail('curve width');
   if(c.scaleType!=null&&!['absorbance','relative','ratio'].includes(c.scaleType))fail('signal type');
   if(c.provenance!=null&&!text(c.provenance,100000))fail('provenance');
-  const curve={id:c.id,name:c.name,x:c.x.slice(),y:c.y.slice(),breaks:c.breaks.slice(),color:c.color,style:c.style,visible:c.visible,lineWidth:c.lineWidth??null,scaleType:c.scaleType||'absorbance',provenance:c.provenance||null,cache:{}};
+  if(c.origin!=null&&!['measured','processed','synthetic'].includes(c.origin))fail('signal origin');
+  const curve={origin:signalOrigin(c),id:c.id,name:c.name,x:c.x.slice(),y:c.y.slice(),breaks:c.breaks.slice(),color:c.color,style:c.style,visible:c.visible,lineWidth:c.lineWidth??null,scaleType:c.scaleType||'absorbance',provenance:c.provenance||null,cache:{}};
   if(c.sourceTableId!=null){
    if(!Number.isInteger(c.sourceTableId)||!tables[c.sourceTableId]||!Number.isInteger(c.xColumn)||!Number.isInteger(c.yColumn)||c.xColumn<0||c.yColumn<0||c.xColumn>80||c.yColumn>80)fail('source mapping');
+   const header=tables[c.sourceTableId].rows[0]||[];
+   const unitError=importUnitError(header[c.xColumn],true)||importUnitError(header[c.yColumn]);
+   if(unitError)fail(unitError);
    curve.sourceTableId=c.sourceTableId;curve.xColumn=c.xColumn;curve.yColumn=c.yColumn;
   }
   return curve;
@@ -1681,7 +1854,8 @@ $('saveProject').onclick=()=>{
  }catch(e){statusRaw(e.message,'bad');}
 };
 $('loadProject').onchange=async event=>{
- const file=event.target.files[0];if(!file)return;
+ const file=event.target.files[0];if(!file||sessionBusy)return;
+ const unlock=lockSession();
  try{
   if(file.size>25*1024*1024)throw Error(t('tooLarge'));
   const next=validateProject(JSON.parse(await file.text()));
@@ -1690,10 +1864,10 @@ $('loadProject').onchange=async event=>{
   processingRange=next.processingRange;
   ({manualYLimits,derivativeGalleryOpen,derivativeAutoFit,yInputsEdited}=next.flags);
   for(const id of PROJECT_CONTROL_IDS){const el=$(id);if(el.type==='checkbox')el.checked=next.controls[id];else el.value=next.controls[id];}
-  zoomHistory.length=0;axesBeforePublication=null;locked=false;drag=null;plotState=null;
+  zoomHistory.length=0;axesBeforePublication=null;pendingPublicationAxes=null;locked=false;drag=null;plotState=null;
   updateZoomBack();updateMapping();updateSamples();render();statusRaw(t('projectLoaded'));
  }catch(e){statusRaw(e.message,'bad');}
- finally{event.target.value='';}
+ finally{event.target.value='';unlock();}
 };
 
 function exportSvg(){if(!plotState){status('noPlot','warn');return;}let {order}=plotState,svg=exportPlotMarkup(plotState);download(new Blob([svg],{type:'image/svg+xml;charset=utf-8'}),'uvvis_overlay_D'+order+'.svg');}
@@ -1740,12 +1914,20 @@ async function exportPng(){
  }catch(e){statusRaw(t('pngFail')+': '+e.message,'bad');}
  finally{if(canvas)canvas.width=canvas.height=0;button.disabled=false;}
 }
-async function importFiles(files){let added=0,warnings=[],bad=[];for(let f of files){try{if(f.size>25*1024*1024)throw Error(t('tooLarge'));let ext=f.name.split('.').pop().toLowerCase(),r;if(ext==='xlsx')r=await parseXlsx(await f.arrayBuffer(),f.name);else if(['txt','csv','tsv'].includes(ext))r=parseText(await f.text(),f.name);else if(ext==='xls'){let signature=new Uint8Array(await f.slice(0,8).arrayBuffer());throw Error(signature[0]===0xd0&&signature[1]===0xcf?(lang==='ar'?'ملف XLS ثنائي قديم (OLE2/BIFF) غير مدعوم؛ احفظه بصيغة XLSX أو CSV.':'Legacy binary XLS (OLE2/BIFF) is not supported; resave as .xlsx or .csv.'):(lang==='ar'?'صيغة XLS غير مدعومة؛ احفظ الملف بصيغة XLSX أو CSV.':'Unsupported .xls variant; resave as .xlsx or .csv.'));}else throw Error(t('ext'));for(let q of r.out){spectra.push({...q,name:uniqueCurveName(q.name),id:++seq,color:PALETTE[(seq-1)%PALETTE.length],style:'solid',visible:true,cache:{}});added++;}warnings.push(...r.warnings);}catch(e){bad.push(f.name+': '+e.message);}}updateMapping();updateSamples();render();if(added){const low=$('xmin').value.trim(),high=$('xmax').value.trim(),lo=low===''?-Infinity:Number(low),hi=high===''?Infinity:Number(high),outside=spectra.filter(s=>s.visible&&(s.x[0]<lo||s.x.at(-1)>hi));if(outside.length)warnings.push((lang==='ar'?'هناك أطوال موجية محفوظة خارج العرض الحالي؛ استخدم ملاءمة المحاور للبيانات':'Retained wavelength readings extend outside the current display; use Fit to data')+' ('+outside.length+')');}let msg=`${added} ${t('importResult')}`+(warnings.length?'\n'+t('warning')+' '+warnings.slice(0,7).join(' | '):'')+(bad.length?'\n'+t('failed')+' '+bad.join(' | '):'');statusRaw(msg,bad.length?(added?'warn':'bad'):(warnings.length?'warn':''));}
+let sessionBusy=false;
+function lockSession(){
+ sessionBusy=true;
+ const buttons='upload loadProject saveProject mapApply prepApply clear demo'.split(' ').map(id=>[$(id),$(id).disabled]);
+ for(const [el] of buttons)el.disabled=true;
+ return ()=>{sessionBusy=false;for(const [el,disabled] of buttons)el.disabled=disabled;};
+}
+async function importFiles(files){if(sessionBusy||!files.length)return;const unlock=lockSession();try{let added=0,warnings=[],bad=[];for(let f of files){const previousTables=sourceTables.length;try{if(f.size>25*1024*1024)throw Error(t('tooLarge'));let ext=f.name.split('.').pop().toLowerCase(),r;if(ext==='xlsx')r=await parseXlsx(await f.arrayBuffer(),f.name);else if(['txt','csv','tsv'].includes(ext))r=parseText(await f.text(),f.name);else if(ext==='xls'){let signature=new Uint8Array(await f.slice(0,8).arrayBuffer());throw Error(signature[0]===0xd0&&signature[1]===0xcf?(lang==='ar'?'ملف XLS ثنائي قديم (OLE2/BIFF) غير مدعوم؛ احفظه بصيغة XLSX أو CSV.':'Legacy binary XLS (OLE2/BIFF) is not supported; resave as .xlsx or .csv.'):(lang==='ar'?'صيغة XLS غير مدعومة؛ احفظ الملف بصيغة XLSX أو CSV.':'Unsupported .xls variant; resave as .xlsx or .csv.'));}else throw Error(t('ext'));assertSessionCapacity([...spectra,...r.out],sourceTables);for(let q of r.out){spectra.push({...q,name:uniqueCurveName(q.name),id:++seq,color:PALETTE[(seq-1)%PALETTE.length],style:'solid',visible:true,cache:{}});added++;}warnings.push(...r.warnings);}catch(e){if(e.name==='SessionLimitError')sourceTables.length=previousTables;bad.push(f.name+': '+e.message);}}updateMapping();updateSamples();render();if(added){const low=$('xmin').value.trim(),high=$('xmax').value.trim(),lo=low===''?-Infinity:Number(low),hi=high===''?Infinity:Number(high),outside=spectra.filter(s=>s.visible&&(s.x[0]<lo||s.x.at(-1)>hi));if(outside.length)warnings.push((lang==='ar'?'هناك أطوال موجية محفوظة خارج العرض الحالي؛ استخدم ملاءمة المحاور للبيانات':'Retained wavelength readings extend outside the current display; use Fit to data')+' ('+outside.length+')');}let msg=`${added} ${t('importResult')}`+(warnings.length?'\n'+t('warning')+' '+warnings.slice(0,7).join(' | '):'')+(bad.length?'\n'+t('failed')+' '+bad.join(' | '):'');statusRaw(msg,bad.length?(added?'warn':'bad'):(warnings.length?'warn':''));}finally{unlock();}}
 $('langToggle').onclick=switchLanguage;
 $('upload').onchange=e=>{importFiles([...e.target.files]);e.target.value='';};let drop=$('drop');drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag');};drop.ondragleave=()=>drop.classList.remove('drag');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');importFiles([...e.dataTransfer.files]);};
-$('demo').onclick=()=>{let x=Array.from({length:301},(_,i)=>200+i),defs=[{name:'Sample A · synthetic',f:w=>.04+.75*Math.exp(-.5*((w-274)/17)**2)+.12*Math.exp(-.5*((w-355)/36)**2)},{name:'Sample B · synthetic',f:w=>.05+.65*Math.exp(-.5*((w-286)/21)**2)+.10*Math.exp(-.5*((w-348)/28)**2)},{name:'Sample C · synthetic',f:w=>.04+.52*Math.exp(-.5*((w-265)/24)**2)+.14*Math.exp(-.5*((w-375)/24)**2)}];for(let d of defs){const raw=x.map(d.f),baseline=Math.min(...raw);spectra.push({id:++seq,name:d.name,x:[...x],y:raw.map(y=>Math.max(0,y-baseline)),breaks:[],color:PALETTE[(seq-1)%PALETTE.length],style:'solid',visible:true,cache:{}});}updateSamples();render();status('demoStatus');};
+$('demo').onclick=()=>{try{assertSessionCapacity([...spectra,...Array.from({length:3},()=>({x:Array(301)}))],sourceTables);}catch(e){statusRaw(e.message,'warn');return;}let x=Array.from({length:301},(_,i)=>200+i),defs=[{name:'Sample A · synthetic',f:w=>.04+.75*Math.exp(-.5*((w-274)/17)**2)+.12*Math.exp(-.5*((w-355)/36)**2)},{name:'Sample B · synthetic',f:w=>.05+.65*Math.exp(-.5*((w-286)/21)**2)+.10*Math.exp(-.5*((w-348)/28)**2)},{name:'Sample C · synthetic',f:w=>.04+.52*Math.exp(-.5*((w-265)/24)**2)+.14*Math.exp(-.5*((w-375)/24)**2)}];for(let d of defs){const raw=x.map(d.f),baseline=Math.min(...raw);spectra.push({id:++seq,name:d.name,x:[...x],y:raw.map(y=>Math.max(0,y-baseline)),breaks:[],color:PALETTE[(seq-1)%PALETTE.length],style:'solid',visible:true,cache:{},origin:'synthetic'});}updateSamples();render();status('demoStatus');};
 $('clear').onclick=()=>{spectra=[];sourceTables=[];updateMapping();updateSamples();render();status('cleared');};let axesBeforePublication=null;
-function setPublicationAxes(force=false){
+function setPublicationAxes(force=false){pendingPublicationAxes=force;}
+function applyPublicationAxes(force=false){
  if(!$('publicationMode').checked||activeOrder()===0)return;
  const curves=visible().map(s=>useData(s,activeOrder()));
  const finite=curves.flatMap(d=>d.x.filter((x,i)=>Number.isFinite(d.y[i])));
@@ -1781,6 +1963,7 @@ $('prepApply').onclick=()=>{
   const ref=spectra.find(s=>s.id===Number($('prepReference').value));
   if(!source)throw Error('Select a source curve');
   const mode=$('prepMode').value,generated=prepareProcessedCurve(source,ref,mode,$('prepLeft').value.trim(),$('prepRight').value.trim());
+  assertSessionCapacity([...spectra,generated],sourceTables);
   generated.name=uniqueCurveName(generated.name);
   spectra.push({...generated,id:++seq,color:PALETTE[(seq-1)%PALETTE.length],style:'solid',visible:true,cache:{},sourceTableId:null});
   updateSamples();render();
@@ -1788,7 +1971,8 @@ $('prepApply').onclick=()=>{
  }catch(e){$('prepStatus').textContent=e.message;statusRaw(e.message,'warn');}
 };
 let lastSensitivity=null;
-$('analysisCurve').onchange=()=>{lastMeasurement=null;lastSensitivity=null;$('analysisResults').textContent='';$('sensitivityResults').textContent='';};
+$('analysisCurve').onchange=invalidateMeasurements;
+for(const id of ['measurementStart','measurementEnd','noiseStart','noiseEnd'])$(id).addEventListener('input',invalidateMeasurements);
 $('sensitivityRun').onclick=()=>{
  if(!plotState){status('noPlot','warn');return;}
  try{
@@ -1800,15 +1984,15 @@ $('sensitivityRun').onclick=()=>{
   const windows=[...new Set([11,15,21,31,current])].sort((x,y)=>x-y);
   const rows=windowSensitivity(d.s,order,degree,windows,lo,hi);
   lastSensitivity={d,rows,order,degree,lo,hi,current};
-  const baseline=rows.find(r=>r.win===current);
+  const baseline=rows.find(r=>r.win===current),ar=lang==='ar';
   const body=rows.map(r=>{
    const change=baseline&&Math.abs(baseline.ordinate)>1e-15?
-    ' · |peak| change vs current '+fmt(100*(Math.abs(r.ordinate)/Math.abs(baseline.ordinate)-1),6)+'%':'';
-   return 'W='+r.win+' points · width '+fmt(r.minSpan,5)+'–'+fmt(r.maxSpan,5)+
-    ' nm (median '+fmt(r.medianSpan,5)+') · dominant |D|='+fmt(Math.abs(r.ordinate),10)+
-    ' @ '+fmt(r.wavelength,8)+' nm · valid '+r.n+change;
+    (ar?' · تغير |القمة| عن النافذة الحالية ':' · |peak| change vs current ')+fmt(100*(Math.abs(r.ordinate)/Math.abs(baseline.ordinate)-1),6)+'%':'';
+   return 'W='+r.win+(ar?' نقطة · العرض ':' points · width ')+fmt(r.minSpan,5)+'–'+fmt(r.maxSpan,5)+
+    (ar?' nm (الوسيط ':' nm (median ')+fmt(r.medianSpan,5)+(ar?') · أكبر |D|=':') · dominant |D|=')+fmt(Math.abs(r.ordinate),10)+
+    ' @ '+fmt(r.wavelength,8)+(ar?' nm · نقاط صالحة ':' nm · valid ')+r.n+change;
   });
-  $('sensitivityResults').textContent='Fitting-window sensitivity, not an automatic optimal-window selection:\n'+body.join('\n');
+  $('sensitivityResults').textContent=(ar?'حساسية النتائج لنافذة الملاءمة؛ لا تمثل اختياراً تلقائياً للنافذة المثلى:\n':'Fitting-window sensitivity, not an automatic optimal-window selection:\n')+body.join('\n');
   $('sensitivityResults').style.whiteSpace='pre-wrap';
  }catch(e){lastSensitivity=null;$('sensitivityResults').textContent=e.message;statusRaw(e.message,'warn');}
 };
@@ -1840,33 +2024,36 @@ $('analyzeSpectrum').onclick=()=>{
   const baseUnit=scaleType==='absorbance'?'A':scaleType==='relative'?'relative signal':'signal ratio';
   const unit=order?baseUnit+' nm^-'+order:baseUnit;
   const areaUnit=baseUnit+(order?' nm^'+(1-order):' nm');
+  const ar=lang==='ar',label=(en,arText)=>ar?arText:en;
+  const boundary=label(' [interpolated boundary]',' [حد مستوفى]');
   const rows=[
-   (lang==='ar'?'المنحنى: ':'Curve: ')+d.s.name+' · D'+order,
-   (lang==='ar'?'النقاط الصالحة: ':'Finite points: ')+m.n,
-   'Maximum: '+fmt(m.highest.y,10)+' '+unit+' @ '+fmt(m.highest.x,8)+' nm'+(m.highest.interpolated?' [interpolated boundary]':''),
-   'Minimum: '+fmt(m.lowest.y,10)+' '+unit+' @ '+fmt(m.lowest.x,8)+' nm'+(m.lowest.interpolated?' [interpolated boundary]':''),
-   'Global peak-to-peak: '+fmt(m.peakToPeak,10)+' '+unit+' (not necessarily adjacent peaks)',
-   'Peak-to-zero |D|: '+fmt(m.peakToZero,10)+' '+unit,
-   'Signed trapezoidal area: '+fmt(m.area,10)+' '+areaUnit+'; valid intervals: '+m.segments,
-   'Integrated coverage: '+fmt(m.coveredWidth,8)+' / '+fmt(hi-lo,8)+' nm; unintegrated (gaps/outside data): '+fmt(m.missingWidth,8)+' nm; boundary values linearly interpolated when necessary',
-   'Zero crossings (candidates): '+(m.zeros.length?m.zeros.map(z=>fmt(z.x,8)+' nm ['+z.kind+']').join('; '):'none'),
-   m.noise?'Exploratory signal / sample SD in user-selected noise region: '+fmt(m.noise.snr,7)+' (n='+m.noise.n+', SD='+fmt(m.noise.sd,10)+'); not an LOQ determination':'S/N not computed: no user-defined noise region.'
+   label('Curve: ','المنحنى: ')+d.s.name+' · D'+order,
+   label('Finite points: ','النقاط الصالحة: ')+m.n,
+   label('Maximum: ','القيمة العظمى: ')+fmt(m.highest.y,10)+' '+unit+' @ '+fmt(m.highest.x,8)+' nm'+(m.highest.interpolated?boundary:''),
+   label('Minimum: ','القيمة الصغرى: ')+fmt(m.lowest.y,10)+' '+unit+' @ '+fmt(m.lowest.x,8)+' nm'+(m.lowest.interpolated?boundary:''),
+   label('Global peak-to-peak: ','الفرق بين العظمى والصغرى: ')+fmt(m.peakToPeak,10)+' '+unit+label(' (not necessarily adjacent peaks)',' (قد لا تكون القمتان متجاورتين)'),
+   label('Peak-to-zero |D|: ','أكبر سعة مطلقة عن الصفر: ')+fmt(m.peakToZero,10)+' '+unit,
+   label('Signed trapezoidal area: ','المساحة الموقعة بطريقة شبه المنحرف: ')+fmt(m.area,10)+' '+areaUnit+label('; valid intervals: ','؛ الفواصل الصالحة: ')+m.segments,
+   label('Integrated coverage: ','مدى التكامل المغطّى: ')+fmt(m.coveredWidth,8)+' / '+fmt(hi-lo,8)+label(' nm; unintegrated (gaps/outside data): ',' nm؛ المدى غير المغطّى (فجوات أو خارج البيانات): ')+fmt(m.missingWidth,8)+label(' nm; boundary values linearly interpolated when necessary',' nm؛ تُستوفى قيم الحدود خطياً عند الحاجة'),
+   label('Zero crossings (candidates): ','مرشحات عبور الصفر: ')+(m.zeros.length?m.zeros.map(z=>fmt(z.x,8)+' nm ['+(ar?(z.kind==='zero at recorded wavelength'?'صفر عند طول مسجّل':'صفر بالاستيفاء الخطي'):z.kind)+']').join('; '):label('none','لا توجد')),
+   m.noise?label('Exploratory signal / sample SD in user-selected noise region: ','النسبة الاستكشافية للإشارة إلى الانحراف المعياري في مجال الضجيج المختار: ')+fmt(m.noise.snr,7)+' (n='+m.noise.n+', SD='+fmt(m.noise.sd,10)+label('); not an LOQ determination',')؛ لا تمثل تحديداً لحد التقدير الكمي'):label('S/N not computed: no user-defined noise region.','لم تُحسب نسبة الإشارة إلى الضجيج لأن مجال الضجيج غير محدد.')
   ];
   if(scaleType!=='absorbance')rows.push(lang==='ar'
     ?'تنبيه: المساحة والسعات تخص إشارة محوّلة ولا يجوز تفسيرها مباشرةً على أنها تركيز أو امتصاصية أصلية.'
     :'Caution: areas and amplitudes of transformed signals are not directly interpretable as concentration or raw absorbance.');
   if(order>=3)rows.push(t('higherDerivativeCaution'));
-  if(m.noise&&Number.isFinite(m.noise.snr)&&m.noise.snr<10)rows.push('Caution: low exploratory S/N; do not infer analytical LOQ from this ratio.');
+  if(m.noise&&Number.isFinite(m.noise.snr)&&m.noise.snr<10)rows.push(label('Caution: low exploratory S/N; do not infer analytical LOQ from this ratio.','تنبيه: النسبة الاستكشافية منخفضة؛ لا تستنتج منها حد التقدير الكمي.'));
   $('analysisResults').textContent=rows.join('\n');
   $('analysisResults').style.whiteSpace='pre-wrap';
  }catch(e){lastMeasurement=null;statusRaw(e.message,'warn');$('analysisResults').textContent=e.message;}
 };
 $('exportMetrics').onclick=()=>{
  if(!lastMeasurement){$('analyzeSpectrum').click();if(!lastMeasurement)return;}
- const {m,d,order,range}=lastMeasurement;
+ const {m,d,order,noise,range}=lastMeasurement;
  const rows=[
   ['Metric','Value','Unit','Details'],
   ['Curve',d.s.name,'',''],
+  ['Curve provenance',curveProvenance(d.s),'',''],
   ['Signal type',d.s.scaleType||'absorbance','','Original absorbance versus transformed relative/ratio signal'],
   ['Derivative order',order,'',''],
   ['Processing minimum',processingRange.lo,'nm',''],
@@ -1886,7 +2073,7 @@ $('exportMetrics').onclick=()=>{
   ['Peak-to-zero absolute amplitude',m.peakToZero,readingUnit(d.s,order),''],
   ['Trapezoidal signed area',m.area,readingUnit(d.s,order)+' nm','discontinuous intervals not bridged; transformed signals are not raw concentration'],
   ...m.zeros.map(z=>['Zero-crossing candidate',z.x,'nm',z.kind]),
-  ...(m.noise?[['Exploratory S/N',m.noise.snr,'','not a quantification limit'],['Noise sample SD',m.noise.sd,readingUnit(d.s,order),'sample SD; n='+m.noise.n]]:[])
+  ...(m.noise?[['Noise-region minimum',noise.lo,'nm',''],['Noise-region maximum',noise.hi,'nm',''],['Exploratory S/N',m.noise.snr,'','not a quantification limit'],['Noise sample SD',m.noise.sd,readingUnit(d.s,order),'sample SD; n='+m.noise.n]]:[])
  ];
  const content='\uFEFF# UV-Vis Spectral Studio v'+APP_VERSION+'\r\n'+rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
  download(new Blob([content],{type:'text/csv;charset=utf-8'}),'uvvis_measurements_D'+order+'.csv');
@@ -1904,7 +2091,7 @@ function exportedCsv(){
   '# Data mode: '+(aligned?'aligned grid with provenance for every cell':'original measured wavelength positions; no inter-spectrum interpolation'),
   '# NOTE: derivative values are computed from locally fitted measured absorbances; a measured wavelength is not a measured derivative.'
  ];
- for(const d of data)settings.push('# Curve provenance '+d.s.name.replace(/[\r\n]/g,' ')+': '+String(d.s.provenance||'original measured absorbance').replace(/[\r\n]/g,' '));
+ for(const d of data)settings.push('# Curve provenance '+d.s.name.replace(/[\r\n]/g,' ')+': '+curveProvenance(d.s).replace(/[\r\n]/g,' '));
  const rows=[];
  const columns=['Wavelength (nm)'];
  for(const d of data){
@@ -1919,11 +2106,11 @@ function exportedCsv(){
    if(i>=0){
     const y=d.y[i];
     row.push(Number.isFinite(y)?y:'');
-    if(aligned)row.push(Number.isFinite(y)?'measured wavelength; computed derivative if D>0':'unavailable');
+    if(aligned)row.push(Number.isFinite(y)?readingProvenance(d.s,order,false,true):'unavailable');
    }else if(aligned){
     const y=interp(d,w);
     row.push(Number.isFinite(y)?y:'');
-    row.push(Number.isFinite(y)?'linearly interpolated; derivative if D>0':'unavailable');
+    row.push(Number.isFinite(y)?(order?'linearly interpolated derivative':'linearly interpolated '+(signalOrigin(d.s)==='measured'?'absorbance':signalOrigin(d.s)+' signal')):'unavailable');
    }else row.push('');
   }
   rows.push(row);

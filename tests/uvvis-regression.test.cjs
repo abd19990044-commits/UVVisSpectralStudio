@@ -3,6 +3,7 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
+const crypto=require('node:crypto');
 
 const html=fs.readFileSync(require('node:path').join(__dirname,'..','index.html'),'utf8');
 const match=html.match(/<script>([\s\S]*?)<\/script>/);
@@ -22,7 +23,7 @@ const controls={
 };
 for(const id of ['overlayTableToggle','overlayTableRefresh','overlayTablePrev','overlayTableNext','overlayTableCsv',
  'overlayTableOrder','overlayTableVisible','overlayTableFrom','overlayTableTo',
- 'readingLookup','readingWave','readingTableToggle','readingCurve','readingOrder',
+ 'readingLookup','readingWave','readingTableToggle','readingCurve','readingOrder','readingMode',
  'readingStart','readingEnd','readingTableRefresh','readingTableExport']){
  controls[id]={value:'',checked:false,addEventListener(){},setAttribute(){},options:[]};
 }
@@ -111,7 +112,18 @@ test('Changing only display X limits never changes computed derivatives',()=>{
  assert.deepEqual(before,after);
  controls.xmin.value='270';controls.xmax.value='400';
 });
-test('CSV and import hard limits are absent',()=>{
+test('Repeated fit-setting changes cannot grow the derivative cache without bound',()=>{
+ const s={name:'Cached fit',x:Array.from({length:41},(_,i)=>270+i),y:Array(41).fill(.2),breaks:[],cache:{}};
+ const savedWindow=controls.window.value;
+ try{
+  for(const w of ['9','11','15','21','31']){
+   controls.window.value=w;
+   for(let order=1;order<=4;order++)assert.ok(ctx.derivative(s,order).some(Number.isFinite));
+  }
+  assert.ok(Object.keys(s.cache).length<=8);
+ }finally{controls.window.value=savedWindow;}
+});
+test('Import does not silently truncate wavelengths to 200–3000 nm',()=>{
  assert.ok(!script.includes('x>=200&&x<=3000'));
  assert.ok(!script.includes('v>=200&&v<=3000'));
  assert.ok(script.includes('function exportedCsv()'));
@@ -257,6 +269,54 @@ test('Quoted CSV, embedded delimiters/newlines and escaped quotes retain exact o
  assert.throws(()=>c.parseText('"unclosed\n200,1','bad.csv'),/Unclosed/);
  assert.throws(()=>c.splitRow('"200"x,1',','),/Unexpected/);
  assert.deepEqual(Array.from(c.splitRow('"a""b",2',',')),['a"b','2']);
+});
+
+test('D0 SVG is byte-for-byte identical to the audited baseline',()=>{
+ const harness=require('./render-harness.cjs')();
+ const {sha256}=require('./fixtures/d0-rendering.json');
+ for(const c of harness.cases){
+  assert.equal(crypto.createHash('sha256').update(harness.renderD0(c)).digest('hex'),sha256[c.name],c.name);
+ }
+});
+
+test('Publication derivatives retain usable wavelength ticks at narrow and fractional zoom',()=>{
+ const {ctx,controls,data}=require('./render-harness.cjs')();
+ controls.publicationMode.checked=true;
+ for(const [xmin,xmax] of [[271,279],[271.1,271.4]]){
+  const svg=ctx.buildSvg(data,4,{xmin,xmax,ymin:-2e-5,ymax:3e-5}).svg;
+  const labels=[...svg.matchAll(/<text[^>]*text-anchor="middle"[^>]*>([0-9.]+)<\/text>/g)].map(m=>Number(m[1]));
+  assert.ok(labels.length>=3,`Missing X ticks for ${xmin}–${xmax} nm`);
+  assert.ok(labels.every(x=>x>=xmin-1e-8&&x<=xmax+1e-8));
+ }
+});
+
+test('Explicit non-absorbance signals and non-nm axes are rejected, including manual mapping',()=>{
+ const c={t:x=>x,lang:'en',sourceTables:[]};vm.createContext(c);
+ vm.runInContext(extract('function median(','function uniqueCurveName('),c);
+ const points=Array.from({length:15},(_,i)=>[200+i,.5+.001*i]);
+ for(const signal of ['Transmittance','T','%T','T %','mAbs','mAU','Fluorescence intensity']){
+  const rows=[['Wavelength (nm)',signal],...points];
+  assert.throws(()=>c.rowsToSpectra(rows,'unit.csv'),/Unsupported signal/);
+  assert.throws(()=>c.rowsToSpectra(rows,'unit.csv',{xi:0,ys:[1]}),/Unsupported signal/);
+ }
+ for(const axis of ['Wavelength (µm)','Wavelength (μm)','Wavelength (um)','Wavelength (Å)','Wavenumber (cm⁻¹)','Energy (eV)']){
+  assert.throws(()=>c.rowsToSpectra([[axis,'Absorbance'],...points],'axis.csv',{xi:0,ys:[1]}),/Unsupported axis unit/);
+ }
+ const rows=[['Wavelength (nm)','Calibration sample','Transmittance'],...points.map(([x,y])=>[x,y,.5])];
+ const result=c.rowsToSpectra(rows,'mixed.csv');
+ assert.equal(result.out.length,1);
+ assert.deepEqual(Array.from(result.out[0].y),points.map(p=>p[1]));
+ assert.match(result.warnings.join(' '),/Unsupported signal/);
+});
+
+test('Session capacity is enforced before an oversized batch can be committed',()=>{
+ const c={lang:'en'};vm.createContext(c);
+ vm.runInContext(extract('function assertSessionCapacity(','function retainSourceTable('),c);
+ const curve={x:Array(7)};
+ assert.doesNotThrow(()=>c.assertSessionCapacity(Array(128).fill(curve),[]));
+ assert.throws(()=>c.assertSessionCapacity(Array(129).fill(curve),[]),{name:'SessionLimitError'});
+ assert.throws(()=>c.assertSessionCapacity([{x:{length:1000001}}],[]),{name:'SessionLimitError'});
+ assert.throws(()=>c.assertSessionCapacity([],[{rows:[{length:2000001}]}]),{name:'SessionLimitError'});
 });
 
 function zipContext(){

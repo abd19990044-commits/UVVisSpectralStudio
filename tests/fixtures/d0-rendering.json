@@ -1,0 +1,10 @@
+{
+  "baselineCommit": "32e5ec0efe2756b37a70f136b7b97a79992fb04b",
+  "sha256": {
+    "default": "d48e82175e5250b4061c5434fd2261d093c0e1394b7d5a5a078106a74dba7d88",
+    "legend": "396f041e659480d7b383dd1f4ee99e9d10107ba03f9b69c00bb159295bb2e60e",
+    "small-absorbance": "46d27f27e4a4fbb63d4eae72bcfd6a809b0af9fc94314dd56daccf40f3e78fdf",
+    "manual-ticks": "3a2848608d2f870db5beb1fa40ff388c3aa0880f06f0b2d746693f4677fd5d3c",
+    "preview": "88eb399bf620d91333d756b3173e9e608f17d4ffb4219b5ccfcc6db3a0b82a2d"
+  }
+}

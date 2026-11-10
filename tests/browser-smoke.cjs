@@ -4,11 +4,12 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {pathToFileURL}=require('node:url');
 const playwright=require('playwright');
+const {version}=require('../package.json');
 const browserName=process.env.BROWSER||'chromium';
 assert.ok(['chromium','firefox','webkit'].includes(browserName));
 
 async function run(){
- const browser=await playwright[browserName].launch({headless:true});
+ const browser=await playwright[browserName].launch({headless:true,executablePath:process.env.BROWSER_EXECUTABLE||undefined});
  const page=await browser.newPage({acceptDownloads:true,viewport:{width:1440,height:900}});
  const errors=[];
  page.on('pageerror',err=>errors.push(err.message));
@@ -21,10 +22,10 @@ async function run(){
   assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'light');
 
   const citation=page.locator('#citationText');
-  assert.equal(await page.locator('#appVersion').textContent(),'v1.3.1');
-  assert.equal(await page.locator('#footerVersion').textContent(),'v1.3.1');
+  assert.equal(await page.locator('#appVersion').textContent(),'v'+version);
+  assert.equal(await page.locator('#footerVersion').textContent(),'v'+version);
   assert.match(await citation.inputValue(),/Hasan, A\. S\. \(2026\)/);
-  assert.match(await citation.inputValue(),/Version v1\.3\.1/);
+  assert.ok((await citation.inputValue()).includes('Version v'+version));
   assert.match(await citation.inputValue(),/\[Computer software\]\. Zenodo\. https:\/\/doi\.org\/10\.5281\/zenodo\.22923131/);
   assert.equal(await page.locator('#citationPanel').getByText(/zenodo\.22923132/i).count(),0);
   assert.equal(await page.locator('#citationPanel .citation-doi a').getAttribute('href'),
@@ -86,6 +87,17 @@ async function run(){
   assert.ok((await page.locator('#chart').innerHTML()).includes('e-'));
   await page.locator('#langToggle').click();
   assert.ok((await page.locator('#chart').innerHTML()).includes('Wavelength (nm)'));
+  await page.locator('#analyzeSpectrum').click();
+  assert.match(await page.locator('#analysisResults').textContent(),/المساحة الموقعة/);
+  await page.locator('#langToggle').click();
+
+  await page.locator('#readingOrder').selectOption('4');
+  await page.locator('#readingWave').fill('300');
+  await page.locator('#readingLookup').click();
+  assert.match(await page.locator('#readingResult').textContent(),/D4.*synthetic data/);
+  await page.locator('#window').selectOption('21');
+  assert.match(await page.locator('#readingResult').textContent(),/Settings or data changed/);
+  await page.locator('#window').selectOption('15');
 
   await page.locator('#measurementStart').fill('300');
   await page.locator('#measurementEnd').fill('380');
@@ -204,6 +216,19 @@ async function run(){
   await page.locator('#prepApply').click();
   await page.waitForFunction(()=>document.querySelectorAll('#samples [data-name]').length===9);
   assert.match(await page.locator('#prepStatus').textContent(),/derived|processed|جديد|معالج/i);
+  const processedName=await page.locator('#samples [data-name]').last().inputValue();
+  await page.locator('#readingCurve').selectOption({label:processedName});
+  await page.locator('#readingOrder').selectOption('0');
+  await page.locator('#readingWave').fill('300');
+  await page.locator('#readingLookup').click();
+  assert.match(await page.locator('#readingResult').textContent(),/Processed signal at a recorded wavelength/);
+  await page.locator('#readingTableToggle').click();
+  const readingDownload=page.waitForEvent('download');
+  await page.locator('#readingTableExport').click();
+  const readingCsv=fs.readFileSync(await (await readingDownload).path(),'utf8');
+  assert.match(readingCsv,/Curve provenance: operation=baseline/);
+  assert.match(readingCsv,/Processed signal at a recorded wavelength/);
+  assert.doesNotMatch(readingCsv,/Original measured reading/);
   const originalSummary=await page.locator('#samples [data-name]').first().evaluate(el=>el.parentElement.textContent);
   assert.match(originalSummary,/301/,'Original demo spectrum must remain unchanged');
   const derivedCsvPromise=page.waitForEvent('download');
@@ -216,7 +241,7 @@ async function run(){
   await page.locator('#saveProject').click();
   const projectBytes=fs.readFileSync(await (await projectPromise).path());
   const project=JSON.parse(projectBytes);
-  assert.equal(project.applicationVersion,'1.3.1');
+  assert.equal(project.applicationVersion,version);
   assert.equal(project.spectra.length,9);
   assert.ok(project.sourceTables.length>=4);
   assert.ok(project.spectra.every(c=>!Object.hasOwn(c,'cache')));
@@ -263,8 +288,41 @@ async function run(){
   const areaCsv=fs.readFileSync(await (await areaPromise).path(),'utf8');
   assert.match(areaCsv,/Trapezoidal signed area,5,/);
   assert.match(areaCsv,/Unintegrated width,0,/);
+  await page.locator('#measurementEnd').fill('204.5');
+  const refreshedAreaPromise=page.waitForEvent('download');await page.locator('#exportMetrics').click();
+  const refreshedAreaCsv=fs.readFileSync(await (await refreshedAreaPromise).path(),'utf8');
+  assert.match(refreshedAreaCsv,/Trapezoidal signed area,4,/, 'Export after an edited interval must not reuse the old result');
+
+  const rawSvg=await page.locator('#chart').innerHTML();
+  await page.locator('#upload').setInputFiles({name:'transmittance.csv',mimeType:'text/csv',buffer:Buffer.from(
+   'Wavelength (nm),Transmittance\n'+Array.from({length:15},(_,i)=>(200+i)+',0.5').join('\n'))});
+  await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('Unsupported signal'));
+  assert.equal(await page.locator('#samples [data-name]').count(),1);
+  assert.equal(await page.locator('#chart').innerHTML(),rawSvg);
+
+  await page.reload();
+  await page.locator('#upload').setInputFiles({name:'large.csv',mimeType:'text/csv',buffer:Buffer.from(
+   'Wavelength (nm),Absorbance\n'+Array.from({length:50000},(_,i)=>{
+    const x=i/1000;return (200+x).toFixed(3)+','+(.1+1e-5*x*x);
+   }).join('\n'))});
+  await page.waitForFunction(()=>document.querySelectorAll('#samples [data-name]').length===1);
+  await page.locator('#window').selectOption('51');
+  await page.locator('#view').selectOption('2');
+  await page.locator('#derivativeProgress').waitFor({state:'visible'});
+  assert.ok(await page.locator('#exportData').isDisabled(),'Previous numerical plot cannot be exported while calculation is pending');
+  await page.locator('#cancelDerivative').click();
+  await page.locator('#derivativeProgress').waitFor({state:'hidden'});
+  assert.match(await page.locator('#status').textContent(),/Calculation cancelled/);
+  await page.locator('#window').selectOption('41');
+  await page.locator('#derivativeProgress').waitFor({state:'hidden',timeout:45000});
+  assert.ok(await page.locator('#exportData').isEnabled());
+  await page.locator('#readingOrder').selectOption('2');
+  await page.locator('#readingWave').fill('225');
+  await page.locator('#readingLookup').click();
+  const value=Number((await page.locator('#readingResult').textContent()).match(/= ([0-9.e+-]+) ·/i)?.[1]);
+  assert.ok(Math.abs(value-2e-5)<1e-9,'Background D2 agrees with the analytic quadratic derivative');
   assert.deepEqual(errors,[],'No uncaught browser errors');
-  process.stdout.write('Browser smoke tests passed: ROI, gallery, axes, zoom, SVG/PNG, XLSX/quoted CSV, AUC, project round-trip and invalid-project rejection.\n');
+  process.stdout.write('Browser smoke tests passed: spectral processing, figure exports, import units, provenance, project round trips and cancellable background derivatives.\n');
  }finally{await browser.close();}
 }
 run().catch(e=>{console.error(e);process.exitCode=1;});
