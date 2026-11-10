@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.2 — 2026-11-10
+
+- Reject explicitly incompatible wavelength units and signal types during automatic and manual import.
+- Identify processed, computed, interpolated, and synthetic readings in the numerical outputs; invalidate stale lookup and measurement results.
+- Use adaptive wavelength ticks for narrow derivative publication plots. Preserve the D0 plot exactly, verified against the prior release's SVG output.
+- Run large derivative plot calculations in a cancellable background worker; serialize file imports and project restores and enforce session capacity before adding curves.
+- Translate measurement and fitting-window reports into Arabic and expand numerical and browser verification.
+
 ## 1.3.1 — 2026-09-27
 
 - Display the current version in the header and footer and provide the matching APA 7 citation in English and Arabic.

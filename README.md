@@ -4,7 +4,7 @@
 
 [Open the application](https://abd19990044-commits.github.io/UVVisSpectralStudio/) · [Download index.html](https://github.com/abd19990044-commits/UVVisSpectralStudio/raw/refs/heads/main/index.html) · [Apache-2.0 license](LICENSE) · [Changes](CHANGELOG.md)
 
-**Current version: 1.3.1.** English and Arabic interface; scientific axes use English labels and wavelength in nm. The application has no runtime dependencies, CDN scripts, account requirement or analysis server. Spectral observations are processed locally in the browser. Download `index.html` to work offline; npm and Python are required only by contributors running verification tests.
+**Current version: 1.3.2.** English and Arabic interface; scientific axes use English labels and wavelength in nm. The application has no runtime dependencies, CDN scripts, account requirement or analysis server. Spectral observations are processed locally in the browser. Download `index.html` to work offline; npm and Python are required only by contributors running verification tests.
 
 [![Zenodo DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22923131.svg)](https://doi.org/10.5281/zenodo.22923131)
 
@@ -47,7 +47,7 @@ Example input:
 "208","0.056"
 ```
 
-Text delimiters may be comma, tab, semicolon or whitespace. At least seven usable wavelength/signal pairs are required for import; derivative fitting may need more. Missing wavelengths are never invented. Positive measured wavelengths outside 200–800 nm are retained; use **Fit to data** to see the full extent. Recognized wavenumber headings are rejected, but generic headings cannot establish units: verify the source units yourself. Legacy binary `.xls` must be converted to `.xlsx` or `.csv`.
+Text delimiters may be comma, tab, semicolon or whitespace. At least seven usable wavelength/signal pairs are required for import; derivative fitting may need more. Missing wavelengths are never invented. Positive measured wavelengths outside 200–800 nm are retained; use **Fit to data** to see the full extent. Explicit non-nm axes (including µm, wavenumber and energy) and non-absorbance columns (including T, %T, mAbs and fluorescence intensity) are rejected, including during manual mapping. Convert instrument output to nm and absorbance A before importing. Generic headings cannot establish units: verify them before analyzing. Legacy binary `.xls` must be converted to `.xlsx` or `.csv`.
 
 ## Scientific conventions
 
@@ -68,11 +68,11 @@ The optional noise-region result is an amplitude/sample-standard-deviation ratio
 ## Data tables, figures and provenance
 
 - Combined tables use the sorted union of recorded wavelength positions; missing readings remain blank. Table CSV includes all matching rows, even when the screen shows one 500-row page.
-- Derivatives at recorded wavelengths are computed values. Aligned-grid CSV explicitly labels interpolated and unavailable readings; no gap is filled silently.
+- Derivatives and processed signals at recorded wavelengths are computed values. Reading tables and CSV exports distinguish these from measured absorbance and synthetic demonstration data. Changing data or fit settings invalidates the displayed lookup result. Aligned-grid CSV explicitly labels interpolated and unavailable readings; no gap is filled silently.
 - CSV comment lines beginning with `#` identify the application version, processing/display ranges and fitting configuration. Per-curve provenance records transformations and reference interpolation. Spreadsheet programs may need an explicit import step to skip metadata lines.
 - SVG and PNG use the same plotting implementation. PNG includes physical-resolution metadata. Exported plots omit the page title and developer credit; the in-plot legend is optional.
 - **PDF uses the browser print dialog**. Choose Save as PDF and verify page size, scaling and margins. It is not a direct PDF encoder and does not promise identical print output in every browser.
-- A journal's final size, typography and format requirements still determine the appropriate figure settings.
+- A journal's final size, typography and format requirements still determine the appropriate figure settings. The original D0 plot formatting, including its two-decimal Y tick labels, is preserved. Narrow derivative publication plots adapt their X ticks to the visible range.
 
 ## Saving and reopening research work
 
@@ -87,7 +87,7 @@ There is no automatic cloud backup or session recovery after reload. Save projec
 - Spectrum input files: at most **25 MiB each**. Text imports: at most 150,000 logical records and 80 columns. XLSX: at most 3000 ZIP entries, 150 MiB declared/actual expanded entry bytes, and 150,000 rows per sheet; wavelength/signal mapping considers the first 80 columns.
 - XLSX requires `DecompressionStream('deflate-raw')`. Decompression is bounded while reading, verifies actual entry sizes and CRC32 checksums, and rejects corrupt, encrypted or unsupported archives. CRC32 detects corruption; it is not an authenticity signature.
 - Automated browser verification targets **Chromium, Firefox and WebKit**. The test suite is not a certification of every mobile or vendor browser build.
-- Numerical processing runs on the browser's main thread. Large batches can take time; input limits are resource safeguards, not a promise of responsiveness at every limit on every device.
+- Large derivative plot calculations run in a cancellable Web Worker when supported; the application remains a standalone HTML file. Import, other processing, and SVG rendering can still take time for large sessions. The project curve, point, table and cell limits apply when adding data as well as when saving. The 25 MiB serialized project limit is checked at save time.
 - Spectra are not uploaded by application code. Hosting providers still receive ordinary page requests; external citation/source links open their respective services.
 
 ## Verification and deployment
@@ -110,16 +110,16 @@ On Windows PowerShell, use `$env:BROWSER='firefox'` before `npm run test:browser
 
 - Numerical tests cover known polynomial derivatives, processing/display independence, gap isolation, non-destructive transformations, axis scales, clipped AUC, quoted CSV, bounded decompression and corrupt archives.
 - Independent SciPy/analytic checks cover all four derivatives, uniform and irregular sampling, and unmasked edges.
-- Browser tests exercise imports, measurement and CSV export, language switching, zoom, SVG/PNG and DPI, project round trips and atomic rejection of invalid projects.
+- Browser tests exercise imports, measurement and CSV export, language switching, zoom, SVG/PNG and DPI, project round trips, rejected projects, reading invalidation, and cancellable background derivatives. Baseline SVG hashes check exact D0 output across five settings.
 - Main-branch deployment **requires both numerical jobs (Node 22 and 24) and all three browser jobs to pass**. Only `index.html`, `LICENSE` and `NOTICE` are staged for GitHub Pages. `index.html` remains independently usable and embeds the full license and attribution.
 
 Review the [Actions results](https://github.com/abd19990044-commits/UVVisSpectralStudio/actions) for the exact commit used. Passing tests establishes the documented checks, not a guarantee that all possible defects have been eliminated.
 
 ## Citation and versions
 
-The current application and exports identify **v1.3.1**. Cite this version as:
+The current application and exports identify **v1.3.2**. Cite this version as:
 
-> Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.3.1) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923131
+> Hasan, A. S. (2026). UV-Vis Spectral Studio (Version v1.3.2) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22923131
 
 The DOI above is the stable **concept DOI** for the software across versions. For reproducibility, record the exact version, Git commit and processing parameters. [CITATION.cff](CITATION.cff) contains the same DOI.
 
